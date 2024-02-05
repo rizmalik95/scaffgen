@@ -3,7 +3,10 @@ import fitz  # PyMuPDF
 from bs4 import BeautifulSoup, NavigableString
 import re
 import os
+from tqdm.rich import tqdm
+
 from APIcalls import get_summary
+from supabase_client import add_to_supabase
 
 pdf_directory = "PDF"
 if not os.path.exists(pdf_directory):
@@ -21,8 +24,14 @@ def is_pdf(link):
 
 # Download, Read, and summarize a PDF
 def download_read_summarize_pdf(link):
-    response = requests.get(link)
-    filename = os.path.join(pdf_directory, link.split('/')[-1]) # Save PDFs in the specified directory
+    try:
+        response = requests.get(link)
+    except requests.exceptions.SSLError as e:
+        print(f"An SSL error occurred: {e}")
+        return ""
+    filename = os.path.join(
+        pdf_directory,
+        link.split('/')[-1])  # Save PDFs in the specified directory
     with open(filename, 'wb') as f:
         f.write(response.content)
 
@@ -37,45 +46,56 @@ def download_read_summarize_pdf(link):
         print(f"Cannot open broken document: {e}")
         return ""  # Return an error message or use another appropriate response
 
-scaffold_list = []
 
-html_content = response.text
-soup = BeautifulSoup(html_content, 'html.parser')
+def create_scaffold_list(add_to_db: bool):
+    scaffold_list = []
 
-# scaffold_list = title, author, link, answer link (optional), 2 sentence summary
+    html_content = response.text
+    soup = BeautifulSoup(html_content, 'html.parser')
 
-curr_ul = soup.find('ul')
-while True:
-    for li in curr_ul.find_all('li'):
-        links = li.find_all('a')
-        if len(links) == 0: continue
+    # scaffold_list = title, author, link, answer link (optional), 2 sentence summary
 
-        link_text, link_url, answer_url, pdf_summary = '', '', '', ''
+    curr_ul = soup.find('ul')
+    i = 0
+    while True:
+        for li in curr_ul.find_all('li'):
+            links = li.find_all('a')
+            if len(links) == 0: continue
 
-        if is_pdf(links[0]):
-            link_text = links[0].get_text(strip=True)
-            link_url = links[0]['href']
-        
-        for link in links:
-            if link.get_text(strip=True).lower() == 'answers':
-                answer_url = link['href']
-            
-            author = link.next_sibling
-            if author and isinstance(author, NavigableString):
-                author = author.strip()
-                author = re.sub(r'[^a-zA-Z0-9 ]', '', author).lstrip()
-            else:
-                author = ''
-        
-        if link_url != '':
-            pdf_summary = download_read_summarize_pdf(link_url)
-            print((link_text, author, link_url, answer_url, pdf_summary))
-            scaffold_list.append((link_text, author, link_url, answer_url, pdf_summary))
-        
-    curr_ul = curr_ul.find_next('ul')
+            link_text, link_url, answer_url, pdf_summary = '', '', '', ''
 
-    if curr_ul is None:
-        break
+            if is_pdf(links[0]):
+                link_text = links[0].get_text(strip=True)
+                link_url = links[0]['href']
 
-for s in scaffold_list:
-    print(s)
+            for link in links:
+                if link.get_text(strip=True).lower() == 'answers':
+                    answer_url = link['href']
+
+                author = link.next_sibling
+                if author and isinstance(author, NavigableString):
+                    author = author.strip()
+                    author = re.sub(r'[^a-zA-Z0-9 ]', '', author).lstrip()
+                else:
+                    author = ''
+
+            if link_url != '':
+                pdf_summary = download_read_summarize_pdf(link_url)
+                if pdf_summary == "": continue
+                # print((link_text, author, link_url, answer_url, pdf_summary))
+                print(i, link_text)
+                i += 1
+                scaffold = (link_text, author, link_url, answer_url,
+                            pdf_summary)
+                scaffold_list.append(scaffold)
+                if add_to_db:
+                    add_to_supabase(scaffold)
+        curr_ul = curr_ul.find_next('ul')
+
+        if curr_ul is None:
+            break
+    return scaffold_list
+
+
+if __name__ == "__main__":
+    scaffold_list = create_scaffold_list(add_to_db=False)

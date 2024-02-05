@@ -7,6 +7,7 @@ client = OpenAI(api_key=OPENAI_API_KEY)
 def get_summary(text):
     # This function assumes the text of the PDF is passed as an argument
     # You'll need to modify this to handle sending messages to the OpenAI API properly
+    text = text[:6000] # truncate to 12000 characters to not hit token limit
     response = client.chat.completions.create(
         model="gpt-3.5-turbo",
         messages=[
@@ -15,6 +16,17 @@ def get_summary(text):
         ]
     )
     return response.choices[0].message.content
+
+def vocab_scaffold(text):
+    response = client.chat.completions.create(
+        model="gpt-3.5-turbo",
+        messages=[
+            {"role": "system", "content": "prompt here"},
+            {"role": "user", "content": text}
+        ]
+    )
+    return response.choices[0].message.content
+
 
 # response = client.chat.completions.create(
 #     model="gpt-3.5-turbo",
