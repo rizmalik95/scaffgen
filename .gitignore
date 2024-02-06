@@ -1,1 +1,6 @@
 /node_modules
+.env
+scripts/API.py
+scripts/PDF
+scripts/__pycache__
+.next
