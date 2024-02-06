@@ -1,7 +1,7 @@
 import { type AppType } from "next/app";
-import Layout from "@/components/Layout";
+import Layout from "@/components/layout/Layout";
 
-import "scaffold/styles/globals.css";
+import "@/styles/globals.css";
 
 const MyApp: AppType = ({ Component, pageProps }) => {
   return (
