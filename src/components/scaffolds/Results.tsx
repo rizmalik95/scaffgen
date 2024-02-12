@@ -48,8 +48,7 @@ const Results = ({ url, submitCount }: { url: string, submitCount: number }) => 
         try {
           const response = await axios.post('/api/scaffoldGenerator', payload);
           const activity = response.data.activity;
-
-          return activity;
+          setScaffold(activity);
         } catch (error) {
           console.error('Error fetching data:', error);
           // Handle error appropriately
