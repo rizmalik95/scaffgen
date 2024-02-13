@@ -1,45 +1,105 @@
 import { useEffect, useState } from 'react';
 import ResultCard from '@/components/scaffolds/ResultCard';
+import AllScaffolds from '@/components/scaffolds/AllScaffolds';
 import axios from 'axios';
 
 interface ResultItem {
-  title: string;
-  content: string;
+  lessonPlan: string;
+  lessonObjective: string;
 }
 
 const Results = ({ url, submitCount }: { url: string, submitCount: number }) => {
-  const [results, setResults] = useState<ResultItem[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [result, setResult] = useState<ResultItem>({ lessonPlan: '', lessonObjective: '' });
+  const [lessonLoading, setLessonLoading] = useState(false);
+  const [scaffold, setScaffold] = useState('' as string);
+  const [scaffoldLoading, setScaffoldLoading] = useState(false);
 
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchLessonData = async () => {
       if (url) {
-        setLoading(true);
+        setLessonLoading(true);
         try {
           const response = await axios.get(`/api/curriculum?url=${encodeURIComponent(url)}`);
-          setResults([
-            { title: 'Lesson Objective', content: response.data.learningObjectives.join(', ') },
-            { title: 'Teaching Standard', content: response.data.standards.join(', ') }
-          ]);
+          setResult({
+            lessonPlan: response.data.learningObjectives.join(', '),
+            lessonObjective: response.data.standards.join(', ')
+          }
+          );
         } catch (error) {
           console.error('Error fetching data:', error);
           // Handle error appropriately
         }
-        setLoading(false);
+        setLessonLoading(false);
       }
     };
 
-    fetchData();
+    fetchLessonData();
   }, [url, submitCount]);
 
-  if (loading) return <div>Loading...</div>;
+  useEffect(() => {
+    const fetchScaffoldGen = async () => {
+      if (result) {
+        setScaffoldLoading(true);
+
+        const payload = {
+          lessonPlan: result.lessonPlan,
+          lessonObjective: result.lessonObjective
+        };
+
+        try {
+          const response = await axios.post('/api/scaffoldGenerator', payload);
+          const activity = response.data.activity;
+          setScaffold(activity);
+        } catch (error) {
+          console.error('Error fetching data:', error);
+          // Handle error appropriately
+        }
+        setScaffoldLoading(false);
+      }
+    }
+    fetchScaffoldGen();
+  }, [result]);
+
+  const render = (result: ResultItem) => {
+    const elements: JSX.Element[] = [];
+
+    if (lessonLoading) {
+      elements.push(<p key="loading">Loading lesson...</p>);
+    } else {
+      elements.push(<ResultCard key="lesson" title="Lesson Plan" content={result.lessonPlan} />)
+      elements.push(<ResultCard key="objective" title="Lesson Objective" content={result.lessonObjective} />)
+    }
+    if (scaffoldLoading) {
+      elements.push(<p key="loading">Loading scaffold...</p>);
+    } else {
+      // TEMPORARY manual scaffold fill, replace with scaffolds from database
+      const scaffoldsData = [
+        {
+          image: 'https://via.placeholder.com/300x200', // Filler image URL
+          title: 'Scaffold 1',
+          standard: result.lessonObjective,
+          summary: scaffold,
+          barGraph: 'https://via.placeholder.com/300x100', // Filler bar graph image URL
+        },
+        {
+          image: 'https://via.placeholder.com/300x200', // Filler image URL
+          title: 'Scaffold 2',
+          standard: result.lessonObjective,
+          summary: scaffold,
+          barGraph: 'https://via.placeholder.com/300x100', // Filler bar graph image URL
+        },
+      ]
+      elements.push(<AllScaffolds key="scaffolds" scaffoldsData={scaffoldsData} />)
+    }
+
+    return <div>{elements}</div>;
+  };
+
 
   return (
     <div className="container mx-auto p-4">
       <h2>Results</h2>
-      {results.map((result, index) => (
-        <ResultCard key={index} title={result.title} content={result.content} />
-      ))}
+      {render(result)}
     </div>
   );
 };
