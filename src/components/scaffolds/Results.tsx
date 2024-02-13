@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import ResultCard from '@/components/scaffolds/ResultCard';
+import AllScaffolds from '@/components/scaffolds/AllScaffolds';
 import axios from 'axios';
 
 interface ResultItem {
@@ -71,7 +72,24 @@ const Results = ({ url, submitCount }: { url: string, submitCount: number }) => 
     if (scaffoldLoading) {
       elements.push(<p key="loading">Loading scaffold...</p>);
     } else {
-      elements.push(<ResultCard key="scaffold" title="Scaffold" content={scaffold} />)
+      // TEMPORARY manual scaffold fill, replace with scaffolds from database
+      const scaffoldsData = [
+        {
+          image: 'https://via.placeholder.com/300x200', // Filler image URL
+          title: 'Scaffold 1',
+          standard: result.lessonObjective,
+          summary: scaffold,
+          barGraph: 'https://via.placeholder.com/300x100', // Filler bar graph image URL
+        },
+        {
+          image: 'https://via.placeholder.com/300x200', // Filler image URL
+          title: 'Scaffold 2',
+          standard: result.lessonObjective,
+          summary: scaffold,
+          barGraph: 'https://via.placeholder.com/300x100', // Filler bar graph image URL
+        },
+      ]
+      elements.push(<AllScaffolds key="scaffolds" scaffoldsData={scaffoldsData} />)
     }
 
     return <div>{elements}</div>;

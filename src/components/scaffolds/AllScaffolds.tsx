@@ -34,7 +34,7 @@ const Scaffold = ({ image, title, standard, summary, barGraph }: ScaffoldProps) 
   };
   
 // Main Component
-const AllScaffolds = () => {
+const AllScaffolds = ({ scaffoldsData }: { scaffoldsData: ScaffoldProps[] }) => {
   // Settings for the slider
   const settings = {
     dots: true,
@@ -60,33 +60,6 @@ const AllScaffolds = () => {
     ],
     // other settings...
   };
-
-  // Data for the scaffolds
-  const scaffoldsData = [
-    {
-      image: 'https://via.placeholder.com/300x200', // Filler image URL
-      title: 'Scaffold 1',
-      standard: '6.4.2.1',
-      summary: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus.',
-      barGraph: 'https://via.placeholder.com/300x100', // Filler bar graph image URL
-    },
-    {
-      image: 'https://via.placeholder.com/300x200',
-      title: 'Scaffold 2',
-      standard: '6.4.2.1',
-      summary: 'Pellentesque auctor neque nec urna. Proin sapien ipsum, porta a, auctor quis.',
-      barGraph: 'https://via.placeholder.com/300x100',
-    },
-    {
-      image: 'https://via.placeholder.com/300x200',
-      title: 'Scaffold 3',
-      standard: '6.4.2.1',
-      summary: 'Curabitur ligula sapien, tincidunt non, euismod vitae, posuere imperdiet.',
-      barGraph: 'https://via.placeholder.com/300x100',
-    },
-    // Add more scaffolds as needed
-  ];
-
 
   return (
     <div className="all-scaffolds">
