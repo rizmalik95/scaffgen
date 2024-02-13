@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import InputForm from '@/components/scaffolds/InputForm';
 import Results from '@/components/scaffolds/Results';
+import AllScaffolds from '@/components/scaffolds/AllScaffolds';
 
 export default function Start() {
   const [url, setUrl] = useState('');
@@ -16,6 +17,7 @@ export default function Start() {
       <h1>Generate Scaffolds</h1>
       <InputForm onSubmitUrl={(url) => handleSubmit(url)} />
       <Results url={url} submitCount={submitCount} />
+      <AllScaffolds></AllScaffolds>
     </div>
   );
 }
