@@ -7,18 +7,26 @@ Teacher X is preparing a lesson on the quadratic equation from the curricular re
 
 ## Sprint Updates
 
-### Ronak
-
+### Sprint 1
+#### Ronak
 In this sprint, I worked with everyone else to primarily scope our project, come up with the most essential features and system design. I helped brainstorm the different technology stacks nad how we will connect different pieces of software together and store our data. We talked with the Khanmigo team, and then as a group discussed how we can differentiate ourselves from what Khan Academy already offers. On the technical side, I first worked with Ritika to scrape Resourceaholic website for pdf scaffolds. Then, I started working on connecting our Python scripts to the frontend T3 app that we have built. This part is unfinished, so I will continue it in the next sprint. 
 
 For the next sprint, my goal is first finish connecting the two scraping scripts we have (the resourceaholic scraper for scaffolds, and the illustrative mathematics scraper for lessons) to the frontent in Typescript, so that they can be surfaced by frontend components. Then, I want to work on two things. One, populating databases with our scraped information, instead of current method of computing on the fly, so we only have to make these scrapes once. Two, I will work with Ritika to build logic for the LLM to match relevant scaffolds with the current lesson plan. 
 
-### Ritika
+#### Ritika
 This past sprint, we spent a lot of time defining our solution and making sure we were addressing the main problem that Riz had identified in his previous user research. Most of the first week was brainstorming ideas, and clearly identifying what we needed to code. Towards the end of the first week, Ronak and I wrote one of our scraping scripts to create our human-written scaffolds for middle school math formatted as a list of tuples in the following format: (Scaffold Name, Author, Link URL if it is a PDF, Answer URL if it exists, 2 Sentence Summary). The next week, I worked on making an API call to read each pdf and provide the 2 sentence summary that we included in our human-written scaffold database.
 
 For sprint 2, I plan to help write our prompts to create LLM generated scaffolds. In speaking with individuals from Khanmigo, they shared that all of their Educational tools are based on prompt engineering and no fine tuning. I think that could be interesting for us to test out at some point, but starting with prompt generation, and helping create another LLM model that’s able to match teacher queries with the GPT summaries we produced.
 
-### Riz
+#### Riz
 We spent some time narrowing in on the specific problem that we’re hoping to solve. This involved me sharing some of the insights that I’ve gained from qualitative research with teachers over the past few months. This helped us narrow in on two main points of differentiation: (1) connection to teachers’ existing curriculum, and (2) returning teacher-created scaffolds to the teacher, as well as LLM-created ones. This was really helpful to get us all on the same page. I then spent the bulk of my time this week on two main tasks: (1) writing a python script that extracts key information from Illustrative Mathematics, and (2) putting together a simple frontend for the app. 
 
 In the next sprint, I will be working on the prompting needed to create the LLM scaffolds based on the curriculum. I will also begin working on the logic that powers the app to retreive the appropriate human-crafted scaffold for specific curriculum inputs. This is going to involve a lot of trial and error and iterative improvements. I'll also be assisting with the frontend design. 
+
+### Sprint 2
+
+#### Ronak
+In sprint 2, I mainly worked on building backend Node api's that got information from our database and AI generated scaffolds, so that they can be called by the frontend to populate our scaffold result cards. At the end, I also helped Riz and Ritika set up a vector database so that we can do RAG on relevant generated scaffolds (this one is WIP)
+
+For the next sprint, I plan on finishing up the vector database and build out the backend api that will fetch the top k cosine similarity results from the vector database. Then, I will focus on one of our GPT prompt construction tasks that we've outlined for sprint 3 (either generating better scaffolds or LLM evaluation/scoring of scaffolds). 
+
