@@ -1,11 +1,14 @@
+# Scrapes Resourcaholic for scaffolds
+
 import requests
 import fitz  # PyMuPDF
 from bs4 import BeautifulSoup, NavigableString
 import re
 import os
 from tqdm.rich import tqdm
+from collections import namedtuple
 
-from APIcalls import get_summary
+from APIcalls import get_summary, create_embedding
 from supabase_client import add_to_supabase
 
 pdf_directory = "PDF"
@@ -53,7 +56,7 @@ def create_scaffold_list(add_to_db: bool):
     html_content = response.text
     soup = BeautifulSoup(html_content, 'html.parser')
 
-    # scaffold_list = title, author, link, answer link (optional), 2 sentence summary
+    # scaffold_list = title, author, link, answer link (optional), 2 sentence summary, embedding
 
     curr_ul = soup.find('ul')
     i = 0
@@ -63,6 +66,7 @@ def create_scaffold_list(add_to_db: bool):
             if len(links) == 0: continue
 
             link_text, link_url, answer_url, pdf_summary = '', '', '', ''
+            embedding = None
 
             if is_pdf(links[0]):
                 link_text = links[0].get_text(strip=True)
@@ -82,14 +86,14 @@ def create_scaffold_list(add_to_db: bool):
             if link_url != '':
                 pdf_summary = download_read_summarize_pdf(link_url)
                 if pdf_summary == "": continue
-                # print((link_text, author, link_url, answer_url, pdf_summary))
-                print(i, link_text)
+                summary_embedding = create_embedding(pdf_summary)
                 i += 1
                 scaffold = (link_text, author, link_url, answer_url,
-                            pdf_summary)
+                            pdf_summary, summary_embedding)
                 scaffold_list.append(scaffold)
                 if add_to_db:
-                    add_to_supabase(scaffold)
+                    table_name = "scaffolds2"
+                    add_to_supabase(table_name, scaffold)
         curr_ul = curr_ul.find_next('ul')
 
         if curr_ul is None:
@@ -98,4 +102,4 @@ def create_scaffold_list(add_to_db: bool):
 
 
 if __name__ == "__main__":
-    scaffold_list = create_scaffold_list(add_to_db=False)
+    scaffold_list = create_scaffold_list(add_to_db=True)

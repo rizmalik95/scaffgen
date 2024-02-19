@@ -1,37 +1,24 @@
+# RAG
 import os
 from supabase import create_client, Client
 from langchain_openai import OpenAIEmbeddings
 from langchain_community.vectorstores import Chroma
 from langchain.docstore.document import Document
 
-# Set OpenAI API key
-os.environ['OPENAI_API_KEY'] = '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'
-# os.environ['OPENAI_API_KEY'] = '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'
+from dotenv import load_dotenv
+
+dotenv_path = os.path.join(os.path.dirname(__file__), '..', '.env')
+load_dotenv(dotenv_path=dotenv_path)
+OPENAI_API_KEY: str = os.environ.get("OPENAI_API_KEY")
 
 # Initialize Supabase client
-url = "https://cukkxrhvvllrdsfexoqj.supabase.co"
-key = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN1a2t4cmh2dmxscmRzZmV4b3FqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MDcxNzA1NTQsImV4cCI6MjAyMjc0NjU1NH0.QxtX9x2N0Uk80W_Rh9xbwh8Rua8prA0cl6rhuB5SPFk"
+url: str = os.environ.get("SUPABASE_URL")
+key: str = os.environ.get("SUPABASE_KEY")
+# url = "https://cukkxrhvvllrdsfexoqj.supabase.co"
+# key = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN1a2t4cmh2dmxscmRzZmV4b3FqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MDcxNzA1NTQsImV4cCI6MjAyMjc0NjU1NH0.QxtX9x2N0Uk80W_Rh9xbwh8Rua8prA0cl6rhuB5SPFk"
 supabase: Client = create_client(url, key)
 
-# Initialize OpenAI Embeddings
-openai_embeddings = OpenAIEmbeddings()
 
-# Initialize Chroma vector store
-db = Chroma(embedding_function=openai_embeddings)
-
-# Call this function once to update db vector store
-def store_embeddings_in_chroma():
-    data = supabase.table("scaffolds").select("summary, id").execute()
-    for row in data.data:
-        curr_doc = Document(
-            page_content = row['summary'],
-            metadata = {
-                "id": row['id']
-            }
-        )
-        db.add_documents([curr_doc])
-store_embeddings_in_chroma()
-print(db)
 
 # Return top k similar human-written Scaffolds
 def get_top_similar_scaffolds(lesson_summary):
