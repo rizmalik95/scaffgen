@@ -4,8 +4,8 @@ import AllScaffolds from '@/components/scaffolds/AllScaffolds';
 import axios from 'axios';
 
 interface ResultItem {
-  lessonPlan: string;
-  lessonObjective: string;
+  lessonObjectives: string;
+  lessonStandards: string;
 }
 
 const Results = ({ url, submitCount }: { url: string, submitCount: number }) => {
@@ -21,8 +21,8 @@ const Results = ({ url, submitCount }: { url: string, submitCount: number }) => 
         try {
           const response = await axios.get(`/api/curriculum?url=${encodeURIComponent(url)}`);
           setResult({
-            lessonPlan: response.data.learningObjectives.join(', '),
-            lessonObjective: response.data.standards.join(', ')
+            lessonObjectives: response.data.learningObjectives.join(', '),
+            lessonStandards: response.data.standards.join(', ')
           }
           );
         } catch (error) {
@@ -42,8 +42,8 @@ const Results = ({ url, submitCount }: { url: string, submitCount: number }) => 
         setScaffoldLoading(true);
 
         const payload = {
-          lessonPlan: result.lessonPlan,
-          lessonObjective: result.lessonObjective
+          lessonObjectives: result.lessonObjectives,
+          lessonStandards: result.Standards
         };
 
         try {
@@ -66,8 +66,8 @@ const Results = ({ url, submitCount }: { url: string, submitCount: number }) => 
     if (lessonLoading) {
       elements.push(<p key="loading">Loading lesson...</p>);
     } else {
-      elements.push(<ResultCard key="lesson" title="Lesson Plan" content={result.lessonPlan} />)
-      elements.push(<ResultCard key="objective" title="Lesson Objective" content={result.lessonObjective} />)
+      elements.push(<ResultCard key="lesson" title="Lesson Objectives" content={result.lessonObjectives} />)
+      elements.push(<ResultCard key="objective" title="Lesson Standards" content={result.lessonStandards} />)
     }
     if (scaffoldLoading) {
       elements.push(<p key="loading">Loading scaffold...</p>);
