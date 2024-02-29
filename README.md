@@ -10,7 +10,7 @@ Create a .env file with
 ```POSTGRESS_PASSWORD=''
 SUPABASE_URL=''
 SUPABASE_KEY=''
-OPENAI_API_KEY=''  ```
+OPENAI_API_KEY=''```
 
 
 ```In terminal, npm run dev ```
