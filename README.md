@@ -7,17 +7,22 @@ Teacher X is preparing a lesson on the quadratic equation from the curricular re
 
 ## User Testing Instructions
 Create a .env file with 
-POSTGRESS_PASSWORD=''
+```POSTGRESS_PASSWORD=''
 SUPABASE_URL=''
 SUPABASE_KEY=''
-OPENAI_API_KEY='' 
+OPENAI_API_KEY=''  ```
+
 
 ```In terminal, npm run dev ```
 
-Once the page is up, go to "Generate can enter any lesson url from Illustrative Mathematics (for example: https://curriculum.illustrativemathematics.org/MS/teachers/1/2/4/preparation.html) which should generate --
+Once the page is up, go to "Generate can enter any lesson url from Illustrative Mathematics (for example: https://curriculum.illustrativemathematics.org/MS/teachers/1/2/4/preparation.html) which should generate a results card (scraped from the IM page showcasing learning objectives and the exact standard) and scaffolds that are retrieved from our human-generated database, and LLM generated scaffolds. 
 
-## Sprint 4 Goals
-(1) 
+## Sprint 4 Goals / Demo Day Plans
+(1) Improve Output Quality: We want to go back to what we previously implemented and improve the matching algorithm to increase the quality of retrieved human-written scaffolds. We plan to improve this process by having an LLM call which assigns different tags to each human scaffold that we can use to improve retrieval quality. Additionally, we want to continue generating high quality LLM-written scaffolds by implementing automated scoring and evaluation features of our LLM generated content.
+
+(2) Improve UI: Especially for Demo Day, we want our front end to look more polished and appealing to use. This includes changes to the images on our scaffolds, removing our result card from displaying on the front end, formatting our LLM generated scaffolds into PDFs that are classroom ready, and more.
+
+(3) User Testing: We are working on setting up in-person meetings and zoom calls with various middle school math teachers to provide user feedback on our product (evaluating our content quality and usability). 
 
 ## Sprint Updates
 
@@ -58,7 +63,7 @@ Over the course of this sprint, I worked across a range of mini-projects. The fi
 
 
 #### Ritika
-
+For this sprint, we were working on trying to link all of our individual moving parts together. Ronak and I first explored OpenAI’s Assistants API since we noticed saw they had a feature to help create an agent playground. We were going to integrate our RAG using the assistants API, but realized this API was more helpful for our scaffold generation instead of retrieval of existing scaffolds. After, Ronak and I worked on setting up our top-k scaffold retrieval from our supabase database. We also spent a long time linking our retrieved scaffolds and LLM scaffolds into the correct format to actually display on our website. Before, our scaffolds page was displaying manually entered scaffolds to help design the layout of the page. Now, all of the content is tailored to the link entered!
 
 #### Riz
 Over this sprint, I spent most of my time working on the prompting for our GPT-created instructional materials. This involved a lot of iteration and improvement in the OpenAI playground and reading documentation on novel prompt engineering approaches. Based on our learnings in class, I implemented a 'chain of thought' approach, involving multiple API calls which yielded significantly better outputs. We are now moving ahead with this. I also ran initial tests on the retrieval system to check for the quality and relevance of the returned materials. It looks like we need to do some additional work on this, and I'll be spending much of my time in Sprint 4 working to improve these outputs. I'll be doing this by compiling an initial test set and then adjusting the retrieval pipeline. 
