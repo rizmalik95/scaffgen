@@ -7,11 +7,12 @@ Teacher X is preparing a lesson on the quadratic equation from the curricular re
 
 ## User Testing Instructions
 Create a .env file with 
-```POSTGRESS_PASSWORD=''
+```
+POSTGRESS_PASSWORD=''
 SUPABASE_URL=''
 SUPABASE_KEY=''
-OPENAI_API_KEY=''```
-
+OPENAI_API_KEY=''
+```
 
 ```In terminal, npm run dev ```
 
