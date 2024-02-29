@@ -13,8 +13,14 @@ SUPABASE_URL=''
 SUPABASE_KEY=''
 OPENAI_API_KEY=''
 ```
-
-```In terminal, npm run dev ```
+In terminal, to install all npm dependencies, run
+```
+npm install
+```
+and then start the webapp with
+```
+npm run dev
+```
 
 Once the page is up, go to "Generate can enter any lesson url from Illustrative Mathematics (for example: https://curriculum.illustrativemathematics.org/MS/teachers/1/2/4/preparation.html) which should generate a results card (scraped from the IM page showcasing learning objectives and the exact standard) and scaffolds that are retrieved from our human-generated database, and LLM generated scaffolds. 
 
@@ -61,7 +67,7 @@ Over the course of this sprint, I worked across a range of mini-projects. The fi
 ### Sprint 3
 
 #### Ronak
-
+In this sprint, I worked with Ritika to successfully retrieve scaffolds in our database based on the relevant lesson. We initialized a vector database in supabase that stores an embedding of activity summaries, and then using cosine similarity to match these scaffolds with the current lesson plan in question. We got this entire end-to-end process working, so now our minimum requirements of the product are complete: a teacher enters a lesson plan, we generate relevant AI scaffolds and pull up relevant human made scaffolds. For sprint 4, the main priority for me will be making everything look prettier and demo-able. 
 
 #### Ritika
 For this sprint, we were working on trying to link all of our individual moving parts together. Ronak and I first explored OpenAI’s Assistants API since we noticed saw they had a feature to help create an agent playground. We were going to integrate our RAG using the assistants API, but realized this API was more helpful for our scaffold generation instead of retrieval of existing scaffolds. After, Ronak and I worked on setting up our top-k scaffold retrieval from our supabase database. We also spent a long time linking our retrieved scaffolds and LLM scaffolds into the correct format to actually display on our website. Before, our scaffolds page was displaying manually entered scaffolds to help design the layout of the page. Now, all of the content is tailored to the link entered!
@@ -70,4 +76,4 @@ For this sprint, we were working on trying to link all of our individual moving 
 Over this sprint, I spent most of my time working on the prompting for our GPT-created instructional materials. This involved a lot of iteration and improvement in the OpenAI playground and reading documentation on novel prompt engineering approaches. Based on our learnings in class, I implemented a 'chain of thought' approach, involving multiple API calls which yielded significantly better outputs. We are now moving ahead with this. I also ran initial tests on the retrieval system to check for the quality and relevance of the returned materials. It looks like we need to do some additional work on this, and I'll be spending much of my time in Sprint 4 working to improve these outputs. I'll be doing this by compiling an initial test set and then adjusting the retrieval pipeline. 
 
 ## Note on project history 
-Our project builds on an existing codebase that was written by Rizwaan (and two other students) during a mini-project in CS293. The features built in this project allowed a user to input specific words about a lesson and receive three versions of a warmup task that reviews prior knowledge. Our current project has gone significantly beyond this: (1) we allow the user to input a URL which is parsed, (2) a wider range of LLM-created materials, (3) a retrieveal system where materials written by other teachers are returned to the teacher, and (4) significant UI/UX improvements. 
+Our project builds on an existing codebase that was written by Rizwaan (and two other students) during a mini-project in CS293. The features built in this project allowed a user to input specific words about a lesson and receive three versions of a warmup task that reviews prior knowledge. Our current project has gone significantly beyond this: (1) we allow the user to input a URL which is parsed, (2) a wider range of LLM-created materials, (3) a retrieveal system where materials written by other teachers are returned to the teacher, and (4) significant UI/UX improvements. Specifically in the code, we kept the landing page the same (`src/pages/index.tsx`), but everything in `src/pages/start.tsx` and all its submodules and api calls are all brand new from this project. So that's everything in `src/pages/api/`, and everything in `src/commponents/scaffolds`. 
