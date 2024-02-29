@@ -61,3 +61,7 @@ Over the course of this sprint, I worked across a range of mini-projects. The fi
 
 
 #### Riz
+Over this sprint, I spent most of my time working on the prompting for our GPT-created instructional materials. This involved a lot of iteration and improvement in the OpenAI playground and reading documentation on novel prompt engineering approaches. Based on our learnings in class, I implemented a 'chain of thought' approach, involving multiple API calls which yielded significantly better outputs. We are now moving ahead with this. I also ran initial tests on the retrieval system to check for the quality and relevance of the returned materials. It looks like we need to do some additional work on this, and I'll be spending much of my time in Sprint 4 working to improve these outputs. I'll be doing this by compiling an initial test set and then adjusting the retrieval pipeline. 
+
+## Note on project history 
+Our project builds on an existing codebase that was written by Rizwaan (and two other students) during a mini-project in CS293. The features built in this project allowed a user to input specific words about a lesson and receive three versions of a warmup task that reviews prior knowledge. Our current project has gone significantly beyond this: (1) we allow the user to input a URL which is parsed, (2) a wider range of LLM-created materials, (3) a retrieveal system where materials written by other teachers are returned to the teacher, and (4) significant UI/UX improvements. 
