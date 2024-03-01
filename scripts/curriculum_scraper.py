@@ -1,3 +1,4 @@
+# Scrapes IM for Lesson Objective and Standard
 import requests
 from lxml import html
 import sys  # Import sys to handle command-line arguments
