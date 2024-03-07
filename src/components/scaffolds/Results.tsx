@@ -103,6 +103,7 @@ const Results = ({ url, submitCount }: { url: string, submitCount: number }) => 
         // get back a list [(pdfurl, title, summary), (pdfurl, title, summary), ...]
         const payload = {
           objectives: LessonData.lessonObjectives,
+          standards: LessonData.lessonStandards,
           k: 3
         };
         try {

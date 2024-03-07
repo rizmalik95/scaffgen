@@ -24,9 +24,9 @@ export default async function handler(
   res: NextApiResponse<DataOutputs>
 ) {
   if (req.method === 'POST') {
-    const { objectives, k } = req.body;
+    const { objectives, standards, k } = req.body;
 
-    if (!objectives || !k) {
+    if (!objectives || !k || !standards) {
       res.status(400).json({ error: 'Please provide both objectives and k' });
       return;
     }
@@ -34,7 +34,7 @@ export default async function handler(
     try {
       const queryEmbedding = await openai.embeddings.create({
         model: 'text-embedding-ada-002',
-        input: objectives,
+        input: objectives + standards, // this is the line to change
       });
 
       const queryEmbeddingData = queryEmbedding.data ?? [];
