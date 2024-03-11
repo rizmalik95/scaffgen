@@ -13,6 +13,8 @@ interface ScaffoldItem {
   pdfUrl: string;
   title: string;
   summary: string;
+  standard: Array<string>;
+  tags: Array<string>;
 }
 
 // TODO: make this import the same scaffoldProps from AllScaffolds.tsx
@@ -21,7 +23,8 @@ interface ScaffoldProps {
     image: string;
     title: string;
     summary: string;
-    barGraph: string;
+    standard: Array<string>;
+    tags: Array<string>;
   }
 
 const Results = ({ url, submitCount }: { url: string, submitCount: number }) => {
@@ -55,44 +58,44 @@ const Results = ({ url, submitCount }: { url: string, submitCount: number }) => 
   }, [url, submitCount]);
 
 
-  useEffect(() => {
-    const fetchAIScaffolds = async () => {
-      if (LessonData.lessonObjectives) {
-        // For loop through different Scaffold Types
-        const scaffoldTypes = ['backgroundKnowledge', 'mathLanguage']
-        let newAIScaffolds = [];
-        for (let i = 0; i < scaffoldTypes.length; i++) {
-          const payload = {
-            lessonObjectives: LessonData.lessonObjectives,
-            lessonSttandards: LessonData.lessonStandards,
-            scaffoldType: scaffoldTypes[i]
-          };
-          try {
-            // Somewhere here we need to match scaffoldGenerator.ts API output to pdfUrl, title, summary for AllScaffolds.tsx 
-            const response = await axios.post('/api/scaffoldGenerator', payload);
-            const scaffoldItem = {
-              pdfUrl: response.data.pdfUrl,
-              title: response.data.title,
-              summary: response.data.activity
-            };
-            newAIScaffolds.push(scaffoldItem);
-          } catch (error) {
-            console.error('Error fetching data:', error);
-            }
-          }
-          // setAIScaffolds([...AIScaffolds, scaffoldItem]);
-          setAIScaffolds(prevState => [...prevState, ...newAIScaffolds]);
-          setScaffoldLoading(false);
-          // console.log('scaffoldItem');
-          // console.log(scaffoldItem);
-          // console.log('AIScaffolds')
-          // console.log(AIScaffolds) 
-        }
-        console.log('AIScaffolds')
-        console.log(AIScaffolds)
-      };
-    fetchAIScaffolds();
-  }, [LessonData]);
+  // useEffect(() => {
+  //   const fetchAIScaffolds = async () => {
+  //     if (LessonData.lessonObjectives) {
+  //       // For loop through different Scaffold Types
+  //       const scaffoldTypes = ['backgroundKnowledge', 'mathLanguage']
+  //       let newAIScaffolds = [];
+  //       for (let i = 0; i < scaffoldTypes.length; i++) {
+  //         const payload = {
+  //           lessonObjectives: LessonData.lessonObjectives,
+  //           lessonSttandards: LessonData.lessonStandards,
+  //           scaffoldType: scaffoldTypes[i]
+  //         };
+  //         try {
+  //           // Somewhere here we need to match scaffoldGenerator.ts API output to pdfUrl, title, summary for AllScaffolds.tsx 
+  //           const response = await axios.post('/api/scaffoldGenerator', payload);
+  //           const scaffoldItem = {
+  //             pdfUrl: response.data.pdfUrl,
+  //             title: response.data.title,
+  //             summary: response.data.activity
+  //           };
+  //           newAIScaffolds.push(scaffoldItem);
+  //         } catch (error) {
+  //           console.error('Error fetching data:', error);
+  //           }
+  //         }
+  //         // setAIScaffolds([...AIScaffolds, scaffoldItem]);
+  //         setAIScaffolds(prevState => [...prevState, ...newAIScaffolds]);
+  //         setScaffoldLoading(false);
+  //         // console.log('scaffoldItem');
+  //         // console.log(scaffoldItem);
+  //         // console.log('AIScaffolds')
+  //         // console.log(AIScaffolds) 
+  //       }
+  //       console.log('AIScaffolds')
+  //       console.log(AIScaffolds)
+  //     };
+  //   fetchAIScaffolds();
+  // }, [LessonData]);
 
   useEffect(() => {
     const fetchHumanScaffolds = async () => {
@@ -110,7 +113,9 @@ const Results = ({ url, submitCount }: { url: string, submitCount: number }) => 
           const scaffoldItems: ScaffoldItem[] = response.data.map((item: any) => ({
             pdfUrl: item.link_url,
             title: item.title,
-            summary: item.pdf_summary
+            summary: item.pdf_summary,
+            standard: item.standard,
+            tags: item.type_tags
           }));
           setHumanScaffolds(scaffoldItems);
           console.log('scaffoldItems')
@@ -127,10 +132,11 @@ const Results = ({ url, submitCount }: { url: string, submitCount: number }) => 
   const convertToScaffoldProps = (scaffoldItems: ScaffoldItem[]): ScaffoldProps[] => {
     return scaffoldItems.map((item) => ({
       pdfUrl: item.pdfUrl,
-      image: 'https://i.ytimg.com/vi/lChy_cN3of0/maxresdefault.jpg',
+      image: 'https://i.ytimg.com/vi/lChy_cN3of0/maxresdefault.jpg', // to change next
       title: item.title,
       summary: item.summary,
-      barGraph: 'https://scottplot.net/cookbook/4.1/images/bar_positions.png',
+      standard: item.standard,
+      tags: item.tags,
     }));
   };
 
