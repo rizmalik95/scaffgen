@@ -22,7 +22,8 @@ def add_to_supabase(table_name, scaffold_tuple):
             "url": scaffold_tuple[2],
             "answer_url": scaffold_tuple[3],
             "summary": scaffold_tuple[4],
-            "summary_embedding": scaffold_tuple[5]
+            "summary_embedding": scaffold_tuple[5],
+            "type_tags": scaffold_tuple[6]
         }).execute()
     except Exception as e:
         print(f"An error occurred while trying to add data to Supabase: {e}")

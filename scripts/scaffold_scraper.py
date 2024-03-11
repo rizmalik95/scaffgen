@@ -45,11 +45,11 @@ def download_read_summarize_pdf(link):
                 text += page.get_text()
         text = text[:6000] # truncate to 12000 characters to not hit token limit
         summary = get_summary(text)
-        type_tags, retrieval_tags = get_tags(text)
-        return summary, type_tags, retrieval_tags
+        type_tags = get_tags(text)
+        return summary, type_tags
     except fitz.FileDataError as e:
         print(f"Cannot open broken document: {e}")
-        return ""  # Return an error message or use another appropriate response
+        return "", ""  # Return an error message or use another appropriate response
 
 
 def create_scaffold_list(add_to_db: bool):
@@ -87,6 +87,9 @@ def create_scaffold_list(add_to_db: bool):
 
             if link_url != '':
                 pdf_summary, type_tags = download_read_summarize_pdf(link_url)
+                # print(link_text)
+                # print(pdf_summary)
+                # print(type_tags)
                 if pdf_summary == "": continue
                 summary_embedding = create_embedding(pdf_summary)
                 i += 1
