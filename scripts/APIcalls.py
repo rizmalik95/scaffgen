@@ -1,7 +1,7 @@
 from openai import OpenAI
 from dotenv import load_dotenv
 import os
-# from langchain_openai import OpenAIEmbeddings
+from langchain_openai import OpenAIEmbeddings
 import requests
 from io import BytesIO
 import time
@@ -21,15 +21,30 @@ def get_summary(text):
     # You'll need to modify this to handle sending messages to the OpenAI API properly
     prompt = "You are a skilled middle school math Educator in the United States who will receive a classroom scaffold and analyze (1) what is the format of the scaffold, (2) the main math concepts being taught that are relevant to middle school level learning, (3) which types of students would benefit from this activity. Be helpful, informative, and include the description of this scaffold as 2-3 sentences in a paragraph."
     prompt2 = """
-    This is a lesson task for middle school math. You are an expert instructional designer. For this task, you will write a set of tags. The tags should include:
+    You are an expert instructional designer. You are also a middle-school math teacher using this task in a lesson. For the task, consider how you would use it in the lesson, and then write a set of tags. The tags should include:
 
     High-level topic
     Specific sub-level topic 
     CCSS standards that align to the task (maximum 3)
     Learning Objectives that the task supports 
-    Specific learners that the task supports
+    A one-sentence summary of the task that includes: (1) what the task is, (2) the specific sub-level topics. 
 
-    Think step by step. Provide the tags and nothing else. 
+    Example response: 
+    {
+    "High-level topic": "The number system - Fractions",
+    "Specific sub-level topic": "Dividing fractions",
+    "CCSS standards": [
+        "6.NS.A.1: Interpret and compute quotients of fractions, and solve word problems involving division of fractions by fractions, e.g., using visual fraction models and equations to represent the problem.",
+        "7.NS.A.2: Apply and extend previous understandings of multiplication and division and of fractions to multiply and divide rational numbers."
+    ],
+    "Learning Objectives": [
+        "Coordinate different strategies for dividing by a fraction, utilizing oral, written, and other representational methods.",
+        "Find the quotient of two fractions and explain the solution method comprehensively through oral, written, and other forms of representation."
+    ],
+    "Summary": "Students will ​​students will critically analyze a range of statements about operations involving division of fractions, deciding whether they are Always, Sometimes, or Never True."
+    }
+
+    For the task, consider how you would use it in the lesson, and then write a set of tags. Think step by step. Provide the JSON response and nothing else. 
     """
     response = client.chat.completions.create(
         model="gpt-4",
