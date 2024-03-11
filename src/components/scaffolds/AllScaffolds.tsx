@@ -15,33 +15,35 @@ interface ScaffoldProps {
     barGraph: string;
   }
 
-// Individual Scaffold Component
-const Scaffold = ({ pdfUrl, image, title, summary, barGraph }: ScaffoldProps) => {
-    const handleImageClick = () => {
-      window.open(pdfUrl, '_blank'); // Opens the PDF URL in a new tab
-    };
-
-    return (
-      <div className="scaffold-container mx-4">
-        <div className="scaffold-image relative">
-          <img src={image} alt={title} className="w-full" />
-          <button
-            className="absolute inset-0 w-full h-full bg-transparent"
-            onClick={handleImageClick} // clickable button for opening pdfUrl
-            aria-label="Open PDF"
-            style={{ zIndex: 3 }}
-          ></button>
-          <div className="scaffold-title absolute inset-0 flex justify-center items-center bg-black bg-opacity-0 hover:bg-opacity-50 transition-opacity">
-            <span className="text-white text-center">{title}</span>
-          </div>
-        </div>
-        <p className="scaffold-summary mt-2">{summary}</p>
-        <div className="scaffold-bar-graph mt-2">
-          <img src={barGraph} alt="Bar Graph" className="w-full" />
-        </div>
-      </div>
-    );
+/// Individual Scaffold Component
+const Scaffold = ({ pdfUrl, image, title, summary }: ScaffoldProps) => {
+  const handleImageClick = () => {
+    window.open(pdfUrl, '_blank'); // Opens the PDF URL in a new tab
   };
+
+  return (
+    <div className="mx-4 my-4 bg-teal-50 rounded-lg shadow-lg overflow-hidden">
+      <div className="title-section bg-purple-600 rounded-t-lg p-4 text-center">
+        <h2 className="text-white text-xl font-bold">{title}</h2>
+      </div>
+      <div className="scaffold-image relative">
+        <img src={image} alt={title} className="w-full max-w-md mx-auto" /> {/* Adjust the max-width as needed */}
+        <button
+          className="absolute inset-0 w-full h-full bg-transparent"
+          onClick={handleImageClick} // clickable button for opening pdfUrl
+          aria-label="Open PDF"
+          style={{ zIndex: 10 }}
+        ></button>
+      </div>
+      <div className="p-4">
+        <p className="text-gray-700 text-base">{summary}</p>
+      </div>
+    </div>
+  );
+};
+
+
+
   
 // Main Component
 const AllScaffolds = ({ scaffoldsData }: { scaffoldsData: ScaffoldProps[] }) => {
