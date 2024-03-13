@@ -8,7 +8,7 @@ const CTA = () => (
             className="text-3xl font-semibold text-gray-800 sm:text-4xl"
             id="oss"
           >
-            ScaffGen is Proudly Open Source HELLO RONAK
+            ScaffGen is Proudly Open Source
           </h2>
           <p className="mt-3 text-gray-600">
             Our source code is available on GitHub.
