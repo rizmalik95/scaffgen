@@ -40,8 +40,8 @@ const Navbar = () => {
           state ? "fixed z-10 h-full" : ""
         }`}
       >
-        <div className="custom-screen mx-auto items-center md:flex">
-          <div className="flex items-center justify-between py-3 md:block md:py-5">
+        <div className="custom-screen mx-auto items-start md:flex">
+          <div className="flex items-center justify-between py-3 md:block md:py-5 mb-5">
             <Link href="/" className="flex items-center gap-3">
               <Image src="/box.svg" alt="logo" width={30} height={30} />
               <div className="text-lg font-bold">ScaffGen</div>
@@ -86,7 +86,7 @@ const Navbar = () => {
             </div>
           </div>
           <div
-            className={`mt-8 flex-1 pb-3 md:mt-0 md:block md:pb-0 ${
+            className={`mt-8 flex-1 py-7 md:mt-0 md:block md:pb-0 ${
               state ? "" : "hidden"
             }`}
           >
