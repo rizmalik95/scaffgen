@@ -19,15 +19,15 @@ const InputForm = ({ onSubmitUrl }: { onSubmitUrl: (url: string) => void }) => {
 
   // RITIKA -- BETTER UI BUT NOT CONNECTED
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col items-center gap-4 relative w-full">
-      <div className="relative w-11/12">
+    <form onSubmit={handleSubmit} className="flex flex-col items-center relative w-full">
+      <div className="relative w-full">
         <input
           type="text"
           value={url}
           onChange={(e) => setUrl(e.target.value)}
           placeholder="Enter the URL"
-          className="input input-bordered w-full h-12 rounded-lg text-gray-700 pr-12 pl-4" // added pl-4 for padding
-          style={{ backgroundColor: 'var(--input)', borderColor: 'var(--border)', borderWidth: '2px' }}
+          className="outline-none w-full h-12 rounded-lg text-gray-700 pr-12 pl-4
+          border border-slate-300 focus:border-slate-400 shadow-md focus:shadow-md p-2 transition-colors duration-150 ease-in-out" // added pl-4 for padding
         />
         <button type="submit"
           className="absolute right-0 inset-y-0 my-auto flex items-center px-4">
