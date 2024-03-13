@@ -53,10 +53,40 @@ export default async function handler(
         throw matchDocumentsError;
       }
 
-      const changedPdfSummary = (document) => document.summary["Summary"];
-      const changedStandard = (document) => document.summary["CCSS standards"].map((standard) => standard.split(':')[0].trim());
-      const changedTypeTags = (document) => document.type_tags.split(',').map(tag => tag.trim())
+      const parseSummaryToJson = (document) => {
+        try {
+          // Parse the JSON string to an object
+          const summaryObject = JSON.parse(document.summary);
+          return summaryObject;
+        } catch (error) {
+          console.error('Error parsing summary:', error);
+          // Handle the error as needed
+        }
+      };
 
+      const changedPdfSummary = (document) => {
+        const summaryObject = parseSummaryToJson(document);
+        return summaryObject ? summaryObject.Summary : undefined;
+      };
+
+      const changedStandard = (document) => {
+        const summaryObject = parseSummaryToJson(document);
+        return summaryObject ? summaryObject['CCSS standards'] : undefined;
+      };      
+
+      // const changedStandard = (document) => changedPdfSummary(document)["CCSS standards"].map((standard) => standard.split(':')[0].trim());
+      
+      const changedTypeTags = (document) => {
+        // Explicitly check if type_tags is a string and not empty
+        if (typeof document.type_tags === 'string' && document.type_tags.trim().length > 0) {
+          // Split the string by commas, trim whitespace, and return the array
+          return document.type_tags.split(',').map(tag => tag.trim());
+        } else {
+          // Return an empty array if type_tags is undefined, null, or an empty string
+          return [];
+        }
+      };
+            
       const mappedData = documents.map((document: any) => ({
         title: document.title,
         author: document.author,
