@@ -50,7 +50,7 @@ const Scaffold = ({ pdfUrl, image, title, summary }: ScaffoldProps) => {
   };
 
   return (
-    <div className="mx-4 my-4 rounded-2xl shadow overflow-hidden bg-gradient-to-b from-purple-200 to-white border border-gray-200 font-sans">
+    <div className="w-[29%] mx-4 my-4 rounded-2xl shadow overflow-hidden bg-gradient-to-b from-purple-200 to-white border border-gray-200 font-sans">
       {/* Image Section with rounded corners */}
       <div className="relative">
         <img src={image} alt={title} className="w-2/3 mx-auto mt-4 rounded-xl" />
@@ -116,9 +116,9 @@ const AllScaffolds = ({ scaffoldsData }: { scaffoldsData: ScaffoldProps[] }) => 
   };
 
   return (
-    <div className="all-scaffolds">
+    <div className="all-scaffolds max-w-hh">
       <h2 className="scaffolds-header text-center text-4xl font-bold my-8">Scaffolds</h2>
-      <Slider {...settings}>
+      <div className="flex flex-wrap justify-between">
         {scaffoldsData.map((scaffold, index) => (
           <Scaffold
             key={index}
@@ -126,10 +126,11 @@ const AllScaffolds = ({ scaffoldsData }: { scaffoldsData: ScaffoldProps[] }) => 
             image={scaffold.image}
             title={scaffold.title}
             summary={scaffold.summary}
-            barGraph={scaffold.barGraph}
+            standard={scaffold.standard}
+            tags={scaffold.tags}
           />
         ))}
-      </Slider>
+      </div>
     </div>
   );
 };
