@@ -16,6 +16,8 @@ type DataOutputs = {
   link_url?: string;
   answer_url?: string;
   pdf_summary?: string;
+  standard?: Array<string>;
+  type_tags?: Array<string>;
   error?: string;
 }
 
@@ -24,9 +26,9 @@ export default async function handler(
   res: NextApiResponse<DataOutputs>
 ) {
   if (req.method === 'POST') {
-    const { objectives, k } = req.body;
+    const { objectives, standards, k } = req.body;
 
-    if (!objectives || !k) {
+    if (!objectives || !k || !standards) {
       res.status(400).json({ error: 'Please provide both objectives and k' });
       return;
     }
@@ -34,7 +36,7 @@ export default async function handler(
     try {
       const queryEmbedding = await openai.embeddings.create({
         model: 'text-embedding-ada-002',
-        input: objectives,
+        input: objectives + standards, // this is the line to change
       });
 
       const queryEmbeddingData = queryEmbedding.data ?? [];
@@ -51,13 +53,49 @@ export default async function handler(
         throw matchDocumentsError;
       }
 
+      const parseSummaryToJson = (document) => {
+        try {
+          // Parse the JSON string to an object
+          const summaryObject = JSON.parse(document.summary);
+          return summaryObject;
+        } catch (error) {
+          console.error('Error parsing summary:', error);
+          // Handle the error as needed
+        }
+      };
+
+      const changedPdfSummary = (document) => {
+        const summaryObject = parseSummaryToJson(document);
+        return summaryObject ? summaryObject.Summary : undefined;
+      };
+
+      const changedStandard = (document) => {
+        const summaryObject = parseSummaryToJson(document);
+        return summaryObject ? summaryObject['CCSS standards'] : undefined;
+      };      
+
+      // const changedStandard = (document) => changedPdfSummary(document)["CCSS standards"].map((standard) => standard.split(':')[0].trim());
+      
+      const changedTypeTags = (document) => {
+        // Explicitly check if type_tags is a string and not empty
+        if (typeof document.type_tags === 'string' && document.type_tags.trim().length > 0) {
+          // Split the string by commas, trim whitespace, and return the array
+          return document.type_tags.split(',').map(tag => tag.trim());
+        } else {
+          // Return an empty array if type_tags is undefined, null, or an empty string
+          return [];
+        }
+      };
+            
       const mappedData = documents.map((document: any) => ({
         title: document.title,
         author: document.author,
         link_url: document.url,
         answer_url: document.answer_url,
-        pdf_summary: document.summary
-      }));
+        pdf_summary: changedPdfSummary(document),
+        standard: changedStandard(document),
+        type_tags: changedTypeTags(document),
+}));
       
       res.status(200).json(mappedData);
     } catch (error) {

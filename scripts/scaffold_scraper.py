@@ -8,7 +8,7 @@ import os
 from tqdm.rich import tqdm
 from collections import namedtuple
 
-from APIcalls import get_summary, create_embedding
+from APIcalls import get_summary, get_tags, create_embedding
 from supabase_client import add_to_supabase
 
 pdf_directory = "PDF"
@@ -43,11 +43,13 @@ def download_read_summarize_pdf(link):
             text = ""
             for page in doc:
                 text += page.get_text()
+        text = text[:6000] # truncate to 12000 characters to not hit token limit
         summary = get_summary(text)
-        return summary
+        type_tags = get_tags(text)
+        return summary, type_tags
     except fitz.FileDataError as e:
         print(f"Cannot open broken document: {e}")
-        return ""  # Return an error message or use another appropriate response
+        return "", ""  # Return an error message or use another appropriate response
 
 
 def create_scaffold_list(add_to_db: bool):
@@ -56,7 +58,7 @@ def create_scaffold_list(add_to_db: bool):
     html_content = response.text
     soup = BeautifulSoup(html_content, 'html.parser')
 
-    # scaffold_list = title, author, link, answer link (optional), 2 sentence summary, embedding
+    # scaffold_list = title, author, link, answer link (optional), 2 sentence summary, embedding, type_tags (frontend), retrieval_tags (backend)
 
     curr_ul = soup.find('ul')
     i = 0
@@ -84,12 +86,15 @@ def create_scaffold_list(add_to_db: bool):
                     author = ''
 
             if link_url != '':
-                pdf_summary = download_read_summarize_pdf(link_url)
+                pdf_summary, type_tags = download_read_summarize_pdf(link_url)
+                # print(link_text)
+                # print(pdf_summary)
+                # print(type_tags)
                 if pdf_summary == "": continue
                 summary_embedding = create_embedding(pdf_summary)
                 i += 1
                 scaffold = (link_text, author, link_url, answer_url,
-                            pdf_summary, summary_embedding)
+                            pdf_summary, summary_embedding, type_tags)
                 scaffold_list.append(scaffold)
                 if add_to_db:
                     table_name = "scaffolds2"

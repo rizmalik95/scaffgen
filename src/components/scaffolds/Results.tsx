@@ -13,6 +13,8 @@ interface ScaffoldItem {
   pdfUrl: string;
   title: string;
   summary: string;
+  standard: Array<string>;
+  tags: Array<string>;
 }
 
 // TODO: make this import the same scaffoldProps from AllScaffolds.tsx
@@ -21,7 +23,8 @@ interface ScaffoldProps {
     image: string;
     title: string;
     summary: string;
-    barGraph: string;
+    standard: Array<string>;
+    tags: Array<string>;
   }
 
 const Results = ({ url, submitCount }: { url: string, submitCount: number }) => {
@@ -102,6 +105,7 @@ const Results = ({ url, submitCount }: { url: string, submitCount: number }) => 
         // get back a list [(pdfurl, title, summary), (pdfurl, title, summary), ...]
         const payload = {
           objectives: LessonData.lessonObjectives,
+          standards: LessonData.lessonStandards,
           k: 3
         };
         try {
@@ -109,7 +113,9 @@ const Results = ({ url, submitCount }: { url: string, submitCount: number }) => 
           const scaffoldItems: ScaffoldItem[] = response.data.map((item: any) => ({
             pdfUrl: item.link_url,
             title: item.title,
-            summary: item.pdf_summary
+            summary: item.pdf_summary,
+            standard: item.standard,
+            tags: item.type_tags
           }));
           setHumanScaffolds(scaffoldItems);
           console.log('scaffoldItems')
@@ -126,10 +132,11 @@ const Results = ({ url, submitCount }: { url: string, submitCount: number }) => 
   const convertToScaffoldProps = (scaffoldItems: ScaffoldItem[]): ScaffoldProps[] => {
     return scaffoldItems.map((item) => ({
       pdfUrl: item.pdfUrl,
-      image: 'https://i.ytimg.com/vi/lChy_cN3of0/maxresdefault.jpg',
+      image: 'https://i.ytimg.com/vi/lChy_cN3of0/maxresdefault.jpg', // to change next
       title: item.title,
       summary: item.summary,
-      barGraph: 'https://scottplot.net/cookbook/4.1/images/bar_positions.png',
+      standard: item.standard,
+      tags: item.tags,
     }));
   };
 
