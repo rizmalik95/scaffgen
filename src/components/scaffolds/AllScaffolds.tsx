@@ -16,41 +16,15 @@ interface ScaffoldProps {
   tags: Array<string>;
 }
 
+
 /// Individual Scaffold Component
-// const Scaffold = ({ pdfUrl, image, title, summary }: ScaffoldProps) => {
-//   const handleImageClick = () => {
-//     window.open(pdfUrl, '_blank'); // Opens the PDF URL in a new tab
-//   };
-
-//   return (
-//     <div className="mx-4 my-4 bg-teal-50 rounded-lg shadow-lg overflow-hidden">
-//       <div className="title-section bg-purple-600 rounded-t-lg p-4 text-center">
-//         <h2 className="text-white text-xl font-bold">{title}</h2>
-//       </div>
-//       <div className="scaffold-image relative">
-//         <img src={image} alt={title} className="w-full max-w-md mx-auto" /> {/* Adjust the max-width as needed */}
-//         <button
-//           className="absolute inset-0 w-full h-full bg-transparent"
-//           onClick={handleImageClick} // clickable button for opening pdfUrl
-//           aria-label="Open PDF"
-//           style={{ zIndex: 10 }}
-//         ></button>
-//       </div>
-//       <div className="p-4">
-//         <p className="text-gray-700 text-base">{summary}</p>
-//       </div>
-//     </div>
-//   );
-// };
-
-// Individual Scaffold Component
 const Scaffold = ({ pdfUrl, image, title, summary }: ScaffoldProps) => {
   const handleImageClick = () => {
     window.open(pdfUrl, '_blank'); // Opens the PDF URL in a new tab
   };
 
   return (
-    <div className="mx-4 my-4 rounded-2xl shadow overflow-hidden bg-gradient-to-b from-purple-200 to-white border border-gray-200 font-sans">
+    <div className="w-[29%] mx-4 my-4 rounded-2xl shadow overflow-hidden bg-gradient-to-b from-purple-200 to-white border border-gray-200 font-sans">
       {/* Image Section with rounded corners */}
       <div className="relative">
         <img src={image} alt={title} className="w-2/3 mx-auto mt-4 rounded-xl" />
@@ -85,7 +59,6 @@ const Scaffold = ({ pdfUrl, image, title, summary }: ScaffoldProps) => {
   );
 };
 
-
   
 // Main Component
 const AllScaffolds = ({ scaffoldsData }: { scaffoldsData: ScaffoldProps[] }) => {
@@ -116,9 +89,9 @@ const AllScaffolds = ({ scaffoldsData }: { scaffoldsData: ScaffoldProps[] }) => 
   };
 
   return (
-    <div className="all-scaffolds">
+    <div className="all-scaffolds max-w-hh">
       <h2 className="scaffolds-header text-center text-4xl font-bold my-8">Scaffolds</h2>
-      <Slider {...settings}>
+      <div className="flex flex-wrap justify-between">
         {scaffoldsData.map((scaffold, index) => (
           <Scaffold
             key={index}
@@ -126,10 +99,11 @@ const AllScaffolds = ({ scaffoldsData }: { scaffoldsData: ScaffoldProps[] }) => 
             image={scaffold.image}
             title={scaffold.title}
             summary={scaffold.summary}
-            barGraph={scaffold.barGraph}
+            standard={scaffold.standard}
+            tags={scaffold.tags}
           />
         ))}
-      </Slider>
+      </div>
     </div>
   );
 };

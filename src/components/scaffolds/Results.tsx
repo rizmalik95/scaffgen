@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import ResultCard from '@/components/scaffolds/ResultCard';
 import AllScaffolds from '@/components/scaffolds/AllScaffolds';
+import LessonInfo from '@/components/scaffolds/LessonInfo';
 // import ScaffoldProps from '@/components/scaffolds/AllScaffolds';
 import axios from 'axios';
 
@@ -144,15 +145,18 @@ const Results = ({ url, submitCount }: { url: string, submitCount: number }) => 
     const elements: JSX.Element[] = [];
 
     if (lessonLoading) {
-      elements.push(<p key="loading">Loading lesson...</p>);
-    } else {
-      elements.push(<ResultCard key="lesson" title="Lesson Plan" content={result.lessonObjectives} />)
-      elements.push(<ResultCard key="objective" title="Lesson Objective" content={result.lessonStandards} />)
+      elements.push(<p key="lessonLoading">Loading lesson...</p>);
+    } else if (result.lessonObjectives) {
+      elements.push(
+        <div key="lessonInfo" className="my-5 w-2/3 mx-auto">
+          <LessonInfo lessonObjectives={result.lessonObjectives} lessonStandards={result.lessonStandards} />
+        </div>
+      )
     }
     // Taking humanScaffolds and AIScaffolds generated from LessonData, add image + bar graph image
     if (scaffoldLoading) {
-      elements.push(<p key="loading">Loading scaffolds...</p>);
-    } else {
+      elements.push(<p key="scaffoldLoading">Loading scaffolds...</p>);
+    } else if (humanScaffolds.length > 0 || AIScaffolds.length > 0){
       const scaffoldsDataHuman = convertToScaffoldProps(humanScaffolds);
       const scaffoldsDataAI = convertToScaffoldProps(AIScaffolds);
   
@@ -163,8 +167,7 @@ const Results = ({ url, submitCount }: { url: string, submitCount: number }) => 
   };
 
   return (
-    <div className="container mx-auto p-4">
-      <h2>Results</h2>
+    <div className="flex flex-col gap-8">
       {render(LessonData)}
     </div>
   );
