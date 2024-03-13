@@ -16,6 +16,8 @@ type DataOutputs = {
   link_url?: string;
   answer_url?: string;
   pdf_summary?: string;
+  standard?: Array<string>;
+  type_tags?: Array<string>;
   error?: string;
 }
 
@@ -51,13 +53,19 @@ export default async function handler(
         throw matchDocumentsError;
       }
 
+      const changedPdfSummary = (document) => document.summary["Summary"];
+      const changedStandard = (document) => document.summary["CCSS standards"].map((standard) => standard.split(':')[0].trim());
+      const changedTypeTags = (document) => document.type_tags.split(',').map(tag => tag.trim())
+
       const mappedData = documents.map((document: any) => ({
         title: document.title,
         author: document.author,
         link_url: document.url,
         answer_url: document.answer_url,
-        pdf_summary: document.summary
-      }));
+        pdf_summary: changedPdfSummary(document),
+        standard: changedStandard(document),
+        type_tags: changedTypeTags(document),
+}));
       
       res.status(200).json(mappedData);
     } catch (error) {

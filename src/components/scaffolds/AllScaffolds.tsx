@@ -86,9 +86,6 @@ const Scaffold = ({ pdfUrl, image, title, summary }: ScaffoldProps) => {
 };
 
 
-
-
-
   
 // Main Component
 const AllScaffolds = ({ scaffoldsData }: { scaffoldsData: ScaffoldProps[] }) => {
