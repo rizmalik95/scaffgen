@@ -148,7 +148,7 @@ const Results = ({ url, submitCount }: { url: string, submitCount: number }) => 
       elements.push(<p key="lessonLoading">Loading lesson...</p>);
     } else if (result.lessonObjectives) {
       elements.push(
-        <div key="lessonInfo" className="my-5">
+        <div key="lessonInfo" className="my-5 w-2/3 mx-auto">
           <LessonInfo lessonObjectives={result.lessonObjectives} lessonStandards={result.lessonStandards} />
         </div>
       )

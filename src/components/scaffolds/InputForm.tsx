@@ -19,7 +19,7 @@ const InputForm = ({ onSubmitUrl }: { onSubmitUrl: (url: string) => void }) => {
 
   // RITIKA -- BETTER UI BUT NOT CONNECTED
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col items-center relative w-full">
+    <form onSubmit={handleSubmit} className="flex flex-col items-center relative w-2/3">
       <div className="relative w-full">
         <input
           type="text"
