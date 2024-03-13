@@ -13,8 +13,8 @@ interface ScaffoldItem {
   pdfUrl: string;
   title: string;
   summary: string;
-  standard: Array<string>;
-  tags: Array<string>;
+  standard: string;
+  tags: string;
 }
 
 // TODO: make this import the same scaffoldProps from AllScaffolds.tsx
@@ -23,8 +23,8 @@ interface ScaffoldProps {
     image: string;
     title: string;
     summary: string;
-    standard: Array<string>;
-    tags: Array<string>;
+    standard: string;
+    tags: string;
   }
 
 const Results = ({ url, submitCount }: { url: string, submitCount: number }) => {

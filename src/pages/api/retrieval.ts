@@ -16,8 +16,8 @@ type DataOutputs = {
   link_url?: string;
   answer_url?: string;
   pdf_summary?: string;
-  standard?: Array<string>;
-  type_tags?: Array<string>;
+  standard?: string;
+  type_tags?: string;
   error?: string;
 }
 
@@ -69,22 +69,36 @@ export default async function handler(
         return summaryObject ? summaryObject.Summary : undefined;
       };
 
+      // const changedStandard = (document) => {
+      //   const summaryObject = parseSummaryToJson(document);
+      //   // Corrected the key to match your JSON object structure.        
+      //   return summaryObject ? summaryObject['CCSS standards'] : undefined;
+      // };
+
       const changedStandard = (document) => {
         const summaryObject = parseSummaryToJson(document);
-        return summaryObject ? summaryObject['CCSS standards'] : undefined;
-      };      
-
-      // const changedStandard = (document) => changedPdfSummary(document)["CCSS standards"].map((standard) => standard.split(':')[0].trim());
-      
-      const changedTypeTags = (document) => {
-        // Explicitly check if type_tags is a string and not empty
-        if (typeof document.type_tags === 'string' && document.type_tags.trim().length > 0) {
-          // Split the string by commas, trim whitespace, and return the array
-          return document.type_tags.split(',').map(tag => tag.trim());
-        } else {
-          // Return an empty array if type_tags is undefined, null, or an empty string
-          return [];
+        if (!summaryObject) return undefined;
+    
+        // Ensure 'CCSS standards' exists and is an array.
+        const standardsArray = summaryObject['CCSS standards'];
+        if (!Array.isArray(standardsArray)) {
+            console.error('CCSS standards is not an array:', standardsArray);
+            return ""; // Return an empty string or handle this case as appropriate.
         }
+    
+        // Regex to match any character sequence up to the first colon in each string.
+        const regex = /([^:]+)(?=:)/g;
+    
+        // Map through the array, applying the regex to each standard description to extract just the standard codes.
+        const matchedStandards = standardsArray.map((standardDesc) => {
+            const match = standardDesc.match(regex);
+            return match ? match[0] : null; // Extract the first match, which should be the standard code.
+        }).filter(Boolean); // Remove any null entries if a match wasn't found.
+    
+        // Join the array of matched standards into a single string separated by commas.
+        const standardsString = matchedStandards.join(", ");
+    
+        return standardsString; // Return the single string of standards.
       };
             
       const mappedData = documents.map((document: any) => ({
@@ -94,9 +108,9 @@ export default async function handler(
         answer_url: document.answer_url,
         pdf_summary: changedPdfSummary(document),
         standard: changedStandard(document),
-        type_tags: changedTypeTags(document),
+        type_tags: document.type_tags,
 }));
-      
+
       res.status(200).json(mappedData);
     } catch (error) {
       console.error('Error getting scaffolds:', error);
