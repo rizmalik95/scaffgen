@@ -20,6 +20,7 @@ interface ScaffoldItem {
   summary: string;
   standard: string;
   tags: string;
+  isAI: boolean;
 }
 
 // TODO: make this import the same scaffoldProps from AllScaffolds.tsx
@@ -30,6 +31,7 @@ interface ScaffoldProps {
     summary: string;
     standard: string;
     tags: string;
+    isAI: boolean;
 }
 
 const Results = ({ url, submitCount }: { url: string, submitCount: number }) => {
@@ -81,7 +83,7 @@ const Results = ({ url, submitCount }: { url: string, submitCount: number }) => 
           setAIScaffoldPercentBuffered((i + 0.5) / scaffoldTypes.length * 100);
           const payload = {
             lessonObjectives: LessonData.lessonObjectives,
-            lessonSttandards: LessonData.lessonStandards,
+            lessonStandards: LessonData.lessonStandards,
             scaffoldType: scaffoldTypes[i]
           };
           try {
@@ -93,8 +95,9 @@ const Results = ({ url, submitCount }: { url: string, submitCount: number }) => 
               pdfUrl: pdfGenResponse.data.pdfUrl,
               title: scaffoldResponse.data.title,
               summary: scaffoldResponse.data.summary,
-              standard: "standard", // TODO: change to response.data.standard
-              tags: "tags", // TODO: change to response.data.tags
+              standard: payload.lessonStandards,
+              tags: scaffoldResponse.data.tags, 
+              isAI: true,
             };
             newAIScaffolds.push(scaffoldItem);
             setAIScaffoldPercentLoaded((i + 1) / scaffoldTypes.length * 100);
@@ -123,7 +126,7 @@ const Results = ({ url, submitCount }: { url: string, submitCount: number }) => 
         const payload = {
           objectives: LessonData.lessonObjectives,
           standards: LessonData.lessonStandards,
-          k: 3
+          k: 4
         };
         try {
           const response = await axios.post('/api/retrieval', payload);
@@ -132,7 +135,8 @@ const Results = ({ url, submitCount }: { url: string, submitCount: number }) => 
             title: item.title,
             summary: item.pdf_summary,
             standard: item.standard,
-            tags: item.type_tags
+            tags: item.type_tags,
+            isAI: false,
           }));
           setHumanScaffolds(scaffoldItems);
           setHumanScaffoldLoading(false);
@@ -153,6 +157,7 @@ const Results = ({ url, submitCount }: { url: string, submitCount: number }) => 
       summary: item.summary,
       standard: item.standard,
       tags: item.tags,
+      isAI: item.isAI,
     }));
   };
 
