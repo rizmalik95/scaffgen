@@ -1,5 +1,7 @@
 # Scaffgen
 
+![image](https://github.com/rmalde/scaffgen/assets/47470168/2fcff70b-89df-4465-a68f-dcccd1678b9f)
+
 We plan to build a simple tool that takes in a teacher’s curricular materials and provides a set of curated scaffolded activities that supplement and support these materials. Some of these outputs will be LLM-created and some others will be human-written. 
 
 ### User Story
