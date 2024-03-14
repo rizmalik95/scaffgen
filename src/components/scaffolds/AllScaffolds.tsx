@@ -16,9 +16,17 @@ interface ScaffoldProps {
   tags: string;
 }
 
+const gradientClasses = [
+  "bg-gradient-to-b from-orange-200 to-white",
+  "bg-gradient-to-b from-blue-200 to-white",
+  "bg-gradient-to-b from-pink-200 to-white",
+  "bg-gradient-to-b from-indigo-200 to-white",
+  "bg-gradient-to-b from-yellow-200 to-white",
+  "bg-gradient-to-b from-green-200 to-white"
+];
 
 /// Individual Scaffold Component
-const Scaffold = ({ pdfUrl, image, title, summary, standard, tags = ''  }: ScaffoldProps) => {
+const Scaffold = ({ pdfUrl, image, title, summary, standard, tags = '', gradient}: ScaffoldProps & {gradient: string}) => {
   const handleScaffoldClick = () => {
     window.open(pdfUrl, '_blank'); // Opens the PDF URL in a new tab
   };
@@ -27,8 +35,8 @@ const Scaffold = ({ pdfUrl, image, title, summary, standard, tags = ''  }: Scaff
   const hasTag = (tagName) => tagList.includes(tagName);
 
   return (
-    <div className="w-[29%] mx-4 my-4 rounded-2xl shadow overflow-hidden bg-gradient-to-b from-purple-200 to-white border border-gray-200 font-sans
-                    hover:shadow-md hover:border-slate-300 cursor-pointer"
+    <div className={`w-[29%] mx-4 my-4 rounded-2xl shadow overflow-hidden ${gradient} border border-gray-200 font-sans \
+                    hover:shadow-md hover:border-slate-300 cursor-pointer`}
           onClick={handleScaffoldClick}>
       {/* Image Section with rounded corners */}
       <div className="relative">
@@ -113,8 +121,7 @@ const AllScaffolds = ({ scaffoldsData }: { scaffoldsData: ScaffoldProps[] }) => 
             summary={scaffold.summary}
             standard={scaffold.standard}
             tags={scaffold.tags}
-            standard={scaffold.standard}
-            tags={scaffold.tags}
+            gradient={gradientClasses[index % gradientClasses.length] || gradientClasses[0]}
           />
         ))}
       </div>

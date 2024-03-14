@@ -69,7 +69,7 @@ const Results = ({ url, submitCount }: { url: string, submitCount: number }) => 
 
   useEffect(() => {
     const fetchAIScaffolds = async () => {
-      if (LessonData.lessonObjectives) {
+      if (LessonData.lessonObjectives && !AIScaffoldLoading) {
         setAIScaffoldLoading(true);
         setAIScaffoldPercentLoaded(0);
         setAIScaffoldPercentBuffered(0);
@@ -180,9 +180,8 @@ const Results = ({ url, submitCount }: { url: string, submitCount: number }) => 
     } else if (humanScaffolds.length > 0 || AIScaffolds.length > 0){
       const scaffoldsDataHuman = convertToScaffoldProps(humanScaffolds);
       const scaffoldsDataAI = convertToScaffoldProps(AIScaffolds);
-  
-      elements.push(<AllScaffolds key="human" scaffoldsData={scaffoldsDataHuman} />)
-      elements.push(<AllScaffolds key="ai" scaffoldsData={scaffoldsDataAI} />)
+
+      elements.push(<AllScaffolds key="scaffolds" scaffoldsData={scaffoldsDataHuman.concat(scaffoldsDataAI)} />)
     }
     return <div>{elements}</div>;
   };
