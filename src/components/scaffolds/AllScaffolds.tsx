@@ -16,9 +16,10 @@ interface ScaffoldProps {
   tags: string;
 }
 
-// Individual Scaffold Component
-const Scaffold = ({ pdfUrl, image, title, summary, standard, tags = '' }: ScaffoldProps) => {
-  const handleImageClick = () => {
+
+/// Individual Scaffold Component
+const Scaffold = ({ pdfUrl, image, title, summary, standard, tags = ''  }: ScaffoldProps) => {
+  const handleScaffoldClick = () => {
     window.open(pdfUrl, '_blank'); // Opens the PDF URL in a new tab
   };
   
@@ -26,13 +27,14 @@ const Scaffold = ({ pdfUrl, image, title, summary, standard, tags = '' }: Scaffo
   const hasTag = (tagName) => tagList.includes(tagName);
 
   return (
-    <div className="w-[29%] mx-4 my-4 rounded-2xl shadow overflow-hidden bg-gradient-to-b from-purple-200 to-white border border-gray-200 font-sans">
+    <div className="w-[29%] mx-4 my-4 rounded-2xl shadow overflow-hidden bg-gradient-to-b from-purple-200 to-white border border-gray-200 font-sans
+                    hover:shadow-md hover:border-slate-300 cursor-pointer"
+          onClick={handleScaffoldClick}>
       {/* Image Section with rounded corners */}
       <div className="relative">
         <img src={image} alt={title} className="w-2/3 mx-auto mt-4 rounded-xl" />
         <button
           className="absolute inset-0 w-full h-full bg-transparent"
-          onClick={handleImageClick}
           aria-label="Open PDF"
           style={{ zIndex: 10 }}
         ></button>

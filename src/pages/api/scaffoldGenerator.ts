@@ -49,7 +49,7 @@ export default async function handler(
 
       try {
         const prerequisiteResponse = await openai.chat.completions.create({
-          model: 'gpt-3.5-turbo',
+          model: 'gpt-4',
           messages: [
             {
               role: 'system',
@@ -89,10 +89,15 @@ export default async function handler(
         Question 4:
         Question 5:
         
-        There is no need to reference the underlying topics.`;
+        There is no need to reference the underlying topics.
+        
+        Output this resource in HTML code, making it look pretty, professional, and styled so that the activity is engaging and fun.
+        Please leave blank area for student responses, since this will be an interactive resource.
+        Feel free to include online hosted images that you know exist.
+        Only provide HTML code and nothing else.`;
 
         const warmupTaskResponse = await openai.chat.completions.create({
-          model: 'gpt-3.5-turbo',
+          model: 'gpt-4',
           messages: [
             {
               role: 'system',
@@ -151,11 +156,16 @@ export default async function handler(
       2.
       3.
       4.
-      5.`;
+      5.
+      
+      Output this resource in HTML code, making it look pretty, professional, and styled so that the activity is engaging and fun.
+        Please leave blank area for student responses, since this will be an interactive resource.
+        Feel free to include online hosted images that you know exist.
+        Only provide HTML code and nothing else.`;
 
       try {
         const mathLanguageResponse = await openai.chat.completions.create({
-          model: "gpt-3.5-turbo",
+          model: "gpt-4",
           messages: [
             {
               "role": "system",
