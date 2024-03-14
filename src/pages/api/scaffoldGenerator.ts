@@ -5,10 +5,13 @@ const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
+const model = 'gpt-3.5-turbo';
+
 type Data = {
   activity?: string; // Soon to be pdfUrl
   title?: string;
   summary?: string;
+  tags?: string;
   error?: string;
 }
 
@@ -49,7 +52,7 @@ export default async function handler(
 
       try {
         const prerequisiteResponse = await openai.chat.completions.create({
-          model: 'gpt-4',
+          model: model,
           messages: [
             {
               role: 'system',
@@ -97,7 +100,7 @@ export default async function handler(
         Only provide HTML code and nothing else.`;
 
         const warmupTaskResponse = await openai.chat.completions.create({
-          model: 'gpt-4',
+          model: model,
           messages: [
             {
               role: 'system',
@@ -116,8 +119,9 @@ export default async function handler(
         res.status(200).json(
           {
             activity: warmupTask,
-            title: 'Background Knowledge',
-            summary: 'This scaffold provides a warmup task that reviews and activates necessary prior knowledge for the lesson.'
+            title: 'Background Knowledge Quiz',
+            summary: 'This task provides five questions that review and activate relevant knowledge and skills for the lesson.', // summary
+            tags: 'Activate Background Knowledge,Addressing Misconceptions',
           }
         );
       } catch (error) {
@@ -165,7 +169,7 @@ export default async function handler(
 
       try {
         const mathLanguageResponse = await openai.chat.completions.create({
-          model: "gpt-4",
+          model: model,
           messages: [
             {
               "role": "system",
@@ -186,8 +190,9 @@ export default async function handler(
         res.status(200).json(
           {
             activity: mathLanguageTask,
-            title: 'Background Knowledge',
-            summary: 'This scaffold does math knowledge building'
+            title: 'Relevant Vocab & Sentence Stems',
+            summary: 'This resource contains a set of key words and sentence stems specific to this particular lesson.', // summary
+            tags: 'Building Math Language'
           }
         );
       } catch (error) {

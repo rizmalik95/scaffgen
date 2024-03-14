@@ -14,24 +14,35 @@ interface ScaffoldProps {
   summary: string;
   standard: string;
   tags: string;
+  isAI: boolean;
 }
 
 const gradientClasses = [
   "bg-gradient-to-b from-orange-200 to-white",
   "bg-gradient-to-b from-blue-200 to-white",
   "bg-gradient-to-b from-pink-200 to-white",
-  "bg-gradient-to-b from-indigo-200 to-white",
+  "bg-gradient-to-b from-purple-200 to-white",
   "bg-gradient-to-b from-yellow-200 to-white",
   "bg-gradient-to-b from-green-200 to-white"
 ];
 
+const imageLinks = [
+  "https://i.ytimg.com/vi/lChy_cN3of0/maxresdefault.jpg",
+  "https://saleshood.com/wp-content/uploads/2014/05/learning-culture.gif",
+  "https://cdn-res.keymedia.com/cms/images/us/036/0308_638042050063908337.jpg",
+  "https://cdn.psychologytoday.com/sites/default/files/styles/article-inline-half-caption/public/field_blog_entry_images/2019-10/stairs_lightbulb_0.jpg?itok=2kHP2JcT",
+  "https://www.fordfoundation.org/wp-content/uploads/2023/07/learning-archive.png",
+  "https://lemonlearning.com/wp-content/uploads/2023/01/learning-by-doing-1.jpg"
+];
+
 /// Individual Scaffold Component
-const Scaffold = ({ pdfUrl, image, title, summary, standard, tags = '', gradient}: ScaffoldProps & {gradient: string}) => {
+const Scaffold = ({ pdfUrl, image, title, summary, standard, tags = '', isAI, gradient}: ScaffoldProps & {gradient: string}) => {
   const handleScaffoldClick = () => {
     window.open(pdfUrl, '_blank'); // Opens the PDF URL in a new tab
   };
   
   const tagList = tags ? tags.split(',').map(tag => tag.trim()) : [];
+  if (isAI) {tagList.push('AI Generated')};
   const hasTag = (tagName) => tagList.includes(tagName);
 
   return (
@@ -67,10 +78,11 @@ const Scaffold = ({ pdfUrl, image, title, summary, standard, tags = '', gradient
       <div className="flex flex-wrap justify-center gap-2 p-4">
         {hasTag('Building Math Language') && <div className="bg-red-200 rounded-full px-4 py-1 text-sm font-medium text-red-800">Building Math Language</div>}
         {hasTag('Developing Fluency') && <div className="bg-blue-200 rounded-full px-4 py-1 text-sm font-medium text-blue-800">Developing Fluency</div>}
-        {hasTag('Activate Background Knowledge') && <div className="bg-green-200 rounded-full px-4 py-1 text-sm font-medium text-green-800">Activate Background Knowledge</div>}
+        {hasTag('Activate Background Knowledge') && <div className="bg-pink-200 rounded-full px-4 py-1 text-sm font-medium text-pink-800">Activate Background Knowledge</div>}
         {hasTag('Misconceptions') && <div className="bg-yellow-200 rounded-full px-4 py-1 text-sm font-medium text-yellow-800">Misconceptions</div>}
         {hasTag('Recruiting Interest') && <div className="bg-indigo-200 rounded-full px-4 py-1 text-sm font-medium text-indigo-800">Recruiting Interest</div>}
         {hasTag('Extra Challenge') && <div className="bg-purple-200 rounded-full px-4 py-1 text-sm font-medium text-purple-800">Extra Challenge</div>}
+        {hasTag('AI Generated') && <div className="bg-green-200 rounded-full px-4 py-1 text-sm font-medium text-green-800">✨ AI Generated</div>}
       </div>
     </div>
   );
@@ -109,18 +121,19 @@ const AllScaffolds = ({ scaffoldsData }: { scaffoldsData: ScaffoldProps[] }) => 
   };
 
   return (
-    <div className="all-scaffolds max-w-hh">
-      <h2 className="scaffolds-header text-center text-4xl font-bold my-8">Scaffolds</h2>
+    <div className="all-scaffolds max-w-hh mt-20">
+      <h2 className="scaffolds-header text-center text-4xl font-bold my-8">Retrieved and Generated Scaffolds</h2>
       <div className="flex flex-wrap justify-between">
         {scaffoldsData.map((scaffold, index) => (
           <Scaffold
             key={index}
             pdfUrl={scaffold.pdfUrl}
-            image={scaffold.image}
+            image={imageLinks[index % imageLinks.length] || imageLinks[0]}
             title={scaffold.title}
             summary={scaffold.summary}
             standard={scaffold.standard}
             tags={scaffold.tags}
+            isAI={scaffold.isAI}
             gradient={gradientClasses[index % gradientClasses.length] || gradientClasses[0]}
           />
         ))}
