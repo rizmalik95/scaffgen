@@ -70,7 +70,7 @@ export default async function handler(
           presence_penalty: 0,
         });
 
-        const prerequisiteTopics = prerequisiteResponse.choices[0].message.content.trim();
+        const prerequisiteTopics = prerequisiteResponse.choices[0]?.message?.content?.trim() ?? '';
 
         promptTwoContent = `Based on the prerequisite topics and today's learning objective, write a short warmup task for students that reviews and activates this necessary prior knowledge.
 
@@ -114,7 +114,7 @@ export default async function handler(
           presence_penalty: 0,
         });
 
-        const warmupTask = warmupTaskResponse.choices[0].message.content.trim();
+        const warmupTask = warmupTaskResponse.choices[0]?.message?.content?.trim() ?? '';
 
         res.status(200).json(
           {
@@ -186,7 +186,7 @@ export default async function handler(
           frequency_penalty: 0,
           presence_penalty: 0,
         });
-        const mathLanguageTask = mathLanguageResponse.choices[0].message.content ?? "";
+        const mathLanguageTask = mathLanguageResponse.choices[0]?.message?.content?.trim() ?? '';
         res.status(200).json(
           {
             activity: mathLanguageTask,

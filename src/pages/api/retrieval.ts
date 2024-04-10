@@ -3,11 +3,11 @@ import OpenAI from "openai";
 
 import { createClient } from '@supabase/supabase-js'
 
-const supabaseClient = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_KEY)
+const supabaseClient = createClient(process.env.SUPABASE_URL || '', process.env.SUPABASE_KEY || '')
 
 // You would replace 'your_api_key_here' with your actual OpenAI API key
 const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY, // It's best to keep your API key in environment variables
+  apiKey: process.env.OPENAI_API_KEY || '', // It's best to keep your API key in environment variables
 });
 
 type DataOutputs = {
@@ -53,7 +53,7 @@ export default async function handler(
         throw matchDocumentsError;
       }
 
-      const parseSummaryToJson = (document) => {
+      const parseSummaryToJson = (document: { summary: string; }) => {
         try {
           // Parse the JSON string to an object
           const summaryObject = JSON.parse(document.summary);
@@ -64,7 +64,7 @@ export default async function handler(
         }
       };
 
-      const changedPdfSummary = (document) => {
+      const changedPdfSummary = (document: any) => {
         const summaryObject = parseSummaryToJson(document);
         return summaryObject ? summaryObject.Summary : undefined;
       };
@@ -75,7 +75,7 @@ export default async function handler(
       //   return summaryObject ? summaryObject['CCSS standards'] : undefined;
       // };
 
-      const changedStandard = (document) => {
+      const changedStandard = (document: any) => {
         const summaryObject = parseSummaryToJson(document);
         if (!summaryObject) return undefined;
     

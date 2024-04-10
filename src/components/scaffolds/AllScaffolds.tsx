@@ -1,5 +1,4 @@
 import React from 'react';
-import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css'; 
 import 'slick-carousel/slick/slick-theme.css';
 
@@ -43,7 +42,7 @@ const Scaffold = ({ pdfUrl, image, title, summary, standard, tags = '', isAI, gr
   
   const tagList = tags ? tags.split(',').map(tag => tag.trim()) : [];
   if (isAI) {tagList.push('AI Generated')};
-  const hasTag = (tagName) => tagList.includes(tagName);
+  const hasTag = (tagName: string) => tagList.includes(tagName);
 
   return (
     <div className={`w-[29%] mx-4 my-4 rounded-2xl shadow overflow-hidden ${gradient} border border-gray-200 font-sans \
@@ -128,13 +127,13 @@ const AllScaffolds = ({ scaffoldsData }: { scaffoldsData: ScaffoldProps[] }) => 
           <Scaffold
             key={index}
             pdfUrl={scaffold.pdfUrl}
-            image={imageLinks[index % imageLinks.length] || imageLinks[0]}
+            image={imageLinks[index % imageLinks.length] || imageLinks[0] || ''}
             title={scaffold.title}
             summary={scaffold.summary}
             standard={scaffold.standard}
             tags={scaffold.tags}
             isAI={scaffold.isAI}
-            gradient={gradientClasses[index % gradientClasses.length] || gradientClasses[0]}
+            gradient={gradientClasses[index % gradientClasses.length] || gradientClasses[0] || ''}
           />
         ))}
       </div>
