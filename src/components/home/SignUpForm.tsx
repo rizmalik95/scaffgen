@@ -35,11 +35,11 @@ const SignUpForm = () => {
           onChange={(e) => setEmail(e.target.value)}
           required
           placeholder="Email Address"
-          className="flex grow rounded-lg border border-slate-300 bg-white px-4 py-2.5 font-semibold text-slate-600 outline-none duration-150 focus:border-slate-600"
+          className="flex grow rounded-lg border border-slate-300 bg-white px-4 py-2.5 font-semibold text-slate-600 outline-none duration-150 focus:border-slate-600  shadow-md"
         />
         <button
           type="submit"
-          className="rounded-lg bg-rose-400 px-4 py-2.5 font-semibold text-white hover:bg-rose-300 active:bg-rose-500"
+          className="rounded-lg bg-rose-400 px-4 py-2.5 font-semibold text-white hover:bg-rose-300 active:bg-rose-500 "
         >
           {loading === 0
             ? "Join our Community"
