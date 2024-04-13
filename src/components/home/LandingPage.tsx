@@ -15,11 +15,11 @@ export default function LandingPage() {
       <div className="flex flex-col bg-slate-100">
         <div className="mx-auto my-32 flex max-w-5xl flex-col items-center gap-10 px-5 text-center md:px-10">
           <h1 className="text-4xl font-extrabold text-slate-700 sm:text-6xl">
-            Generate Classroom Scaffolds in Seconds
+          Scaffold Your Curriculum in Seconds
           </h1>
-          <p className="max-w-2xl text-xl text-slate-500">
-            ScaffGen makes it simple for you to generate AI Scaffolds for your
-            classroom in seconds, completely for free.
+          <p className="max-w-3xl text-xl text-slate-500">
+          Your district-provided curriculum does not serve every student. <br />
+          Coteach.ai helps tailor your curriculum so every student can access and succeed. 
           </p>
           <div className="flex flex-row gap-5">
             <button
@@ -41,24 +41,24 @@ export default function LandingPage() {
         <div className="mx-auto my-32 flex flex-col items-center gap-10 px-5 text-center sm:gap-20 md:px-10">
           <div className="flex flex-col items-center gap-4 sm:gap-8">
             <h1 className="text-3xl font-bold text-slate-700 sm:text-5xl">
-              Why coteach.ai?
+              Why Coteach.ai?
             </h1>
             <hr className="h-1 w-40 bg-rose-400" />
           </div>
           <div className="flex flex-row flex-wrap justify-center gap-20">
             <LandingCard
-              title="Custom Built for Texas Math teachers"
-              content="An activity that helps you find the mystery number from other numbers. It’s super cool and useful for students! This activity is great for students who enjoy visual problems!"
+              title="Integration with leading curriculums"
+              content="Coteach.ai works seamlessly with Illustrative Mathematics and other leading middle-school curriculums"
               color="green"
             />
             <LandingCard
-              title="Custom Built for Texas Math teachers"
-              content="An activity that helps you find the mystery number from other numbers. It’s super cool and useful for students! This activity is great for students who enjoy visual problems!"
+              title="Ensure compliance with IEPs and 504s"
+              content="Students with specific learning needs get the materials and supports they need to succeed"
               color="yellow"
             />
             <LandingCard
-              title="Custom Built for Texas Math teachers"
-              content="An activity that helps you find the mystery number from other numbers. It’s super cool and useful for students! This activity is great for students who enjoy visual problems!"
+              title="Built by experts in Universal Design for Learning (UDL)"
+              content="Our platform is designed by curriculum and special education experts at Stanford University"
               color="pink"
             />
           </div>

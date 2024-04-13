@@ -89,7 +89,7 @@ const Navbar = () => {
               state ? "" : "hidden"
             }`}
           >
-            <ul className="items-center justify-end space-y-6 text-gray-700 md:flex md:space-x-6 md:space-y-0 md:font-medium md:text-gray-600">
+            <ul className="items-center justify-end space-y-6 text-gray-700 md:flex md:space-x-12 md:space-y-0 md:font-medium md:text-gray-600">
               {navigation.map((item, idx) => {
                 return (
                   <li key={idx} className="duration-150 hover:text-gray-900">
@@ -104,7 +104,7 @@ const Navbar = () => {
                   href="/start"
                   className="block bg-rose-400 text-sm font-medium hover:bg-rose-300 text-white"
                 >
-                  Launch App
+                  Try It Now
                 </NavLink>
               </li>
             </ul>
