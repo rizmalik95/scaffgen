@@ -6,12 +6,12 @@ type DataOutputs = {
   error?: string;
 };
 
-let chrome: any;
+let chromium: any;
 let puppeteer: any;
 
 if (process.env.AWS_LAMBDA_FUNCTION_VERSION) {
   // running on the Vercel platform.
-  chrome = require('chrome-aws-lambda');
+  chromium = require("@sparticuz/chromium");;
   puppeteer = require('puppeteer-core');
 } else {
   // running locally.
@@ -21,11 +21,11 @@ if (process.env.AWS_LAMBDA_FUNCTION_VERSION) {
 async function getBrowser() {
   if (process.env.AWS_LAMBDA_FUNCTION_VERSION) {
     return await puppeteer.launch({
-      args: [...chrome.args, '--hide-scrollbars', '--disable-web-security'],
-      defaultViewport: chrome.defaultViewport,
-      executablePath: await chrome.executablePath,
-      headless: true,
+      executablePath: await chromium.executablePath(),
+      headless: chromium.headless,
       ignoreHTTPSErrors: true,
+      defaultViewport: chromium.defaultViewport,
+      args: [...chromium.args, "--hide-scrollbars", "--disable-web-security"],
     });
   } else {
     return await puppeteer.launch();
