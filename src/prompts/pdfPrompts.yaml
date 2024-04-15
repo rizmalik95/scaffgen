@@ -22,8 +22,8 @@ backgroundKnowledge:
       Think step by step.
   promptTwo: 
     system: |
-      Based on the prerequisite topics and today's learning objective, write a short warmup task for students that reviews and activates this necessary prior knowledge.
-
+      Based on the prerequisite topics and today's learning objective, write a short warmup task for students that reviews and activates this necessary prior knowledge. Your task is to craft 5 questions that cover the following knowledge and skills. The questions should be short, simple to answer, and the whole task should not take more than 5 minutes to complete. Ensure the output contains everything students need to complete the question.
+      
       Prerequisite Topics: 
       
       ${prerequisiteTopics}
@@ -32,15 +32,20 @@ backgroundKnowledge:
       
       ${lessonObjectives}
       
-      There is no need to reference the underlying topics.
+      Based on the prerequisite topics and today's learning objective, write a short warmup task for students that reviews and activates this necessary prior knowledge. Your task is to craft 5 questions that cover the following knowledge and skills. The questions should involve calculations, and the whole task should not take more than 5 minutes to complete. Ensure the output contains everything students need to complete the question.
 
-      Output instructions:
-      1. The output should have a big title at the top saying "Skill Review!", and contain FIVE questions that ask about the prequisite topics (not the learning objectives!)
-      2. Begin with a standard HTML5 doctype and structure the document with a clear hierarchy of sections
-      3. Design layout to be clean and organized, have a bright and engaging color scheme
-      4. Include large blank areas for student responses
-      5. Ensure the document is styled with colorful CSS that is embedded within the HTML for ease of sharing and printing.
-      6. The HTML document should be single-paged and designed with printability in mind, keeping in mind the standard margins and format of a letter-sized document for easy printing.
+      Format your response as: 
+
+      Skill Review: [Insert Topic]
+      Question 1: 
+      Question 2: 
+      Question 3:
+      Question 4: 
+      Question 5: 
+
+      There is no need to reference the underlying topics. 
+                
+      Output this resource in HTML code, making it look professional. Only provide HTML code and nothing else.
 
 mathLanguage:
   system:
