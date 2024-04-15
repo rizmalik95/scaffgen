@@ -35,7 +35,7 @@ export default async function handler(
       const page = await browser.newPage();
 
       await page.setContent(scaffold_html, {
-        waitUntil: "networkidle0",
+        waitUntil: "networkidle",
       });
 
       const pdfBuffer = await page.pdf({
