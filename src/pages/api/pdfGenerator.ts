@@ -1,11 +1,36 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import puppeteer from "puppeteer-core";
 import { supabase } from "~/utils/supabaseClient";
 
 type DataOutputs = {
   pdfUrl?: string;
   error?: string;
 };
+
+let chrome: any;
+let puppeteer: any;
+
+if (process.env.AWS_LAMBDA_FUNCTION_VERSION) {
+  // running on the Vercel platform.
+  chrome = require('chrome-aws-lambda');
+  puppeteer = require('puppeteer-core');
+} else {
+  // running locally.
+  puppeteer = require('puppeteer');
+}
+
+async function getBrowser() {
+  if (process.env.AWS_LAMBDA_FUNCTION_VERSION) {
+    return await puppeteer.launch({
+      args: [...chrome.args, '--hide-scrollbars', '--disable-web-security'],
+      defaultViewport: chrome.defaultViewport,
+      executablePath: await chrome.executablePath,
+      headless: true,
+      ignoreHTTPSErrors: true,
+    });
+  } else {
+    return await puppeteer.launch();
+  }
+}
 
 export default async function handler(
   req: NextApiRequest,
@@ -20,9 +45,7 @@ export default async function handler(
     }
 
     try {
-      const browser = await puppeteer.launch({
-        channel: "chrome",
-      });
+      let browser = await getBrowser();
       const page = await browser.newPage();
       await page.setContent(scaffold_html)
 
