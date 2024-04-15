@@ -20,7 +20,9 @@ export default async function handler(
     }
 
     try {
-      const browser = await puppeteer.launch();
+      const browser = await puppeteer.launch({
+        channel: "chrome",
+      });
       const page = await browser.newPage();
       await page.setContent(scaffold_html)
 
