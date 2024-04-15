@@ -1,22 +1,11 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { chromium } from "playwright-chromium";
+import puppeteer from "puppeteer";
 import { supabase } from "~/utils/supabaseClient";
-import { set } from "zod";
 
 type DataOutputs = {
   pdfUrl?: string;
   error?: string;
 };
-
-// async function setupPuppeteer() {
-//   const browser = await puppeteer.launch({
-//     args: chromium.args,
-//     defaultViewport: chromium.defaultViewport,
-//     executablePath: await chromium.executablePath,
-//     headless: chromium.headless,
-//   });
-//   return browser;
-// }
 
 export default async function handler(
   req: NextApiRequest,
@@ -31,12 +20,9 @@ export default async function handler(
     }
 
     try {
-      const browser = await chromium.launch();
+      const browser = await puppeteer.launch();
       const page = await browser.newPage();
-
-      await page.setContent(scaffold_html, {
-        waitUntil: "networkidle",
-      });
+      await page.setContent(scaffold_html)
 
       const pdfBuffer = await page.pdf({
         format: "Letter",
