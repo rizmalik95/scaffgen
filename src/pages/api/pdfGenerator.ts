@@ -66,7 +66,7 @@ export default async function handler(
       res.status(200).json({ pdfUrl: publicUrlData.publicUrl });
     } catch (error) {
       console.error("Error generating pdf:", error);
-      res.status(500).json({ error: "Failed to generate pdf." });
+      res.status(500).json({ error: "Failed to generate pdf: "+ error});
     }
   } else {
     // Handle any non-POST requests
