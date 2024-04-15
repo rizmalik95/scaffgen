@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import puppeteer from "puppeteer";
+import puppeteer from "puppeteer-core";
 import { supabase } from "~/utils/supabaseClient";
 
 type DataOutputs = {
