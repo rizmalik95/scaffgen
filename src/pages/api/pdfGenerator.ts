@@ -1,8 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import puppeteer from "puppeteer";
-import { writeFile } from "fs/promises";
-import fs from "fs";
-import path from "path";
+import { supabase } from "~/utils/supabaseClient";
 
 type DataOutputs = {
   pdfUrl?: string;
@@ -37,11 +35,24 @@ export default async function handler(
       await browser.close();
 
       const fileName = `generated-${Date.now()}.pdf`;
-      const filePath = path.join(process.cwd(), "public", "pdfs", fileName);
+      // Upload PDF to Supabase Storage
+      const { data: uploadData, error: uploadError } = await supabase.storage
+        .from("pdfs")
+        .upload(fileName, pdfBuffer, {
+          contentType: "application/pdf",
+        });
 
-      await writeFile(filePath, pdfBuffer);
-      // Create a write stream
-      res.status(200).json({ pdfUrl: path.join("pdfs", fileName) });
+      if (uploadError) {
+        console.error("Error uploading PDF to Supabase:", uploadError);
+        res.status(500).json({ error: "Failed to upload PDF to Supabase." });
+        return;
+      }
+
+      const { data: publicUrlData } = supabase.storage
+        .from("pdfs")
+        .getPublicUrl(fileName);
+
+      res.status(200).json({ pdfUrl: publicUrlData.publicUrl });
     } catch (error) {
       console.error("Error generating pdf:", error);
       res.status(500).json({ error: "Failed to generate pdf." });
