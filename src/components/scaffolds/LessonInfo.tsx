@@ -2,15 +2,14 @@ interface lessonInfoProps {
   lessonObjectives: string;
   lessonStandards: string;
 }
-
 const LessonInfo = ({ lessonObjectives, lessonStandards }: lessonInfoProps) => {
   return (
-    <div className="flex flex-row md:justify-between gap-10 flex-wrap mx-auto w-full">
-      <div className="flex flex-col md:text-left md:max-w-[66%]">
+    <div className="flex flex-col lg:flex-row justify-between gap-4 lg:gap-10 mx-auto lg:w-15/16 p-4">
+      <div className="flex flex-col w-full lg:w-2/3 text-left">
         <h2 className="text-xl font-bold mb-3">Lesson Objectives</h2>
-        <p>{lessonObjectives}</p>
+        <p className="text-left">{lessonObjectives}</p>
       </div>
-      <div className="flex flex-col md:text-right">
+      <div className="flex flex-col w-full lg:w-1/3 text-right">
         <h2 className="text-xl font-bold mb-3">Lesson Standards</h2>
         <p>{lessonStandards}</p>
       </div>
