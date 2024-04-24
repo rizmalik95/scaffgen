@@ -105,12 +105,7 @@ const Results = ({ url, submitCount }: { url: string, submitCount: number }) => 
             console.error('Error fetching data:', error);
             }
           }
-          // setAIScaffolds([...AIScaffolds, scaffoldItem]);
           setAIScaffolds(prevState => [...prevState, ...newAIScaffolds]);
-          // console.log('scaffoldItem');
-          // console.log(scaffoldItem);
-          // console.log('AIScaffolds')
-          // console.log(AIScaffolds) 
         }
         setAIScaffoldLoading(false);
       };
