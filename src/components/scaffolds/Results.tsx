@@ -67,7 +67,7 @@ const Results = ({ lessonObjective, lessonStandard, submitCount }: { lessonObjec
         setAIScaffoldPercentBuffered(0);
         setAIScaffolds([]);
         // For loop through different Scaffold Types
-        const scaffoldTypes = ['backgroundKnowledge', 'mathLanguage']
+        const scaffoldTypes = ['backgroundKnowledge', 'mathLanguage', 'problemPairs', 'exitTicket']
         let newAIScaffolds: ScaffoldItem[] = [];
         for (let i = 0; i < scaffoldTypes.length; i++) {
           setAIScaffoldPercentBuffered((i + 0.5) / scaffoldTypes.length * 100);

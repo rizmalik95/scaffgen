@@ -12,7 +12,7 @@ const Navbar = () => {
   const navigation = [
     // { title: 'Testimonials', path: '#testimonials' },
     { title: "Homepage", path: "/" },
-    { title: "Scaffold Library", path: "/library" },
+    { title: "Community", path: "/community" },
   ];
 
   const pathname = usePathname();
@@ -40,11 +40,10 @@ const Navbar = () => {
           state ? "fixed z-10 h-full" : ""
         }`}
       >
-        <div className="custom-screen mx-auto items-start md:flex">
+        <div className="custom-screen mx-auto items-start md:flex mt-2">
           <div className="flex items-center justify-between py-3 md:block md:py-5 mb-5">
             <Link href="/" className="flex items-center gap-3">
-              <Image src="/box.svg" alt="logo" width={30} height={30} />
-              <div className="text-lg font-bold">ScaffGen</div>
+              <Image src="/logo.png" alt="logo" width={210} height={36} />
             </Link>
             <div className="md:hidden">
               <button
@@ -90,7 +89,7 @@ const Navbar = () => {
               state ? "" : "hidden"
             }`}
           >
-            <ul className="items-center justify-end space-y-6 text-gray-700 md:flex md:space-x-6 md:space-y-0 md:font-medium md:text-gray-600">
+            <ul className="items-center justify-end space-y-6 text-gray-700 md:flex md:space-x-12 md:space-y-0 md:font-medium md:text-gray-600">
               {navigation.map((item, idx) => {
                 return (
                   <li key={idx} className="duration-150 hover:text-gray-900">
@@ -103,9 +102,9 @@ const Navbar = () => {
               <li>
                 <NavLink
                   href="/start"
-                  className="block bg-gray-800 text-sm font-medium text-white hover:bg-gray-600 active:bg-gray-900 md:inline"
+                  className="block bg-rose-400 text-sm font-medium hover:bg-rose-300 text-white"
                 >
-                  Generate your Scaffolds
+                  Try It Now
                 </NavLink>
               </li>
             </ul>

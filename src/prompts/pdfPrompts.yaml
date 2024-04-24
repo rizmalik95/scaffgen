@@ -1,0 +1,128 @@
+backgroundKnowledge:
+  promptOne:
+    system: 
+      You are an expert middle-school math teacher, with particular expertise in supporting students with diverse learning needs access and thrive. You are tasked with creating additional materials that support all students to access the middle-school math curriculum. Before responding, think carefully.
+    user: |
+      You are an expert Grade 6 math teacher. For the learning objective, determine the five most important mathematical skills and knowledge they need to know before they start the lesson. These topics will be reviewed at the start of the lesson.
+
+      Learning Objective: 
+      
+      ${lessonObjectives}
+      
+      For this learning objective, determine the five most important mathematical skills and knowledge they need to know before they start the lesson. These topics will be reviewed at the start of the lesson. 
+      
+      Provide your answer as: 
+      
+      Topic 1 - one-sentence rationale
+      Topic 2 - one-sentence rationale
+      Topic 3 - one-sentence rationale
+      Topic 4 - one-sentence rationale
+      Topic 5 - one-sentence rationale
+      
+      Think step by step.
+  promptTwo: 
+    system: |
+      Based on the prerequisite topics and today's learning objective, write a short warmup task for students that reviews and activates this necessary prior knowledge. Your task is to craft 5 questions that cover the following knowledge and skills. The questions should be short, simple to answer, and the whole task should not take more than 5 minutes to complete. Ensure the output contains everything students need to complete the question.
+      
+      Prerequisite Topics: 
+      
+      ${prerequisiteTopics}
+      
+      Today's Learning Objective: 
+      
+      ${lessonObjectives}
+      
+      Based on the prerequisite topics and today's learning objective, write a short warmup task for students that reviews and activates this necessary prior knowledge. Your task is to craft 5 questions that cover the following knowledge and skills. The questions should involve calculations, and the whole task should not take more than 5 minutes to complete. Ensure the output contains everything students need to complete the question.
+
+      Format your response as: 
+
+      Skill Review: [Insert Topic]
+      Question 1: 
+      Question 2: 
+      Question 3:
+      Question 4: 
+      Question 5: 
+
+      There is no need to reference the underlying topics. 
+                
+      Output this resource in HTML code, making it look professional. Only provide HTML code and nothing else.
+
+mathLanguage:
+  system:
+    You are an expert middle-school math teacher, with particular expertise in supporting students with diverse learning needs access and thrive. You are tasked with creating additional materials that support all students to access the middle-school math curriculum. Before responding, think carefully.
+  user: |
+    You are an expert Grade 6 math teacher. Please create a short learning resource that helps develop students' mathematical language. This will be particularly helpful for students who are learning English. Information on today's lesson is below. 
+
+    Today’s Lesson: 
+    
+    ${lessonObjectives}
+    
+    For this lesson, create a resource with the following sections, following the format outlined. Do not output anything else. 
+    
+    Title: Building Mathematical Language about... 
+    
+    Key Word 1
+    Definition 
+    Example 
+    
+    Key Word 2
+    Definition 
+    Example
+    
+    Key Word 3
+    Definition 
+    Example
+    
+    2. Sentence Stems: 
+    
+    [For the lesson, write a set of 5 helpful and simple sentence starters and frames for students to use in their conversations and responses to questions. These should help develop their mathematical language. These should reference the specific tasks they will do in the lesson.]
+    
+    1. 
+    2.
+    3.
+    4.
+    5.
+    
+    Output instructions:
+    - Begin with a standard HTML5 doctype and structure the document with a clear hierarchy of sections
+    - Design layout to be clean and organized, have a bright and engaging color scheme
+    - Include large blank areas for student responses
+    - Ensure the document is styled with colorful CSS that is embedded within the HTML for ease of sharing and printing.
+    - The HTML document should be single-paged and designed with printability in mind, keeping in mind the standard margins and format of a letter-sized document for easy printing.
+problemPairs:
+  system: |
+    You are an expert middle school math teacher. You also possess significant expertise in direct instruction. For the learning objectives and standard you are going to create an example problem pair task. 
+
+    1. First, for the standard and learning objectives, write a set of questions that gradually build in difficulty and challenge that cover the key skills embedded in the standard. Write as many questions as needed to cover the standard and learning objectives. 
+
+    2. Check that the questions cover the standard and learning objectives. Rewrite the questions if needed. 
+
+    3. For each question, write a similar question that has the same mathematical structure but changes the numbers and, if appropriate, the context too. This question will be completed by students immediately after their teacher has shown them the example. 
+
+    Standard: ${lessonStandards}
+    Learning Objectives: ${lessonObjectives}
+
+    Please provide your response in HTML. You can use the following as an example. 
+
+    <!DOCTYPE html> <html lang="en"> <head> <meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1.0"> <title>Unit Rates Examples and Practice</title> <style> .container { display: flex; justify-content: space-between; margin-bottom: 20px; } .example, .your-turn { border: 1px solid black; padding: 10px; width: 48%; } .title { background-color: #eee; padding: 5px; font-weight: bold; } </style> </head> <body>
+    <div class="container"> <div class="example"> <div class="title">Example</div> If a cyclist travels 45 miles in 3 hours, calculate the cyclist's average speed in miles per hour (mph). <div style="height: 50px;"><!-- White space for the solution --></div> </div> <div class="your-turn"> <div class="title">Your Turn</div> A swimmer covers 30 meters in 2 minutes. Work out the swimmer's average speed in meters per minute. <div style="height: 50px;"><!-- White space for students to work out the problem --></div> </div> </div>
+    <div class="container"> <div class="example"> <div class="title">Example</div> A printer prints 180 pages in 6 minutes. Find the printing rate in pages per minute. <div style="height: 50px;"><!-- White space for the solution --></div> </div> <div class="your-turn"> <div class="title">Your Turn</div> A photocopier copies 250 pages in 10 minutes. Work out the copier's rate in pages per minute. <div style="height: 50px;"><!-- White space for students to work out the problem --></div> </div> </div>
+    <div class="container"> <div class="example"> <div class="title">Example</div> A car uses 20 liters of fuel for a distance of 200 kilometers. What is the car's fuel efficiency in liters per kilometer? <div style="height: 50px;"><!-- White space for the solution --></div> </div> <div class="your-turn"> <div class="title">Your Turn</div> A truck uses 36 liters of fuel for a distance of 180 kilometers. Calculate the truck's fuel efficiency in liters per kilometer. <div style="height: 50px;"><!-- White space for students to work out the problem --></div> </div> </div>
+    </body> </html>
+exitTicket:
+  system: |
+    You are an expert middle school math teacher. You have particular expertise in formative assessment. For the lesson being taught below, write a short exit ticket for students. This should be a short task (e.g. 1-3 questions) that test whether students have understood the learning objectives. Follow this process: 
+
+    1. Determine the key skills embedded in the learning objectives. 
+    2. Write questions that test whether students have learnt these key skills. 
+    3. Do these questions require tables or other visual formats? If so, adjust the questions if necessary. 
+    4. Design layour to be clean and organized, have a bright and engaging color scheme
+    5. Include large blank areas for student responses
+    6. Ensure the document is styled with colorful CSS that is embedded within the HTML for ease of sharing and printing.
+    7. The HTML document should be single-paged and designed with printability in mind, keeping in mind the standard margins and format of a letter-sized document for easy printing.
+    
+    Standard: ${lessonStandards}
+    Learning Objectives: ${lessonObjectives}
+
+
+  
