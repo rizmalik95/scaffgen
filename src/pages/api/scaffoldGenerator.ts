@@ -3,13 +3,20 @@ import path from "path";
 
 import callOpenAI from "~/utils/callOpenAI";
 import loadYamlFile from "~/utils/loadYamlFile";
-import sendWebhookResponse from "~/utils/sendWebhookResponse";
+import { setTaskStatus } from '~/lib/scaffoldStatusStore';
 
-type ResponseData = {
+type ScaffoldData = {
   activity?: string;
   title?: string;
   summary?: string;
   tags?: string;
+  message?: string;
+  error?: string;
+};
+let taskIdCounter = 0;
+
+type ResponseData = {
+  taskId?: number;
   message?: string;
   error?: string;
 };
@@ -24,18 +31,26 @@ export default async function handler(
     return;
   }
 
-  const { lessonObjectives, lessonStandards, scaffoldType, webhookUrl } = req.body;
+  const { lessonObjectives, lessonStandards, scaffoldType } = req.body;
 
-  if (!lessonObjectives || !webhookUrl) {
-    res.status(400).json({ error: "Please provide both lesson objectives and webhook URL" });
+  if (!lessonObjectives) {
+    res.status(400).json({ error: "Please provide both lesson objectives" });
     return;
   }
-  // Respond immediately to acknowledge receipt
-  res.status(202).json({ message: 'Request received. The result will be sent to the specified webhook URL.' });
 
+  const taskId = ++taskIdCounter; // Generate a new task ID
+  setTaskStatus(taskId, { status: 'In progress' });
 
+  // Move long-running task to async execution
+  processScaffold(taskId, lessonObjectives, lessonStandards, scaffoldType);
+
+  // Respond immediately with task ID
+  res.status(202).json({ taskId, message: "Task started, check status using the task ID" });
+}
+
+async function processScaffold(taskId: number, lessonObjectives: any, lessonStandards: any, scaffoldType: string) {
   try {
-    let resData: ResponseData = {};
+    let resData: ScaffoldData = {};
 
     switch (scaffoldType) {
       case "backgroundKnowledge":
@@ -50,17 +65,13 @@ export default async function handler(
       case "exitTicket":
         resData = await exitTicket(lessonObjectives, lessonStandards);
         break;
-      default:
-        sendWebhookResponse(webhookUrl, { error: "Invalid scaffoldType provided." });
-        break;
     }
 
-    sendWebhookResponse(webhookUrl, resData);
+    // Update task status to completed with data
+    setTaskStatus(taskId, { status: 'Completed', data: resData });
   } catch (error) {
     console.error("Scaffold generation error:", error);
-    sendWebhookResponse(webhookUrl, {
-      error: "Failed to generate activity due to an internal error: " + error,
-    });
+    setTaskStatus(taskId, { status: 'Failed', data: { error: `Failed to generate scaffold due to internal error: ${error}` } });
   }
 }
 
@@ -82,7 +93,7 @@ function fillTemplate(template: string, values: TemplateValues): string {
   return template.replace(/\$\{(\w+)\}/g, (_, key) => values[key] || "");
 }
 
-async function backgroundKnowledge(lessonObjectives: string, lessonStandards: string): Promise<ResponseData> {
+async function backgroundKnowledge(lessonObjectives: string, lessonStandards: string): Promise<ScaffoldData> {
   //Prompt 1
   let template: TemplateValues = {
     lessonObjectives: lessonObjectives,
@@ -122,7 +133,7 @@ async function backgroundKnowledge(lessonObjectives: string, lessonStandards: st
   };
 }
 
-async function mathLanguage(lessonObjectives: string,  lessonStandards: string): Promise<ResponseData> {
+async function mathLanguage(lessonObjectives: string,  lessonStandards: string): Promise<ScaffoldData> {
   let template: TemplateValues = {
     lessonObjectives: lessonObjectives,
   };
@@ -147,7 +158,7 @@ async function mathLanguage(lessonObjectives: string,  lessonStandards: string):
   };
 }
 
-async function problemPairs(lessonObjectives: string, lessonStandards: string): Promise<ResponseData> {
+async function problemPairs(lessonObjectives: string, lessonStandards: string): Promise<ScaffoldData> {
   let template: TemplateValues = {
     lessonObjectives: lessonObjectives,
     lessonStandards: lessonStandards,
@@ -168,7 +179,7 @@ async function problemPairs(lessonObjectives: string, lessonStandards: string): 
   };
 }
 
-async function exitTicket(lessonObjectives: string, lessonStandards: string): Promise<ResponseData> {
+async function exitTicket(lessonObjectives: string, lessonStandards: string): Promise<ScaffoldData> {
   let template: TemplateValues = {
     lessonObjectives: lessonObjectives,
     lessonStandards: lessonStandards,

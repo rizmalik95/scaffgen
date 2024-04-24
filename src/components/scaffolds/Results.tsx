@@ -5,6 +5,7 @@ import LessonInfo from '@/components/scaffolds/LessonInfo';
 // import ScaffoldProps from '@/components/scaffolds/AllScaffolds';
 // import LinearProgress from '@mui/material/LinearProgress';
 import BorderLinearProgress from '@/components/general/BorderLinearProgress';
+import fetchAIScaffoldItem from '~/components/scaffolds/fetchAIScaffolds';
 
 import axios from 'axios';
 import { set } from 'zod';
@@ -79,33 +80,9 @@ const Results = ({ url, submitCount }: { url: string, submitCount: number }) => 
         // For loop through different Scaffold Types
         const scaffoldTypes = ['backgroundKnowledge', 'mathLanguage', 'problemPairs', 'exitTicket']
         let newAIScaffolds: ScaffoldItem[] = [];
-        for (let i = 0; i < scaffoldTypes.length; i++) {
-          setAIScaffoldPercentBuffered((i + 0.5) / scaffoldTypes.length * 100);
-          const payload = {
-            lessonObjectives: LessonData.lessonObjectives,
-            lessonStandards: LessonData.lessonStandards,
-            scaffoldType: scaffoldTypes[i]
-          };
-          try {
-            // Somewhere here we need to match scaffoldGenerator.ts API output to pdfUrl, title, summary for AllScaffolds.tsx 
-            const scaffoldResponse = await axios.post('/api/scaffoldGenerator', payload);
-            const pdfGenResponse = await axios.post('/api/pdfGenerator', { scaffold_html: scaffoldResponse.data.activity })
-            console.log(pdfGenResponse.data.pdfUrl)
-            const scaffoldItem = {
-              pdfUrl: pdfGenResponse.data.pdfUrl,
-              title: scaffoldResponse.data.title,
-              summary: scaffoldResponse.data.summary,
-              standard: payload.lessonStandards,
-              tags: scaffoldResponse.data.tags, 
-              isAI: true,
-            };
-            newAIScaffolds.push(scaffoldItem);
-            setAIScaffoldPercentLoaded((i + 1) / scaffoldTypes.length * 100);
-          } catch (error) {
-            console.error('Error fetching data:', error);
-            }
-          }
-          setAIScaffolds(prevState => [...prevState, ...newAIScaffolds]);
+        
+        
+        setAIScaffolds(prevState => [...prevState, ...newAIScaffolds]);
         }
         setAIScaffoldLoading(false);
       };
