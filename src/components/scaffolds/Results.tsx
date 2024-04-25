@@ -1,10 +1,8 @@
 import { useEffect, useState } from 'react';
-import ResultCard from '@/components/scaffolds/ResultCard';
 import AllScaffolds from '@/components/scaffolds/AllScaffolds';
 import LessonInfo from '@/components/scaffolds/LessonInfo';
-// import ScaffoldProps from '@/components/scaffolds/AllScaffolds';
-// import LinearProgress from '@mui/material/LinearProgress';
 import BorderLinearProgress from '@/components/general/BorderLinearProgress';
+// import { processPDF } from '@/pages/api/customize';
 
 import axios from 'axios';
 import { set } from 'zod';
@@ -34,8 +32,10 @@ interface ScaffoldProps {
     isAI: boolean;
 }
 
-const Results = ({ url, submitCount }: { url: string, submitCount: number }) => {
-  const [LessonData, setLessonData] = useState<ResultItem>({ lessonObjectives: '', lessonStandards: '' });
+const Results = ({ lessonObjective, lessonStandard, submitCount }: { lessonObjective: string, lessonStandard: string, submitCount: number }) => {
+  console.log('Received in Results:', { lessonObjective, lessonStandard, submitCount });
+  
+  const [LessonData, setLessonData] = useState<ResultItem>({ lessonObjectives: "", lessonStandards: "" });
   const [lessonLoading, setLessonLoading] = useState(false);
   const [scaffold, setScaffold] = useState('' as string);
   const [AIScaffoldLoading, setAIScaffoldLoading] = useState(false);
@@ -47,27 +47,17 @@ const Results = ({ url, submitCount }: { url: string, submitCount: number }) => 
   const [AIScaffoldPercentLoaded, setAIScaffoldPercentLoaded] = useState(0);
 
   useEffect(() => {
-    const fetchLessonData = async () => {
-      if (url) {
-        setLessonLoading(true);
-        try {
-          const response = await axios.get(`/api/curriculum?url=${encodeURIComponent(url)}`);
-          setLessonData({
-            lessonObjectives: response.data.learningObjectives.join(', '),
-            lessonStandards: response.data.standards.join(', ')
-          }
-          );
-        } catch (error) {
-          console.error('Error fetching data:', error);
-          // Handle error appropriately
+    const updateLessonData = async () => {
+      setLessonLoading(true);
+        setLessonData({
+          lessonObjectives: lessonObjective,
+          lessonStandards: lessonStandard
         }
-        setLessonLoading(false);
-      }
-    };
-
-    fetchLessonData();
+        );
+      setLessonLoading(false);
+    }
+    updateLessonData();
   }, [submitCount]);
-
 
   useEffect(() => {
     const fetchAIScaffolds = async () => {
@@ -162,13 +152,17 @@ const Results = ({ url, submitCount }: { url: string, submitCount: number }) => 
   };
 
   const render = (result: ResultItem) => {
+    if (submitCount == 0) {
+      return (
+        <div></div>
+      )
+    }
     const elements: JSX.Element[] = [];
-
     if (lessonLoading) {
       // elements.push(<p key="lessonLoading">Loading lesson...</p>);
     } else if (result.lessonObjectives) {
       elements.push(
-        <div key="lessonInfo" className="my-5 w-2/3 mx-auto">
+        <div key="lessonInfo" className="my-5 w-full md:w-10/12 lg:max-w-6xl mx-auto">
           <LessonInfo lessonObjectives={result.lessonObjectives} lessonStandards={result.lessonStandards} />
         </div>
       )
