@@ -1,47 +1,70 @@
 // PDF Tab
+// every line where there is onTabResult({ file }); needs to be changed to send back "data" = objectives and standards
 import React, { useState } from 'react';
 
-const PdfTab = ({ onTabResult }) => {
-  const [file, setFile] = useState(null);
+interface InputData {
+    lessonObjectives: string;
+    lessonStandards: string;
+}
+  
+interface PdfTabProps {
+    onTabResult: (data: InputData) => void;
+}
+
+const PdfTab = ({ onTabResult } : PdfTabProps) => {
+  const [file, setFile] = useState<File | null>(null);
   const [isDragging, setIsDragging] = useState(false);
 
-  const handleDragOver = (e) => {
+  const handleDragOver = (e: React.DragEvent<HTMLElement>) => {
     e.preventDefault();
     setIsDragging(true);
   };
 
-  const handleDragLeave = (e) => {
+  const handleDragLeave = (e: React.DragEvent<HTMLElement>) => {
     e.preventDefault();
     setIsDragging(false);
   };
 
-  const handleDrop = (e) => {
+  const handleDrop = (e: React.DragEvent<HTMLElement>) => {
     e.preventDefault();
     setIsDragging(false);
     const files = e.dataTransfer.files;
     if (files && files.length > 0) {
       const file = files[0];
-      setFile(file);
-      // Assuming you want to do something with the file at this point
-      onTabResult({ file });
+    //   setFile(file);
+
+      // NEED TO CHANGE ONCE THIS IS WORKING
+      onTabResult({
+        lessonObjectives: '',
+        lessonStandards: ''
+      });
     }
   };
 
-  const handleFileChange = (e) => {
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
       const file = e.target.files[0];
-      setFile(file);
-      // Assuming you want to do something with the file at this point
-      onTabResult({ file });
+    //   setFile(file);
+
+      // NEED TO CHANGE ONCE THIS IS WORKING
+      onTabResult({
+        lessonObjectives: '',
+        lessonStandards: ''
+      });
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     // This could be where you handle the file upload/processing
     if (file) {
       // onUploadPdf(file); // Removed based on new structure
-      onTabResult({ file });
+      
+      // NEED TO CHANGE ONCE THIS IS WORKING
+      onTabResult({
+        lessonObjectives: '',
+        lessonStandards: ''
+      });
     }
   };
 
@@ -66,7 +89,12 @@ const PdfTab = ({ onTabResult }) => {
           <button
             type="button"
             className="px-4 py-2 mb-3 rounded bg-blue-500 text-white"
-            onClick={() => document.getElementById('file-upload').click()}
+            onClick={() => {
+                const inputElement = document.getElementById('file-upload') as HTMLInputElement;
+                if (inputElement !== null) {
+                    inputElement.click();
+                }
+            }}
           >
             Select Files
           </button>

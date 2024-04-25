@@ -23,6 +23,10 @@ Start.tsx Outline
   - display other pdfs (all the original content)
 
 */
+interface InputData {
+  lessonObjectives: string;
+  lessonStandards: string;
+}
 
 export default function Start() {
   const [lessonData, setLessonData] = useState({ lessonObjective: '', lessonStandard: '' });
@@ -40,7 +44,7 @@ export default function Start() {
   //   }
   // };
 
-  const handleResultsInput = (inputType, inputData) => {
+  const handleResultsInput = (inputType : string, inputData : InputData) => {
     console.log(`Handling results input: ${inputType}`, inputData); // Log for debugging
     setLessonData({ lessonObjective: inputData.lessonObjectives || '', lessonStandard: inputData.lessonStandards || '' });
     setSubmitCount(prevCount => prevCount + 1);

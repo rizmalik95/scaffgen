@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import AllScaffolds from '@/components/scaffolds/AllScaffolds';
 import LessonInfo from '@/components/scaffolds/LessonInfo';
 import BorderLinearProgress from '@/components/general/BorderLinearProgress';
-import { processPDF } from '@/pages/api/customize';
+// import { processPDF } from '@/pages/api/customize';
 
 import axios from 'axios';
 import { set } from 'zod';

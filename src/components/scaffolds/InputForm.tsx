@@ -3,36 +3,31 @@ import UrlTab from './UrlTab';
 import StandardsTab from './StandardsTab';
 import PdfTab from './PdfTab';
 
-const tabContentStyle = {
-  width: '100%',
-  borderTop: '1px solid #e0e0e0', // separates tabs from content
-  paddingTop: '20px'
-};
+interface InputData {
+  lessonObjectives: string;
+  lessonStandards: string;
+}
 
-const InputForm = ({ activeTab, setActiveTab, onResultsInput } : { activeTab: any, setActiveTab: any, onResultsInput: (inputType: string, inputData: any) => void }) => {
-  const handleTabSubmit = (inputType, inputData) => {
+const InputForm = ({ activeTab, setActiveTab, onResultsInput } : { activeTab: string, setActiveTab: any, onResultsInput: (inputType: string, inputData: InputData) => void }) => {
+  const handleTabSubmit = (inputType: string, inputData: any) => {
     console.log(`Data received from ${inputType}:`, inputData);
     onResultsInput(inputType, inputData);
   };
 
-
-// const InputForm = ({ onResultsInput }: { onResultsInput: (inputType: string, inputData: any) => void }) => {
-//   const [activeTab, setActiveTab] = useState('illustrativeMathematics');
-
   const renderTabContent = () => {
     switch (activeTab) {
       case 'illustrativeMathematics':
-        return <UrlTab onTabResult={(data) => handleTabSubmit('url', data)} />;
+        return <UrlTab onTabResult={(data: InputData) => handleTabSubmit('url', data)} />;
       case 'byStandards':
-        return <StandardsTab onTabResult={(data) => handleTabSubmit('standards', data)} />;
+        return <StandardsTab onTabResult={(data: InputData) => handleTabSubmit('standards', data)} />;
       case 'uploadPdf':
-        return <PdfTab onTabResult={(data) => handleTabSubmit('pdf', data)} />;
+        return <PdfTab onTabResult={(data: InputData) => handleTabSubmit('pdf', data)} />;
       default:
         return null;
     }
   };
 
-  const tabStyle = (isActive) => ({
+  const tabStyle = (isActive: boolean): React.CSSProperties => ({
     flex: 1,
     textAlign: 'center',
     padding: '10px 0',

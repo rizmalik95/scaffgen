@@ -2,7 +2,16 @@
 import React, { useState } from 'react';
 import standardsData from './MS_math_standards.json';
 
-const StandardsTab = ({ onTabResult }) => {
+interface InputData {
+  lessonObjectives: string;
+  lessonStandards: string;
+}
+
+interface StandardsTabProps {
+  onTabResult: (data: InputData) => void;
+}
+
+const StandardsTab = ({ onTabResult } : StandardsTabProps) => {
   const [grade, setGrade] = useState('');
   const [unit, setUnit] = useState('');
   const [selectedStandards, setSelectedStandards] = useState('');
@@ -13,7 +22,7 @@ const StandardsTab = ({ onTabResult }) => {
   const uniqueUnitsForGrade = [...new Set(standardsData.filter(item => item.Grade === grade).map(item => item.Unit))];
   const standardsForUnit = standardsData.filter(item => item.Grade === grade && item.Unit === unit);
 
-  const gridContainerStyle = {
+  const gridContainerStyle : React.CSSProperties = {
     display: 'grid',
     gridTemplateColumns: '15% 25% auto', // Columns size for grade, units and standards
     gridTemplateRows: 'auto 1fr', // Two rows
@@ -21,12 +30,12 @@ const StandardsTab = ({ onTabResult }) => {
     gridRowGap: '1rem', // Gap between rows
     alignItems: 'start',
   };
-  const headerStyle = {
+  const headerStyle : React.CSSProperties = {
     textAlign: 'center', // Center align the headers
     width: '100%', // Make the headers take up the full width of their container
     marginBottom: '0.5rem', // Optional: adds some space below the header
   };  
-  const gradesAndUnitsContainerStyle = {
+  const gradesAndUnitsContainerStyle : React.CSSProperties= {
     display: 'flex',
     flexDirection: 'column',
     rowGap: '10px', // Gap between rows
@@ -42,11 +51,14 @@ const StandardsTab = ({ onTabResult }) => {
     gridColumn: '3',
     gridRow: '1 / span 2', // Span across both rows
   };
+
+  type ButtonCategory = keyof typeof buttonStyles;
+
     // Style for how individual buttons look
   const buttonStyle = {
     display: 'block', // Ensure the button spans the full width of its container
     width: '80%', // Set a fixed width for all buttons
-    textAlign: 'center', // Center the text inside the button
+    textAlign: 'center' as 'center', // Center the text inside the button
     backgroundColor: '#f0e1f5', // Replace with the pastel color you want
     border: 'none',
     borderRadius: '20px',
@@ -71,11 +83,15 @@ const StandardsTab = ({ onTabResult }) => {
       selected: '#CB90E4' // darker purple for selected Standard button
     }
   };
-  const getButtonStyle = (category, isSelected) => ({
-    ...buttonStyle,
-    backgroundColor: isSelected ? buttonStyles[category].selected : buttonStyles[category].default
-  });
-  const handleStandardChange = (e) => {
+
+  const getButtonStyle = (category: ButtonCategory, isSelected: boolean): React.CSSProperties => {
+    return {
+      ...buttonStyle,
+      backgroundColor: isSelected ? buttonStyles[category].selected : buttonStyles[category].default
+    };
+  };
+
+  const handleStandardChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value, checked } = e.target;
     setSelectedStandards(prevSelectedStandards => {
       const currentStandards = prevSelectedStandards ? prevSelectedStandards.split(', ') : [];
@@ -93,7 +109,7 @@ const StandardsTab = ({ onTabResult }) => {
       return currentStandards.join(', ');
     });
   };
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (!lessonObjectives.trim() || !selectedStandards.trim()) {
@@ -172,7 +188,7 @@ const StandardsTab = ({ onTabResult }) => {
                     <div className="relative w-full">
                       <textarea
                         id="lessonObjectives"
-                        rows="4"
+                        rows={4}
                         value={lessonObjectives} // Add the value binding
                         onChange={(e) => setLessonObjectives(e.target.value)} // Add the change handler
                         placeholder="Enter your lesson objectives here..."

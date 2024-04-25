@@ -1,17 +1,26 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 
-function UrlTab({ onTabResult }) {
+interface InputData {
+  lessonObjectives: string;
+  lessonStandards: string;
+}
+
+interface UrlTabProps {
+  onTabResult: (data: InputData) => void;
+}
+
+function UrlTab({ onTabResult  }: UrlTabProps ) {
   const [url, setUrl] = useState('');
   const [error, setError] = useState('');
 
-  const validateUrl = (url) => {
+  const validateUrl = (url: string) => {
     const isValid = url.startsWith('https://curriculum.illustrativemathematics.org/');
     setError(isValid ? '' : 'Please enter a valid Illustrative Mathematics URL.');
     return isValid;
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault(); // Prevent default form submission behavior
     if (!validateUrl(url)) return;
 
