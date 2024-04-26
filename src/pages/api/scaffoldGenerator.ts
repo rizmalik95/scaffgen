@@ -3,7 +3,8 @@ import path from "path";
 
 import callOpenAI from "~/utils/callOpenAI";
 import loadYamlFile from "~/utils/loadYamlFile";
-import { setTaskStatus } from '~/lib/scaffoldStatusStore';
+import { createTaskId, setTaskStatus } from "~/utils/taskManager";
+
 
 type ScaffoldData = {
   activity?: string;
@@ -13,10 +14,9 @@ type ScaffoldData = {
   message?: string;
   error?: string;
 };
-let taskIdCounter = 0;
 
 type ResponseData = {
-  taskId?: number;
+  taskId?: string;
   message?: string;
   error?: string;
 };
@@ -38,17 +38,18 @@ export default async function handler(
     return;
   }
 
-  const taskId = ++taskIdCounter; // Generate a new task ID
+  const taskId = createTaskId();
+  
   setTaskStatus(taskId, { status: 'In progress' });
 
   // Move long-running task to async execution
   processScaffold(taskId, lessonObjectives, lessonStandards, scaffoldType);
 
   // Respond immediately with task ID
-  res.status(202).json({ taskId, message: "Task started, check status using the task ID" });
+  res.status(202).json({ taskId, message: `Task ${taskId} started, check status using the task ID` });
 }
 
-async function processScaffold(taskId: number, lessonObjectives: any, lessonStandards: any, scaffoldType: string) {
+async function processScaffold(taskId: string, lessonObjectives: any, lessonStandards: any, scaffoldType: string) {
   try {
     let resData: ScaffoldData = {};
 

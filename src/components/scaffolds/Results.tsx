@@ -5,7 +5,7 @@ import LessonInfo from '@/components/scaffolds/LessonInfo';
 // import ScaffoldProps from '@/components/scaffolds/AllScaffolds';
 // import LinearProgress from '@mui/material/LinearProgress';
 import BorderLinearProgress from '@/components/general/BorderLinearProgress';
-import fetchAIScaffoldItem from '~/components/scaffolds/fetchAIScaffolds';
+import fetchAIScaffoldItem from '~/components/scaffolds/fetchAIScaffold';
 
 import axios from 'axios';
 import { set } from 'zod';
@@ -60,7 +60,6 @@ const Results = ({ url, submitCount }: { url: string, submitCount: number }) => 
           );
         } catch (error) {
           console.error('Error fetching data:', error);
-          // Handle error appropriately
         }
         setLessonLoading(false);
       }
@@ -79,15 +78,26 @@ const Results = ({ url, submitCount }: { url: string, submitCount: number }) => 
         setAIScaffolds([]);
         // For loop through different Scaffold Types
         const scaffoldTypes = ['backgroundKnowledge', 'mathLanguage', 'problemPairs', 'exitTicket']
-        let newAIScaffolds: ScaffoldItem[] = [];
-        
-        
-        setAIScaffolds(prevState => [...prevState, ...newAIScaffolds]);
+
+        try {
+          const promises = scaffoldTypes.map(async (scaffoldType, i) => {
+            // setAIScaffoldPercentBuffered((i + 1) / scaffoldTypes.length * 100);
+            const scaffoldItem = await fetchAIScaffoldItem(LessonData, scaffoldType);
+            setAIScaffoldPercentLoaded((i + 1) / scaffoldTypes.length * 100);
+            return scaffoldItem;
+          });
+          const newAIScaffolds = await Promise.all(promises);
+          setAIScaffolds(newAIScaffolds);
+        } catch (error) {
+          console.error('Error fetching AI Scaffold:', error);
+        } finally {
+          setAIScaffoldLoading(false);
         }
-        setAIScaffoldLoading(false);
-      };
-    fetchAIScaffolds();
-  }, [LessonData]);
+      }
+      setAIScaffoldLoading(false);
+    };
+  fetchAIScaffolds();
+}, [LessonData]);
 
   useEffect(() => {
     const fetchHumanScaffolds = async () => {
