@@ -17,7 +17,6 @@ export default async function callOpenAI(
   maxTokens: number = 4096,
 ) {
   try {
-    console.log('calling openai')
     let messages: Message[] = [];
     if (system) {
       messages.push({ role: "system", content: system });
@@ -35,7 +34,6 @@ export default async function callOpenAI(
       frequency_penalty: 0,
       presence_penalty: 0,
     });
-    console.log('done openai')
     return response.choices[0]?.message?.content?.trim() ?? "";
   } catch (error) {
     console.error("OpenAI error:", error);

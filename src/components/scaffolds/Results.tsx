@@ -73,7 +73,7 @@ const Results = ({ lessonObjective, lessonStandard, submitCount }: { lessonObjec
             try {
               // setAIScaffoldPercentBuffered((i + 1) / scaffoldTypes.length * 100);
               const scaffoldItem = await fetchAIScaffoldItem(LessonData, scaffoldType);
-              setAIScaffoldPercentLoaded(AIScaffoldPercentLoaded + 1 / scaffoldTypes.length * 100);
+              setAIScaffoldPercentLoaded(prevPercent => prevPercent + 100 / scaffoldTypes.length);
               return scaffoldItem;
             } catch (error) {
               console.error(`Error fetching scaffold for type ${scaffoldType}:`, error);

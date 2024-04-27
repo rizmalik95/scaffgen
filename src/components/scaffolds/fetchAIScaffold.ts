@@ -32,17 +32,15 @@ export default async function fetchAIScaffoldItem(
     // Check status
     const checkStatus = async (): Promise<ScaffoldItem> => {
       return new Promise(async (resolve, reject) => {
-        if (pollCount < 12) { // pollCount times the setTimeout time is max time we'll wait
+        if (pollCount < 18) { // pollCount times the setTimeout time is max time we'll wait
           const statusResponse = await axios.get(
             `/api/checkScaffoldGeneratorStatus?taskId=${taskId}`,
           );
           if (statusResponse.data.status === "Completed") {
             const scaffoldResponse = statusResponse.data.data;
-            console.log(`got scaffold response for task id: ${taskId}`);
             const pdfGenResponse = await axios.post("/api/pdfGenerator", {
               scaffold_html: scaffoldResponse.activity,
             });
-            console.log(`got pdf response for task id: ${taskId}`);
             console.log(pdfGenResponse.data.pdfUrl);
             const scaffoldItem: ScaffoldItem = {
               pdfUrl: pdfGenResponse.data.pdfUrl,
@@ -55,7 +53,7 @@ export default async function fetchAIScaffoldItem(
             resolve(scaffoldItem);
           } else if (statusResponse.data.status === "In progress") {
             pollCount++;
-            setTimeout(() => resolve(checkStatus()), 5000); // Retry after two seconds
+            setTimeout(() => resolve(checkStatus()), 5000); // Retry after five seconds
           } else {
             reject(
               new Error(
