@@ -1,45 +1,57 @@
-import { useState } from 'react';
+import React from 'react';
+import UrlTab from './UrlTab';
+import StandardsTab from './StandardsTab';
+import PdfTab from './PdfTab';
 
-const InputForm = ({ onSubmitUrl }: { onSubmitUrl: (url: string) => void }) => {
-  const [url, setUrl] = useState('');
-  const [error, setError] = useState('');
+interface InputData {
+  lessonObjectives: string;
+  lessonStandards: string;
+}
 
-  const validateUrl = (url: string) => {
-    const isValid = url.startsWith('https://curriculum.illustrativemathematics.org/');
-    setError(isValid ? '' : 'Please enter a valid Illustrative Mathematics URL.');
-    return isValid;
+const InputForm = ({ activeTab, setActiveTab, onResultsInput } : { activeTab: string, setActiveTab: any, onResultsInput: (inputType: string, inputData: InputData) => void }) => {
+  const handleTabSubmit = (inputType: string, inputData: any) => {
+    onResultsInput(inputType, inputData);
   };
 
-  const handleSubmit = (e: { preventDefault: () => void; }) => {
-    e.preventDefault();
-    if (validateUrl(url)) {
-      onSubmitUrl(url);
+  const renderTabContent = () => {
+    switch (activeTab) {
+      case 'illustrativeMathematics':
+        return <UrlTab onTabResult={(data: InputData) => handleTabSubmit('url', data)} />;
+      case 'byStandards':
+        return <StandardsTab onTabResult={(data: InputData) => handleTabSubmit('standards', data)} />;
+      case 'uploadPdf':
+        return <PdfTab onTabResult={(data: InputData) => handleTabSubmit('pdf', data)} />;
+      default:
+        return null;
     }
   };
 
-  // RITIKA -- BETTER UI BUT NOT CONNECTED
+  const tabStyle = (isActive: boolean): React.CSSProperties => ({
+    flex: 1,
+    textAlign: 'center',
+    padding: '10px 0',
+    cursor: 'pointer',
+    backgroundColor: isActive ? '#e0e0e0' : 'transparent', // some color tint for active tab
+    transition: 'background-color 0.3s ease-in-out'
+  });
+
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col items-center relative w-2/3">
-      <div className="relative w-full">
-        <input
-          type="text"
-          value={url}
-          onChange={(e) => setUrl(e.target.value)}
-          placeholder="Enter the URL"
-          className="outline-none w-full h-12 rounded-lg text-gray-700 pr-12 pl-4
-          border border-slate-300 focus:border-slate-400 shadow-md focus:shadow-md p-2 transition-colors duration-150 ease-in-out" // added pl-4 for padding
-        />
-        <button type="submit"
-          className="absolute right-0 inset-y-0 my-auto flex items-center px-4">
-          {/* SVG for the right arrow icon */}
-          {/* Replace this SVG with the SVG code for your specific arrow icon */}
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6">
-            <polyline points="9 18 15 12 9 6"></polyline>
-          </svg>
+    <div className="w-full">
+      <div className="tabs flex justify-between">
+        <button onClick={() => setActiveTab('illustrativeMathematics')} style={tabStyle(activeTab === 'illustrativeMathematics')}>
+          Illustrative Mathematics Link
+        </button>
+        <button onClick={() => setActiveTab('byStandards')} style={tabStyle(activeTab === 'byStandards')}>
+          Common Core Standards
+        </button>
+        <button onClick={() => setActiveTab('uploadPdf')} style={tabStyle(activeTab === 'uploadPdf')}>
+          Upload Existing PDF
         </button>
       </div>
-      {error && <p className="text-red-500 text-sm mt-1">{error}</p>} {/* moved error message */}
-    </form>
+      <div className="tab-content" style={{ width: '100%', borderTop: '1px solid #e0e0e0', paddingTop: '20px' }}>
+        {renderTabContent()}
+      </div>
+    </div>
   );
 };
 
