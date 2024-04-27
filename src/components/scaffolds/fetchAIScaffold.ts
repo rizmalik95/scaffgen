@@ -32,7 +32,7 @@ export default async function fetchAIScaffoldItem(
     // Check status
     const checkStatus = async (): Promise<ScaffoldItem> => {
       return new Promise(async (resolve, reject) => {
-        if (pollCount < 15) {
+        if (pollCount < 12) { // pollCount times the setTimeout time is max time we'll wait
           const statusResponse = await axios.get(
             `/api/checkScaffoldGeneratorStatus?taskId=${taskId}`,
           );
@@ -55,7 +55,7 @@ export default async function fetchAIScaffoldItem(
             resolve(scaffoldItem);
           } else if (statusResponse.data.status === "In progress") {
             pollCount++;
-            setTimeout(() => resolve(checkStatus()), 2000); // Retry after two seconds
+            setTimeout(() => resolve(checkStatus()), 5000); // Retry after two seconds
           } else {
             reject(
               new Error(
