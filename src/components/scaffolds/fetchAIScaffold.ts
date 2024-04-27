@@ -31,7 +31,9 @@ export default async function fetchAIScaffoldItem(LessonData: ResultItem, scaffo
         const statusResponse = await axios.get(`/api/checkScaffoldGeneratorStatus?taskId=${taskId}`);
         if (statusResponse.data.status === 'Completed') {
           const scaffoldResponse = statusResponse.data.data;
+          console.log(`got scaffold response for task id: ${taskId}`)
           const pdfGenResponse = await axios.post('/api/pdfGenerator', { scaffold_html: scaffoldResponse.activity });
+          console.log(`got pdf response for task id: ${taskId}`)
           console.log(pdfGenResponse.data.pdfUrl)
           const scaffoldItem: ScaffoldItem = {
           pdfUrl: pdfGenResponse.data.pdfUrl,
