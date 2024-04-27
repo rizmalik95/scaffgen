@@ -70,13 +70,18 @@ const Results = ({ lessonObjective, lessonStandard, submitCount }: { lessonObjec
 
         try {
           const promises = scaffoldTypes.map(async (scaffoldType, i) => {
-            // setAIScaffoldPercentBuffered((i + 1) / scaffoldTypes.length * 100);
-            const scaffoldItem = await fetchAIScaffoldItem(LessonData, scaffoldType);
-            setAIScaffoldPercentLoaded(AIScaffoldPercentLoaded + 1 / scaffoldTypes.length * 100);
-            return scaffoldItem;
+            try {
+              // setAIScaffoldPercentBuffered((i + 1) / scaffoldTypes.length * 100);
+              const scaffoldItem = await fetchAIScaffoldItem(LessonData, scaffoldType);
+              setAIScaffoldPercentLoaded(AIScaffoldPercentLoaded + 1 / scaffoldTypes.length * 100);
+              return scaffoldItem;
+            } catch (error) {
+              console.error(`Error fetching scaffold for type ${scaffoldType}:`, error);
+              return null; // Return null or some error indication to handle later
+            }
           });
           const newAIScaffolds = await Promise.all(promises);
-          setAIScaffolds(newAIScaffolds);
+          setAIScaffolds(newAIScaffolds.filter((item): item is ScaffoldItem => item !== null));
         } catch (error) {
           console.error('Error fetching AI Scaffold:', error);
         } finally {
