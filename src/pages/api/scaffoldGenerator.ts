@@ -52,7 +52,7 @@ export default async function handler(
 async function processScaffold(taskId: string, lessonObjectives: any, lessonStandards: any, scaffoldType: string) {
   try {
     let resData: ScaffoldData = {};
-
+    console.log(`Starting scaffold type ${scaffoldType}`)
     switch (scaffoldType) {
       case "backgroundKnowledge":
         resData = await backgroundKnowledge(lessonObjectives, lessonStandards);
@@ -67,6 +67,7 @@ async function processScaffold(taskId: string, lessonObjectives: any, lessonStan
         resData = await exitTicket(lessonObjectives, lessonStandards);
         break;
     }
+    console.log(`Completed scaffold type ${scaffoldType}`)
 
     // Update task status to completed with data
     setTaskStatus(taskId, { status: 'Completed', data: resData });
