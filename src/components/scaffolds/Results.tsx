@@ -72,7 +72,7 @@ const Results = ({ lessonObjective, lessonStandard, submitCount }: { lessonObjec
           const promises = scaffoldTypes.map(async (scaffoldType, i) => {
             // setAIScaffoldPercentBuffered((i + 1) / scaffoldTypes.length * 100);
             const scaffoldItem = await fetchAIScaffoldItem(LessonData, scaffoldType);
-            setAIScaffoldPercentLoaded((i + 1) / scaffoldTypes.length * 100);
+            setAIScaffoldPercentLoaded(AIScaffoldPercentLoaded + 1 / scaffoldTypes.length * 100);
             return scaffoldItem;
           });
           const newAIScaffolds = await Promise.all(promises);
