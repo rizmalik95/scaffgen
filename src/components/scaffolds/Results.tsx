@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import AllScaffolds from '@/components/scaffolds/AllScaffolds';
 import LessonInfo from '@/components/scaffolds/LessonInfo';
 import BorderLinearProgress from '@/components/general/BorderLinearProgress';
-// import { processPDF } from '@/pages/api/customize';
+import fetchAIScaffoldItem from '~/components/scaffolds/fetchAIScaffold';
 
 import axios from 'axios';
 import { set } from 'zod';
@@ -33,7 +33,6 @@ interface ScaffoldProps {
 }
 
 const Results = ({ lessonObjective, lessonStandard, submitCount }: { lessonObjective: string, lessonStandard: string, submitCount: number }) => {
-  console.log('Received in Results:', { lessonObjective, lessonStandard, submitCount });
   
   const [LessonData, setLessonData] = useState<ResultItem>({ lessonObjectives: "", lessonStandards: "" });
   const [lessonLoading, setLessonLoading] = useState(false);
@@ -68,44 +67,31 @@ const Results = ({ lessonObjective, lessonStandard, submitCount }: { lessonObjec
         setAIScaffolds([]);
         // For loop through different Scaffold Types
         const scaffoldTypes = ['backgroundKnowledge', 'mathLanguage', 'problemPairs', 'exitTicket']
-        let newAIScaffolds: ScaffoldItem[] = [];
-        for (let i = 0; i < scaffoldTypes.length; i++) {
-          setAIScaffoldPercentBuffered((i + 0.5) / scaffoldTypes.length * 100);
-          const payload = {
-            lessonObjectives: LessonData.lessonObjectives,
-            lessonStandards: LessonData.lessonStandards,
-            scaffoldType: scaffoldTypes[i]
-          };
-          try {
-            // Somewhere here we need to match scaffoldGenerator.ts API output to pdfUrl, title, summary for AllScaffolds.tsx 
-            const scaffoldResponse = await axios.post('/api/scaffoldGenerator', payload);
-            const pdfGenResponse = await axios.post('/api/pdfGenerator', { scaffold_html: scaffoldResponse.data.activity })
-            console.log(pdfGenResponse.data.pdfUrl)
-            const scaffoldItem = {
-              pdfUrl: pdfGenResponse.data.pdfUrl,
-              title: scaffoldResponse.data.title,
-              summary: scaffoldResponse.data.summary,
-              standard: payload.lessonStandards,
-              tags: scaffoldResponse.data.tags, 
-              isAI: true,
-            };
-            newAIScaffolds.push(scaffoldItem);
-            setAIScaffoldPercentLoaded((i + 1) / scaffoldTypes.length * 100);
-          } catch (error) {
-            console.error('Error fetching data:', error);
+
+        try {
+          const promises = scaffoldTypes.map(async (scaffoldType, i) => {
+            try {
+              // setAIScaffoldPercentBuffered((i + 1) / scaffoldTypes.length * 100);
+              const scaffoldItem = await fetchAIScaffoldItem(LessonData, scaffoldType);
+              setAIScaffoldPercentLoaded(AIScaffoldPercentLoaded + 1 / scaffoldTypes.length * 100);
+              return scaffoldItem;
+            } catch (error) {
+              console.error(`Error fetching scaffold for type ${scaffoldType}:`, error);
+              return null; // Return null or some error indication to handle later
             }
-          }
-          // setAIScaffolds([...AIScaffolds, scaffoldItem]);
-          setAIScaffolds(prevState => [...prevState, ...newAIScaffolds]);
-          // console.log('scaffoldItem');
-          // console.log(scaffoldItem);
-          // console.log('AIScaffolds')
-          // console.log(AIScaffolds) 
+          });
+          const newAIScaffolds = await Promise.all(promises);
+          setAIScaffolds(newAIScaffolds.filter((item): item is ScaffoldItem => item !== null));
+        } catch (error) {
+          console.error('Error fetching AI Scaffold:', error);
+        } finally {
+          setAIScaffoldLoading(false);
         }
-        setAIScaffoldLoading(false);
-      };
-    fetchAIScaffolds();
-  }, [LessonData]);
+      }
+      setAIScaffoldLoading(false);
+    };
+  fetchAIScaffolds();
+}, [LessonData]);
 
   useEffect(() => {
     const fetchHumanScaffolds = async () => {
@@ -182,11 +168,11 @@ const Results = ({ lessonObjective, lessonStandard, submitCount }: { lessonObjec
 
       elements.push(<AllScaffolds key="scaffolds" scaffoldsData={scaffoldsDataHuman.concat(scaffoldsDataAI)} />)
     }
-    return <div>{elements}</div>;
+    return <div className="mb-30">{elements}</div>;
   };
 
   return (
-    <div className="flex flex-col gap-8 items-center">
+    <div className="flex flex-col gap-8 items-center mb-40">
       {render(LessonData)}
     </div>
   );

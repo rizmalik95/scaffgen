@@ -10,7 +10,6 @@ interface InputData {
 
 const InputForm = ({ activeTab, setActiveTab, onResultsInput } : { activeTab: string, setActiveTab: any, onResultsInput: (inputType: string, inputData: InputData) => void }) => {
   const handleTabSubmit = (inputType: string, inputData: any) => {
-    console.log(`Data received from ${inputType}:`, inputData);
     onResultsInput(inputType, inputData);
   };
 

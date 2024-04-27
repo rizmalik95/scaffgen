@@ -3,14 +3,88 @@ import path from "path";
 
 import callOpenAI from "~/utils/callOpenAI";
 import loadYamlFile from "~/utils/loadYamlFile";
+import { createTaskId, setTaskStatus } from "~/utils/taskManager";
 
-type ResponseData = {
+
+type ScaffoldData = {
   activity?: string;
   title?: string;
   summary?: string;
   tags?: string;
+  message?: string;
   error?: string;
 };
+
+type ResponseData = {
+  taskId?: string;
+  message?: string;
+  error?: string;
+};
+
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse<ResponseData>,
+) {
+  if (req.method !== "POST") {
+    res.setHeader("Allow", ["POST"]);
+    res.status(405).end("Method Not Allowed");
+    return;
+  }
+
+  const { lessonObjectives, lessonStandards, scaffoldType } = req.body;
+
+  if (!lessonObjectives) {
+    res.status(400).json({ error: "Please provide both lesson objectives" });
+    return;
+  }
+
+  const taskId = createTaskId();
+  
+  setTaskStatus(taskId, { status: 'In progress' });
+
+  // Move long-running task to async execution
+  processScaffold(taskId, lessonObjectives, lessonStandards, scaffoldType);
+
+  // Respond immediately with task ID
+  res.status(202).json({ taskId, message: `Task ${taskId} started, check status using the task ID` });
+}
+
+async function processScaffold(taskId: string, lessonObjectives: any, lessonStandards: any, scaffoldType: string) {
+  try {
+    let resData: ScaffoldData = {};
+    console.log(`Starting scaffold type ${scaffoldType}`)
+    switch (scaffoldType) {
+      case "backgroundKnowledge":
+        resData = await backgroundKnowledge(lessonObjectives, lessonStandards);
+        break;
+      case "mathLanguage":
+        resData = await mathLanguage(lessonObjectives, lessonStandards);
+        break;
+      case "problemPairs":
+        resData = await problemPairs(lessonObjectives, lessonStandards);
+        break;
+      case "exitTicket":
+        resData = await exitTicket(lessonObjectives, lessonStandards);
+        break;
+    }
+    console.log(`Completed scaffold type ${scaffoldType}`)
+
+    // Update task status to completed with data
+    setTaskStatus(taskId, { status: 'Completed', data: resData });
+  } catch (error) {
+    console.error("Scaffold generation error:", error);
+    setTaskStatus(taskId, { status: 'Failed', data: { error: `Failed to generate scaffold due to internal error: ${error}` } });
+  }
+}
+
+// Load prompts from yaml file from src/prompts/pdfPrompts.yaml
+const yamlPath = path.join(
+  process.cwd(),
+  "src",
+  "prompts",
+  "pdfPrompts.yaml",
+);
+const prompts = loadYamlFile(yamlPath);
 
 interface TemplateValues {
   [key: string]: string;
@@ -21,163 +95,115 @@ function fillTemplate(template: string, values: TemplateValues): string {
   return template.replace(/\$\{(\w+)\}/g, (_, key) => values[key] || "");
 }
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse<ResponseData>,
-) {
-  if (req.method === "POST") {
-    const { lessonObjectives, lessonStandards, scaffoldType } = req.body;
+async function backgroundKnowledge(lessonObjectives: string, lessonStandards: string): Promise<ScaffoldData> {
+  console.log('in scaffoldGenerator.ts starting background knowledge')
+  //Prompt 1
+  let template: TemplateValues = {
+    lessonObjectives: lessonObjectives,
+  };
+  const systemPrompt = prompts.backgroundKnowledge.promptOne.system;
+  const userPrompt = fillTemplate(
+    prompts.backgroundKnowledge.promptOne.user,
+    template,
+  );
 
-    if (!lessonObjectives) {
-      res.status(400).json({ error: "Please provide both lesson objectives." });
-      return;
-    }
-    // Load prompts from yaml file from src/prompts/pdfPrompts.yaml
-    const yamlPath = path.join(
-      process.cwd(),
-      "src",
-      "prompts",
-      "pdfPrompts.yaml",
-    );
-    const prompts = loadYamlFile(yamlPath);
-
-    try {
-      let resData: ResponseData = {};
-
-      if (scaffoldType === "backgroundKnowledge") {
-        //Prompt 1
-        let template: TemplateValues = {
-          lessonObjectives: lessonObjectives,
-        };
-        const systemPrompt = prompts.backgroundKnowledge.promptOne.system;
-        const userPrompt = fillTemplate(
-          prompts.backgroundKnowledge.promptOne.user,
-          template,
-        );
-
-        const prerequisiteTopics = await callOpenAI(
-          systemPrompt,
-          userPrompt,
-          512,
-        );
-        if (!prerequisiteTopics) {
-          res.status(500).json({
-            error: `Failed to generate ${scaffoldType} activity due to an OpenAI Error.`,
-          });
-          return;
-        }
-
-        //Prompt 2
-        template = {
-          lessonObjectives: lessonObjectives,
-          prerequisiteTopics: prerequisiteTopics,
-        };
-        const promptTwo = fillTemplate(
-          prompts.backgroundKnowledge.promptTwo.system,
-          template,
-        );
-
-        const warmupTask = await callOpenAI(promptTwo, undefined, 512);
-        if (!warmupTask) {
-          res.status(500).json({
-            error: `Failed to generate ${scaffoldType} activity due to an OpenAI Error.`,
-          });
-          return;
-        }
-
-        resData = {
-          activity: warmupTask,
-          title: "Background Knowledge Quiz",
-          summary:
-            "This task provides five questions that review and activate relevant knowledge and skills for the lesson.", // summary
-          tags: "Activate Background Knowledge,Addressing Misconceptions",
-        };
-      } else if (scaffoldType === "mathLanguage") {
-        let template: TemplateValues = {
-          lessonObjectives: lessonObjectives,
-        };
-        const systemPrompt = prompts.mathLanguage.system;
-        const userPrompt = fillTemplate(prompts.mathLanguage.user, template);
-
-        const mathLanguageResponse = await callOpenAI(
-          systemPrompt,
-          userPrompt,
-          1024,
-        );
-        if (!mathLanguageResponse) {
-          res.status(500).json({
-            error: `Failed to generate ${scaffoldType} activity due to an OpenAI Error.`,
-          });
-          return;
-        }
-
-        resData = {
-          activity: mathLanguageResponse,
-          title: "Relevant Vocab & Sentence Stems",
-          summary:
-            "This resource contains a set of key words and sentence stems specific to this particular lesson.", // summary
-          tags: "Building Math Language",
-        };
-      
-      } else if (scaffoldType === "problemPairs") {
-        let template: TemplateValues = {
-          lessonObjectives: lessonObjectives,
-          lessonStandards: lessonStandards,
-        };
-        const systemPrompt = fillTemplate(prompts.problemPairs.system, template);
-
-        const problemPairsResponse = await callOpenAI(systemPrompt);
-        if (!problemPairsResponse) {
-          res.status(500).json({
-            error: `Failed to generate ${scaffoldType} activity due to an OpenAI Error.`,
-          });
-          return;
-        }
-
-        resData = {
-          activity: problemPairsResponse,
-          title: "Problem Pairs",
-          summary:
-            "This resource contains sets of two problems that are similar in structure but differ in content.", // summary
-          tags: "Problem Solving,Extra Challenge",
-        };
-      
-      } else if (scaffoldType === "exitTicket") {
-        let template: TemplateValues = {
-          lessonObjectives: lessonObjectives,
-          lessonStandards: lessonStandards,
-        };
-        const systemPrompt = fillTemplate(prompts.exitTicket.system, template);
-
-        const exitTicketResponse = await callOpenAI(systemPrompt);
-        if (!exitTicketResponse) {
-          res.status(500).json({
-            error: `Failed to generate ${scaffoldType} activity due to an OpenAI Error.`,
-          });
-          return;
-        }
-
-        resData = {
-          activity: exitTicketResponse,
-          title: "Exit Ticket",
-          summary:
-            "A short task that tests whether the students have understood the learning objectives.", // summary
-          tags: "Assessment,Formative Assessment",
-        };
-        
-      } else {
-        res.status(400).json({ error: "Invalid scaffoldType provided." });
-      }
-
-      res.status(200).json(resData);
-    } catch (error) {
-      console.error("Scaffold generation error:", error);
-      res.status(500).json({
-        error: "Failed to generate activity due to an internal error: " + error,
-      });
-    }
-  } else {
-    res.setHeader("Allow", ["POST"]);
-    res.status(405).end(`Method ${req.method} Not Allowed`);
+  const prerequisiteTopics = await callOpenAI(systemPrompt, userPrompt, 512);
+  if (!prerequisiteTopics) {
+    throw new Error(`Failed to generate backgroundKnowledge activity due to an OpenAI Error.`);
   }
+  console.log('in scaffoldGenerator.ts starting backgroundknowledge part 2')
+
+
+  //Prompt 2
+  template = {
+    lessonObjectives: lessonObjectives,
+    prerequisiteTopics: prerequisiteTopics,
+  };
+  const promptTwo = fillTemplate(
+    prompts.backgroundKnowledge.promptTwo.system,
+    template,
+  );
+
+  const warmupTask = await callOpenAI(promptTwo, undefined);
+  if (!warmupTask) {
+    throw new Error(`Failed to generate backgroundKnowledge activity due to an OpenAI Error.`);
+  }
+  console.log('in scaffoldGenerator.ts finished background knowledge')
+
+
+  return {
+    activity: warmupTask,
+    title: "Background Knowledge Quiz",
+    summary:
+      "This task provides five questions that review and activate relevant knowledge and skills for the lesson.", // summary
+    tags: "Activate Background Knowledge,Addressing Misconceptions",
+  };
+}
+
+async function mathLanguage(lessonObjectives: string,  lessonStandards: string): Promise<ScaffoldData> {
+  let template: TemplateValues = {
+    lessonObjectives: lessonObjectives,
+  };
+  const systemPrompt = prompts.mathLanguage.system;
+  const userPrompt = fillTemplate(prompts.mathLanguage.user, template);
+
+  const mathLanguageResponse = await callOpenAI(
+    systemPrompt,
+    userPrompt,
+  );
+  if (!mathLanguageResponse) {
+    throw new Error(`Failed to generate mathLanguage activity due to an OpenAI Error.`);
+  }
+
+  return {
+    activity: mathLanguageResponse,
+    title: "Relevant Vocab & Sentence Stems",
+    summary:
+      "This resource contains a set of key words and sentence stems specific to this particular lesson.", // summary
+    tags: "Building Math Language",
+  };
+}
+
+async function problemPairs(lessonObjectives: string, lessonStandards: string): Promise<ScaffoldData> {
+  let template: TemplateValues = {
+    lessonObjectives: lessonObjectives,
+    lessonStandards: lessonStandards,
+  };
+  console.log('in scaffoldGenerator.ts starting problemPairs')
+  const systemPrompt = fillTemplate(prompts.problemPairs.system, template);
+
+  const problemPairsResponse = await callOpenAI(systemPrompt);
+  if (!problemPairsResponse) {
+    throw new Error(`Failed to generate problemPairs activity due to an OpenAI Error.`);
+  }
+  console.log('in scaffoldGenerator.ts ending problemPairs')
+
+  return {
+    activity: problemPairsResponse,
+    title: "Problem Pairs",
+    summary:
+      "This resource contains sets of two problems that are similar in structure but differ in content.", // summary
+    tags: "Problem Solving,Extra Challenge",
+  };
+}
+
+async function exitTicket(lessonObjectives: string, lessonStandards: string): Promise<ScaffoldData> {
+  let template: TemplateValues = {
+    lessonObjectives: lessonObjectives,
+    lessonStandards: lessonStandards,
+  };
+  const systemPrompt = fillTemplate(prompts.exitTicket.system, template);
+
+  const exitTicketResponse = await callOpenAI(systemPrompt);
+  if (!exitTicketResponse) {
+    throw new Error(`Failed to generate exitTicket activity due to an OpenAI Error.`);
+  }
+
+  return {
+    activity: exitTicketResponse,
+    title: "Exit Ticket",
+    summary:
+      "A short task that tests whether the students have understood the learning objectives.", // summary
+    tags: "Assessment,Formative Assessment",
+  };
 }

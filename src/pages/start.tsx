@@ -33,17 +33,6 @@ export default function Start() {
   const [submitCount, setSubmitCount] = useState(0);
   const [activeTab, setActiveTab] = useState('illustrativeMathematics'); 
 
-  // const handleResultsInput = (inputType, inputData) => {
-  //   console.log(`Handling results input: ${inputType}`, inputData); // Log for debugging
-  //   if (inputType === 'url' || inputType === 'standards' || inputType === 'pdf') {
-  //     setLessonData({
-  //       lessonObjective: inputData.lessonObjectives,
-  //       lessonStandard: inputData.lessonStandards,
-  //     });
-  //     setSubmitCount(prevCount => prevCount + 1);
-  //   }
-  // };
-
   const handleResultsInput = (inputType : string, inputData : InputData) => {
     console.log(`Handling results input: ${inputType}`, inputData); // Log for debugging
     setLessonData({ lessonObjective: inputData.lessonObjectives || '', lessonStandard: inputData.lessonStandards || '' });
