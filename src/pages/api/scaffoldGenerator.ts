@@ -124,7 +124,7 @@ async function backgroundKnowledge(lessonObjectives: string, lessonStandards: st
     template,
   );
 
-  const warmupTask = await callOpenAI(promptTwo, undefined, 512);
+  const warmupTask = await callOpenAI(promptTwo, undefined);
   if (!warmupTask) {
     throw new Error(`Failed to generate backgroundKnowledge activity due to an OpenAI Error.`);
   }
@@ -150,7 +150,6 @@ async function mathLanguage(lessonObjectives: string,  lessonStandards: string):
   const mathLanguageResponse = await callOpenAI(
     systemPrompt,
     userPrompt,
-    1024,
   );
   if (!mathLanguageResponse) {
     throw new Error(`Failed to generate mathLanguage activity due to an OpenAI Error.`);
