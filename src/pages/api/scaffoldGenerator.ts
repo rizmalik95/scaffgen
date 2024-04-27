@@ -96,6 +96,7 @@ function fillTemplate(template: string, values: TemplateValues): string {
 }
 
 async function backgroundKnowledge(lessonObjectives: string, lessonStandards: string): Promise<ScaffoldData> {
+  console.log('in scaffoldGenerator.ts starting background knowledge')
   //Prompt 1
   let template: TemplateValues = {
     lessonObjectives: lessonObjectives,
@@ -110,6 +111,8 @@ async function backgroundKnowledge(lessonObjectives: string, lessonStandards: st
   if (!prerequisiteTopics) {
     throw new Error(`Failed to generate backgroundKnowledge activity due to an OpenAI Error.`);
   }
+  console.log('in scaffoldGenerator.ts starting backgroundknowledge part 2')
+
 
   //Prompt 2
   template = {
@@ -125,6 +128,8 @@ async function backgroundKnowledge(lessonObjectives: string, lessonStandards: st
   if (!warmupTask) {
     throw new Error(`Failed to generate backgroundKnowledge activity due to an OpenAI Error.`);
   }
+  console.log('in scaffoldGenerator.ts finished background knowledge')
+
 
   return {
     activity: warmupTask,
@@ -165,12 +170,14 @@ async function problemPairs(lessonObjectives: string, lessonStandards: string): 
     lessonObjectives: lessonObjectives,
     lessonStandards: lessonStandards,
   };
+  console.log('in scaffoldGenerator.ts starting problemPairs')
   const systemPrompt = fillTemplate(prompts.problemPairs.system, template);
 
   const problemPairsResponse = await callOpenAI(systemPrompt);
   if (!problemPairsResponse) {
     throw new Error(`Failed to generate problemPairs activity due to an OpenAI Error.`);
   }
+  console.log('in scaffoldGenerator.ts ending problemPairs')
 
   return {
     activity: problemPairsResponse,

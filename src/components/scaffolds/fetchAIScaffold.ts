@@ -32,7 +32,7 @@ export default async function fetchAIScaffoldItem(
     // Check status
     const checkStatus = async (): Promise<ScaffoldItem> => {
       return new Promise(async (resolve, reject) => {
-        if (pollCount < 10) {
+        if (pollCount < 15) {
           const statusResponse = await axios.get(
             `/api/checkScaffoldGeneratorStatus?taskId=${taskId}`,
           );
