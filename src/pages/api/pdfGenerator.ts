@@ -25,7 +25,7 @@ async function getBrowser() {
       headless: chromium.headless,
       ignoreHTTPSErrors: true,
       defaultViewport: chromium.defaultViewport,
-      args: [...chromium.args, "--hide-scrollbars", "--disable-web-security"],
+      args: [...chromium.args, "--hide-scrollbars", "--disable-web-security", "--no-sandbox", "--disable-setuid-sandbox"],
     });
   } else {
     return await puppeteer.launch();

@@ -117,7 +117,7 @@ const Results = ({ lessonObjective, lessonStandard, submitCount }: { lessonObjec
           setHumanScaffolds(scaffoldItems);
           setHumanScaffoldLoading(false);
         } catch (error) {
-          console.error('Error fetching data:', error);
+          console.error('Error fetching human data:', error);
           // Handle error appropriately
         }
       }
