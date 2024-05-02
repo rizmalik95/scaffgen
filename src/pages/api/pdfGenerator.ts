@@ -28,7 +28,9 @@ async function getBrowser() {
       args: [...chromium.args, "--hide-scrollbars", "--disable-web-security", "--no-sandbox", "--disable-setuid-sandbox"],
     });
   } else {
-    return await puppeteer.launch();
+    return await puppeteer.launch(
+      { headless: true, args: ["--no-sandbox", "--disable-setuid-sandbox"] },
+    );
   }
 }
 
