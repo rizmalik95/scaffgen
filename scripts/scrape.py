@@ -158,9 +158,8 @@ def main():
         for elem in data:
             print(elem.capitalize())
             print(data[elem])
-            print("\n")
-    
-    export_data(data, "test")
+            print("\n")    
+        export_data(data, "test")
 
     
     
