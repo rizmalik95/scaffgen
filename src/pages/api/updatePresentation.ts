@@ -40,13 +40,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     }
                 }
             },
-            // {
-            //     insertText: {
-            //         objectId: 'myTextBoxId01', // This needs to be a valid page element ID
-            //         text: content,
-            //         insertionIndex: 0
-            //     }
-            // }
         ];
         
         const batchUpdateResponse = await slides.presentations.batchUpdate({

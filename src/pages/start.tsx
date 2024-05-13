@@ -62,22 +62,24 @@ export default function Start() {
         const response = await axios.post("/api/createPresentation", {
           accessToken: session.accessToken, // assuming accessToken is stored in session
         });
-        console.log("Presentation ID in createPresentation:", response.data.presentationId);
-        setPresentationId(response.data.presentationId);
-        console.log("Presentation Created:", response.data);
+        console.log(
+          "Presentation ID in createPresentation:",
+          response.data.presentationId,
+        );
+        return response.data.presentationId;
       } catch (error) {
         console.error("Error creating presentation:", error);
       }
     }
   };
 
-  const updatePresentation = async () => {
+  const updatePresentation = async (newPresentationId: string) => {
     if (session) {
       try {
-        console.log("Presentation ID in updatePresentation:", presentationId);
+        console.log("Presentation ID in updatePresentation:", newPresentationId);
         const response = await axios.post("/api/updatePresentation", {
           accessToken: session.accessToken, // assuming accessToken is stored in session
-          presentationId: presentationId,
+          presentationId: newPresentationId,
         });
         console.log("Presentation Updated:", response.data);
       } catch (error) {
@@ -87,8 +89,9 @@ export default function Start() {
   };
 
   const setAndUpdatePresentation = async () => {
-    await createPresentation();
-    await updatePresentation();
+    const newPresentationId = await createPresentation();
+    setPresentationId(newPresentationId);
+    await updatePresentation(newPresentationId);
   };
 
   return (
