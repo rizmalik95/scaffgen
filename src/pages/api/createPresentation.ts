@@ -24,7 +24,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     });
 
     const slides = google.slides({ version: 'v1', auth });
-
+    
     // Create a new presentation
     const presentation = await slides.presentations.create({
       requestBody: {
@@ -32,12 +32,18 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       },
     });
 
+    if (!presentation.data.presentationId) {
+      throw new Error('Failed to create presentation: No presentation ID returned');
+    }
+
     res.status(200).json({
       message: 'Presentation created successfully!',
       presentationId: presentation.data.presentationId,
     });
+
   } catch (error) {
     console.error('Error creating presentation:', error);
     res.status(500).json({ error: 'Failed to create presentation' });
   }
+
 }

@@ -38,6 +38,8 @@ export default async function fetchAIScaffoldItem(
           );
           if (statusResponse.data.status === "Completed") {
             const scaffoldResponse = statusResponse.data.data;
+            
+            // THIS IS WHERE WE INTEGRATES GOOGLE SLIDES API INSTEAD
             const pdfGenResponse = await axios.post("/api/pdfGenerator", {
               scaffold_html: scaffoldResponse.activity,
             });

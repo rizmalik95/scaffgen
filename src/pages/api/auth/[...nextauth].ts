@@ -20,6 +20,7 @@ export default NextAuth({
       authorization: {
         params: {
           scope:
+          // need to add more permissions here?
             "openid https://www.googleapis.com/auth/presentations https://www.googleapis.com/auth/drive.file",
         },
       },

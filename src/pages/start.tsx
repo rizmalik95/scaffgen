@@ -37,7 +37,7 @@ export default function Start() {
   });
   const [submitCount, setSubmitCount] = useState(0);
   const [activeTab, setActiveTab] = useState("illustrativeMathematics");
-  const [slidesUrl, setSlidesUrl] = useState("");
+  const [presentationId, setPresentationId] = useState("");
 
   const { data: session } = useSession();
 
@@ -57,13 +57,13 @@ export default function Start() {
   }, [activeTab]);
 
   const createPresentation = async () => {
-    
     if (session) {
       try {
         const response = await axios.post("/api/createPresentation", {
           accessToken: session.accessToken, // assuming accessToken is stored in session
         });
-        setSlidesUrl(`https://docs.google.com/presentation/d/${response.data.presentationId}/edit`);
+        console.log("Presentation ID in createPresentation:", response.data.presentationId);
+        setPresentationId(response.data.presentationId);
         console.log("Presentation Created:", response.data);
       } catch (error) {
         console.error("Error creating presentation:", error);
@@ -71,13 +71,45 @@ export default function Start() {
     }
   };
 
+  const updatePresentation = async () => {
+    if (session) {
+      try {
+        console.log("Presentation ID in updatePresentation:", presentationId);
+        const response = await axios.post("/api/updatePresentation", {
+          accessToken: session.accessToken, // assuming accessToken is stored in session
+          presentationId: presentationId,
+        });
+        console.log("Presentation Updated:", response.data);
+      } catch (error) {
+        console.error("Error updating presentation:", error);
+      }
+    }
+  };
+
+  const setAndUpdatePresentation = async () => {
+    await createPresentation();
+    await updatePresentation();
+  };
+
   return (
     <div className="max-w-hh mx-auto flex min-h-screen flex-col items-center bg-slate-100">
       <div className="container flex min-w-96 flex-col items-center gap-8 pt-10">
-        <button onClick={() => createPresentation()}>
-          Create presentation
-        </button>
-        { slidesUrl && <a href={slidesUrl} className="text-blue-500 underline">{slidesUrl}</a> }
+        <div className="flex flex-col gap-8">
+          <button
+            className="rounded-lg bg-rose-400 px-4 py-2.5 font-semibold text-white hover:bg-rose-300 active:bg-rose-500"
+            onClick={() => setAndUpdatePresentation()}
+          >
+            Create presentation
+          </button>
+          {presentationId && (
+            <a
+              href={`https://docs.google.com/presentation/d/${presentationId}/edit`}
+              className="text-blue-500 underline"
+            >
+              {`https://docs.google.com/presentation/d/${presentationId}/edit`}
+            </a>
+          )}
+        </div>
         <h1 className="text-4xl font-bold">
           Get Curriculum-Aligned Instructional Scaffolds
         </h1>
