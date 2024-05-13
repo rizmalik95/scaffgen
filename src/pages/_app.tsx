@@ -1,14 +1,17 @@
-import { type AppType } from "next/app";
+import { type AppProps } from 'next/app';
 import Layout from "@/components/layout/Layout";
+import { SessionProvider } from "next-auth/react";
 
 import "@/styles/globals.css";
 
-const MyApp: AppType = ({ Component, pageProps }) => {
+const MyApp = ({ Component, pageProps }: AppProps<{ session?: any }>) => {
   return (
-    <Layout>
-      <Component {...pageProps} />
-    </Layout>
-  )
+    <SessionProvider session={pageProps.session}>
+      <Layout>
+        <Component {...pageProps} />
+      </Layout>
+    </SessionProvider>
+  );
 };
 
 export default MyApp;

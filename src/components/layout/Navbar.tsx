@@ -101,7 +101,7 @@ const Navbar = () => {
               })}
               <li>
                 <NavLink
-                  href="/start"
+                  href="/login"
                   className="block bg-rose-400 text-sm font-medium hover:bg-rose-300 text-white"
                 >
                   Try It Now
