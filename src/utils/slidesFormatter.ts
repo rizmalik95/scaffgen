@@ -1,5 +1,6 @@
 import { idGenerator } from "@/utils/idGenerator";
 import { pages } from "next/dist/build/templates/app-page";
+import { RGB, hexToRgb } from "~/utils/colorUtils";
 
 export interface Content {
   type: string;
@@ -31,8 +32,8 @@ export function slidesFormatter(contentList: Content[]): Return {
             elementProperties: {
               pageObjectId: slideId,
               size: {
-                width: {magnitude: content.width, unit: "PT"},
-                height: {magnitude: content.height, unit: "PT"},
+                width: { magnitude: content.width, unit: "PT" },
+                height: { magnitude: content.height, unit: "PT" },
               },
               transform: {
                 scaleX: content.scaleX,
@@ -41,9 +42,9 @@ export function slidesFormatter(contentList: Content[]): Return {
                 translateY: content.translateY,
                 unit: "PT",
               },
-            }
-          }
-        })
+            },
+          },
+        });
         requests.push({
           insertText: {
             objectId: textboxId,
@@ -63,14 +64,20 @@ export function slidesFormatter(contentList: Content[]): Return {
         break;
 
       case "shape":
+        const rgb: RGB | null = content.backgroundColor
+          ? hexToRgb(content.backgroundColor)
+          : null;
+
+        const shapeId = idGenerator();
         requests.push({
           createShape: {
+            objectId: shapeId,
             shapeType: content.shapeType,
             elementProperties: {
               pageObjectId: slideId,
               size: {
-                width: {magnitude: content.width, unit: "PT"},
-                height: {magnitude: content.height, unit: "PT"},
+                width: { magnitude: content.width, unit: "PT" },
+                height: { magnitude: content.height, unit: "PT" },
               },
               transform: {
                 scaleX: content.scaleX,
@@ -79,6 +86,24 @@ export function slidesFormatter(contentList: Content[]): Return {
                 translateY: content.translateY,
                 unit: "PT",
               },
+            },
+          },
+        });
+        requests.push({
+          updateShapeProperties: {
+            objectId: shapeId,
+            fields: "shapeBackgroundFill",
+            shapeProperties: {
+              ...(rgb && {
+                shapeBackgroundFill: {
+                  solidFill: {
+                    color: {
+                      rgbColor: { red: rgb.r, green: rgb.g, blue: rgb.b },
+                    },
+                    alpha: 1,
+                  },
+                },
+              }),
             },
           },
         });

@@ -88,7 +88,7 @@ export default function Start() {
     }
   };
 
-  const setAndUpdatePresentation = async () => {
+  const createAndUpdatePresentation = async () => {
     const newPresentationId = await createPresentation();
     setPresentationId(newPresentationId);
     await updatePresentation(newPresentationId);
@@ -100,7 +100,7 @@ export default function Start() {
         <div className="flex flex-col gap-8">
           <button
             className="rounded-lg bg-rose-400 px-4 py-2.5 font-semibold text-white hover:bg-rose-300 active:bg-rose-500"
-            onClick={() => setAndUpdatePresentation()}
+            onClick={() => createAndUpdatePresentation()}
           >
             Create presentation
           </button>

@@ -30,7 +30,8 @@ const contentList: Content[] =
     "scaleX": 1,
     "scaleY": 1,
     "translateX": 50,
-    "translateY": 140
+    "translateY": 140,
+    "backgroundColor": "#eb9b34"
   },
   {
     "type": "text",
@@ -50,7 +51,8 @@ const contentList: Content[] =
     "scaleX": 1,
     "scaleY": 1,
     "translateX": 50,
-    "translateY": 240
+    "translateY": 240,
+    "backgroundColor": "#eb9b34"
   },
   {
     "type": "text",
