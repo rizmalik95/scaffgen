@@ -107,6 +107,7 @@ export default function Start() {
           {presentationId && (
             <a
               href={`https://docs.google.com/presentation/d/${presentationId}/edit`}
+              target="_blank"
               className="text-blue-500 underline"
             >
               {`https://docs.google.com/presentation/d/${presentationId}/edit`}

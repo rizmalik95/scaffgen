@@ -1,5 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { google } from 'googleapis';
+import contentList from '@/utils/contentList';
+import { slidesFormatter } from '@/utils/slidesFormatter';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     if (req.method !== 'POST') {
@@ -30,17 +32,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         }
         
         // const presentationContent = await callOpenAI(systemPrompt, userPrompt);
-        
-        const requests = [
-            {
-                createSlide: {
-                    insertionIndex: 1,
-                    slideLayoutReference: {
-                        predefinedLayout: 'TITLE_AND_TWO_COLUMNS'
-                    }
-                }
-            },
-        ];
+        const { requests, slideId } = slidesFormatter(contentList);
         
         const batchUpdateResponse = await slides.presentations.batchUpdate({
             presentationId: presentationId,
