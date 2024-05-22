@@ -25,6 +25,9 @@ export function slidesFormatter(contentList: Content[]): Return {
     switch (content.type) {
       case "text":
         const textboxId = idGenerator();
+        const textRgb: RGB | null = content.textColor
+          ? hexToRgb(content.textColor)
+          : null;
         requests.push({
           createShape: {
             objectId: textboxId,
@@ -36,8 +39,8 @@ export function slidesFormatter(contentList: Content[]): Return {
                 height: { magnitude: content.height, unit: "PT" },
               },
               transform: {
-                scaleX: content.scaleX,
-                scaleY: content.scaleY,
+                scaleX: 1,
+                scaleY: 1,
                 translateX: content.translateX,
                 translateY: content.translateY,
                 unit: "PT",
@@ -52,6 +55,22 @@ export function slidesFormatter(contentList: Content[]): Return {
             text: content.text,
           },
         });
+        requests.push({
+          updateTextStyle: {
+            objectId: textboxId,
+            fields: "foregroundColor,bold,fontSize,fontFamily",
+            style: {
+              ...(textRgb && {
+                foregroundColor: { opaqueColor: { rgbColor: textRgb } },
+              }),
+              ...(content.fontSize && {
+                fontSize: { magnitude: content.fontSize, unit: "PT" },
+              }),
+              ...(content.fontFamily && { fontFamily: content.fontFamily }),
+              ...(content.bold && { bold: content.bold }),
+            },
+          },
+        });
         break;
 
       case "image":
@@ -64,8 +83,11 @@ export function slidesFormatter(contentList: Content[]): Return {
         break;
 
       case "shape":
-        const rgb: RGB | null = content.backgroundColor
+        const shapeRgb: RGB | null  = content.backgroundColor
           ? hexToRgb(content.backgroundColor)
+          : null;
+        const outlineRgb: RGB | null = content.outlineColor
+          ? hexToRgb(content.outlineColor)
           : null;
 
         const shapeId = idGenerator();
@@ -80,8 +102,8 @@ export function slidesFormatter(contentList: Content[]): Return {
                 height: { magnitude: content.height, unit: "PT" },
               },
               transform: {
-                scaleX: content.scaleX,
-                scaleY: content.scaleY,
+                scaleX: 1,
+                scaleY: 1,
                 translateX: content.translateX,
                 translateY: content.translateY,
                 unit: "PT",
@@ -92,16 +114,31 @@ export function slidesFormatter(contentList: Content[]): Return {
         requests.push({
           updateShapeProperties: {
             objectId: shapeId,
-            fields: "shapeBackgroundFill",
+            fields: "shapeBackgroundFill,outline",
             shapeProperties: {
-              ...(rgb && {
+              ...(shapeRgb && {
                 shapeBackgroundFill: {
                   solidFill: {
                     color: {
-                      rgbColor: { red: rgb.r, green: rgb.g, blue: rgb.b },
+                      rgbColor: shapeRgb,
                     },
                     alpha: 1,
                   },
+                },
+              }),
+              ...(outlineRgb && {
+                outline: {
+                  outlineFill: {
+                    solidFill: {
+                      color: {
+                        rgbColor: outlineRgb,
+                      },
+                      alpha: 1,
+                    },
+                  },
+                  ...(content.outlineWeight && {
+                    weight: { magnitude: content.outlineWeight, unit: "PT" },
+                  })
                 },
               }),
             },

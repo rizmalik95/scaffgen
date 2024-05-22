@@ -1,7 +1,7 @@
 export type RGB = {
-  r: number;
-  g: number;
-  b: number;
+  red: number;
+  green: number;
+  blue: number;
 };
 
 export function hexToRgb(hex: string): RGB | null {
@@ -20,19 +20,19 @@ export function hexToRgb(hex: string): RGB | null {
 
   // Parse the hex string
   const bigint = parseInt(hex, 16);
-  const r = ((bigint >> 16) & 255) / 255;
-  const g = ((bigint >> 8) & 255) / 255;
-  const b = (bigint & 255) / 255;
+  const red = ((bigint >> 16) & 255) / 255;
+  const green = ((bigint >> 8) & 255) / 255;
+  const blue = (bigint & 255) / 255;
 
-  return { r, g, b };
+  return { red, green, blue };
 }
 
-export function rgbToHex({ r, g, b }: RGB): string {
+export function rgbToHex({ red, green, blue }: RGB): string {
   // Ensure each RGB value is between 0.0 and 1.0
   if (
-    r < 0.0 || r > 1.0 ||
-    g < 0.0 || g > 1.0 ||
-    b < 0.0 || b > 1.0
+    red < 0.0 || red > 1.0 ||
+    green < 0.0 || green > 1.0 ||
+    blue < 0.0 || blue > 1.0
   ) {
     throw new Error('Invalid RGB color values');
   }
@@ -41,6 +41,6 @@ export function rgbToHex({ r, g, b }: RGB): string {
   const toHex = (value: number) => Math.round(value * 255).toString(16).padStart(2, '0');
 
   // Concatenate the hexadecimal strings
-  return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
+  return `#${toHex(red)}${toHex(green)}${toHex(blue)}`;
 }
 
