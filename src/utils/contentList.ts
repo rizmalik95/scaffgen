@@ -6,8 +6,6 @@ const contentList: Content[] = [
     text: "Finding the Square Root of Expressions",
     width: 400,
     height: 60,
-    scaleX: 2,
-    scaleY: 2,
     translateX: 150,
     translateY: 20,
     textColor: "#012b1c",
