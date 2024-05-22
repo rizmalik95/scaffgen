@@ -75,9 +75,22 @@ export function slidesFormatter(contentList: Content[]): Return {
 
       case "image":
         requests.push({
-          insertImage: {
+          createImage: {
             url: content.url,
-            insertionIndex: 0,
+            elementProperties: {
+              pageObjectId: slideId,
+              size: {
+                width: { magnitude: content.width, unit: "PT" },
+                height: { magnitude: content.height, unit: "PT" },
+              },
+              transform: {
+                scaleX: 1,
+                scaleY: 1,
+                translateX: content.translateX,
+                translateY: content.translateY,
+                unit: "PT",
+              },
+            }
           },
         });
         break;

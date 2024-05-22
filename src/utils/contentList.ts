@@ -41,6 +41,14 @@ const contentList: Content[] = [
     translateY: 160,
   },
   {
+    type: "image",
+    url: "https://tutoringforsuccess.us/wp-content/uploads/2024/02/Math.jpg",
+    width: 200,
+    height: 300,
+    translateX: 0,
+    translateY: 100,
+  },
+  {
     type: "shape",
     shapeType: "RECTANGLE",
     width: 400,
