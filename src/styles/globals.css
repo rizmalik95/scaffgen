@@ -10,6 +10,11 @@
   color: black;
 }
 
+.selected-gradient {
+  transform: scale(1.05);
+  transition: transform 0.2s;
+}
+
 .scaffold-grid-item {
   /* Other styling for the grid item */
   position: relative;

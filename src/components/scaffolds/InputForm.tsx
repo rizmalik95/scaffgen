@@ -3,10 +3,8 @@ import UrlTab from './UrlTab';
 import StandardsTab from './StandardsTab';
 import PdfTab from './PdfTab';
 
-interface InputData {
-  lessonObjectives: string;
-  lessonStandards: string;
-}
+// InputData Interface
+import { InputData } from '~/utils/interfaces';
 
 const InputForm = ({ activeTab, setActiveTab, onResultsInput } : { activeTab: string, setActiveTab: any, onResultsInput: (inputType: string, inputData: InputData) => void }) => {
   const handleTabSubmit = (inputType: string, inputData: any) => {

@@ -94,37 +94,17 @@ function fillTemplate(template: string, values: TemplateValues): string {
 }
 
 async function backgroundKnowledge(lessonObjectives: string, lessonStandards: string): Promise<ScaffoldData> {
-  //Prompt 1
   let template: TemplateValues = {
     lessonObjectives: lessonObjectives,
   };
-  const systemPrompt = prompts.backgroundKnowledge.promptOne.system;
-  const userPrompt = fillTemplate(
-    prompts.backgroundKnowledge.promptOne.user,
-    template,
-  );
 
-  const prerequisiteTopics = await callOpenAI(systemPrompt, userPrompt, 512);
-  if (!prerequisiteTopics) {
-    throw new Error(`Failed to generate backgroundKnowledge activity due to an OpenAI Error.`);
-  }
+  const systemPrompt = prompts.backgroundKnowledge.system;
+  const userPrompt = fillTemplate(prompts.backgroundKnowledge.user, template);
 
-
-  //Prompt 2
-  template = {
-    lessonObjectives: lessonObjectives,
-    prerequisiteTopics: prerequisiteTopics,
-  };
-  const promptTwo = fillTemplate(
-    prompts.backgroundKnowledge.promptTwo.system,
-    template,
-  );
-
-  const warmupTask = await callOpenAI(promptTwo, undefined);
+  const warmupTask = await callOpenAI(systemPrompt, userPrompt);
   if (!warmupTask) {
     throw new Error(`Failed to generate backgroundKnowledge activity due to an OpenAI Error.`);
   }
-
 
   return {
     activity: warmupTask,

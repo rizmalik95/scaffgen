@@ -1,51 +1,26 @@
 backgroundKnowledge:
-  promptOne:
-    system: 
-      You are an expert middle-school math teacher, with particular expertise in supporting students with diverse learning needs access and thrive. You are tasked with creating additional materials that support all students to access the middle-school math curriculum. Before responding, think carefully.
-    user: |
-      You are an expert Grade 6 math teacher. For the learning objective, determine the five most important mathematical skills and knowledge they need to know before they start the lesson. These topics will be reviewed at the start of the lesson.
-
-      Learning Objective: 
-      
-      ${lessonObjectives}
-      
-      For this learning objective, determine the five most important mathematical skills and knowledge they need to know before they start the lesson. These topics will be reviewed at the start of the lesson. 
-      
-      Provide your answer as: 
-      
-      Topic 1 - one-sentence rationale
-      Topic 2 - one-sentence rationale
-      Topic 3 - one-sentence rationale
-      Topic 4 - one-sentence rationale
-      Topic 5 - one-sentence rationale
-      
-      Think step by step.
-  promptTwo: 
-    system: |
-      Based on the prerequisite topics and today's learning objective, write a short warmup task for students that reviews and activates this necessary prior knowledge. Your task is to craft 5 questions that cover the following knowledge and skills. The questions should be short, simple to answer, and the whole task should not take more than 5 minutes to complete. Ensure the output contains everything students need to complete the question.
-      
-      Prerequisite Topics: 
-      
-      ${prerequisiteTopics}
-      
-      Today's Learning Objective: 
-      
-      ${lessonObjectives}
-      
-      Based on the prerequisite topics and today's learning objective, write a short warmup task for students that reviews and activates this necessary prior knowledge. Your task is to craft 5 questions that cover the following knowledge and skills. The questions should involve calculations, and the whole task should not take more than 5 minutes to complete. Ensure the output contains everything students need to complete the question.
-
-      Format your response as: 
-
-      Skill Review: [Insert Topic]
-      Question 1: 
-      Question 2: 
-      Question 3:
-      Question 4: 
-      Question 5: 
-
-      There is no need to reference the underlying topics. 
-                
-      Output this resource in HTML code, making it look professional. Only provide HTML code and nothing else.
+  system: 
+    You are an expert Grade 6 math teacher, with expertise in learning sciences and supporting diverse students to access and engage. You are tasked with creating additional materials that support all students to access the middle-school math curriculum. Before responding, think carefully.
+  user: 
+    Your goal is to create a short warmup task that activates and refreshes relevant background knowledge for the lesson information provided.
+    --------------------
+    Learning Objectives - ${lessonObjectives}
+    --------------------
+    Class Context - 50% of students are performing below grade level and find it challenging to access the curriculum.
+    --------------------
+    Here are tips for creating a great warmup task -
+    ~ Think about the specific skills and knowledge students will need to access today’s lesson
+    ~ If they're provided, you can draw on the original curriculum warmup and teacher response to original warmup
+    ~ The warmup should be focused on a single short scenario with up to 3 subparts
+    ~ Some subparts should be accessible for all students
+    ~ The warmup should take no more than 5 minutes to complete in class
+    ~ The task should be student-facing and not need anything else for students to complete it
+    ~ Do not provide a title. Do not provide anything apart from the task. Provide response in natural language, do not use latex
+    ~ The output should be short, concise and clear. Good warmups usually have 40-100 words
+    ~ Think step-by-step
+    --------------------
+    Now, create the warmup task.
+    "WARMUP TASK:"
 
 mathLanguage:
   system:
@@ -102,24 +77,14 @@ problemPairs:
     Standard: ${lessonStandards}
     Learning Objectives: ${lessonObjectives}
 
-    Please provide your response in HTML. You can use the following as an example. 
-
-    <!DOCTYPE html> <html lang="en"> <head> <meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1.0"> <title>Unit Rates Examples and Practice</title> <style> .container { display: flex; justify-content: space-between; margin-bottom: 20px; } .example, .your-turn { border: 1px solid black; padding: 10px; width: 48%; } .title { background-color: #eee; padding: 5px; font-weight: bold; } </style> </head> <body>
-    <div class="container"> <div class="example"> <div class="title">Example</div> If a cyclist travels 45 miles in 3 hours, calculate the cyclist's average speed in miles per hour (mph). <div style="height: 50px;"><!-- White space for the solution --></div> </div> <div class="your-turn"> <div class="title">Your Turn</div> A swimmer covers 30 meters in 2 minutes. Work out the swimmer's average speed in meters per minute. <div style="height: 50px;"><!-- White space for students to work out the problem --></div> </div> </div>
-    <div class="container"> <div class="example"> <div class="title">Example</div> A printer prints 180 pages in 6 minutes. Find the printing rate in pages per minute. <div style="height: 50px;"><!-- White space for the solution --></div> </div> <div class="your-turn"> <div class="title">Your Turn</div> A photocopier copies 250 pages in 10 minutes. Work out the copier's rate in pages per minute. <div style="height: 50px;"><!-- White space for students to work out the problem --></div> </div> </div>
-    <div class="container"> <div class="example"> <div class="title">Example</div> A car uses 20 liters of fuel for a distance of 200 kilometers. What is the car's fuel efficiency in liters per kilometer? <div style="height: 50px;"><!-- White space for the solution --></div> </div> <div class="your-turn"> <div class="title">Your Turn</div> A truck uses 36 liters of fuel for a distance of 180 kilometers. Calculate the truck's fuel efficiency in liters per kilometer. <div style="height: 50px;"><!-- White space for students to work out the problem --></div> </div> </div>
-    </body> </html>
+    Please provide your response as a list of questions.
+    
 exitTicket:
   system: |
     You are an expert middle school math teacher. You have particular expertise in formative assessment. For the lesson being taught below, write a short exit ticket for students. This should be a short task (e.g. 1-3 questions) that test whether students have understood the learning objectives. Follow this process: 
 
     1. Determine the key skills embedded in the learning objectives. 
     2. Write questions that test whether students have learnt these key skills. 
-    3. Do these questions require tables or other visual formats? If so, adjust the questions if necessary. 
-    4. Design layour to be clean and organized, have a bright and engaging color scheme
-    5. Include large blank areas for student responses
-    6. Ensure the document is styled with colorful CSS that is embedded within the HTML for ease of sharing and printing.
-    7. The HTML document should be single-paged and designed with printability in mind, keeping in mind the standard margins and format of a letter-sized document for easy printing.
     
     Standard: ${lessonStandards}
     Learning Objectives: ${lessonObjectives}

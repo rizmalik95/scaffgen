@@ -1,119 +1,124 @@
 import React, { useState, useEffect } from "react";
 import InputForm from "@/components/scaffolds/InputForm";
+import LessonInfo from '@/components/scaffolds/LessonInfo';
 import Results from "@/components/scaffolds/Results";
+import AllScaffolds from '@/components/scaffolds/AllScaffolds';
+
 import { useSession } from "next-auth/react";
+import { useRouter } from 'next/router';
+
 import axios from "axios";
-// import AllScaffolds from "@/components/scaffolds/AllScaffolds";
+
+import { InputData, ScaffoldProps } from '~/utils/interfaces';
 
 /* 
 Start.tsx Outline
 
 1. InputForm.tsx
   - input: one of the three tabs (string)
-  - output: lesson standards and lesson objectives
-  - Tab structure object thing
-    1. UrlTab.tsx
-     - curriculum.ts
-    2. StandardsTab.tsx
-    3. PdfTab.tsx
-     - fake function for now
-    all three of these should return lesson standards and objectives
-  
-2. Results 
-  - input: lesson standards and lesson objectives (currently LessonData variable)
-  - generate AI pdfs (all the original content)
-  - display other pdfs (all the original content)
+  - output: InputData --> LessonObjectives, LessonStandards
 
+  a. UrlTab.tsx
+    - curriculum.ts
+  b. StandardsTab.tsx
+  c. PdfTab.tsx
+    - fake function for now
+
+2. LessonInfo.tsx
+  - input: InputData
+  - output: LessonInfo card that displays LessonObjectives, LessonStandards
+
+3. Results.ts
+  - input: InputData
+  - output: list of ScaffoldProps interface for each scaffold
+
+  a. Retrieve human PDF scaffolds as ScaffoldProps
+  b. Generate AI scaffolds content as ScaffoldProps
+    i. call openAI api to generate slides format
+    ii. use the format to create into presentation
+  c. Images/previews?
+
+4. AllScaffolds.tsx
+  - input: list of ScaffoldProps interface for each scaffold
+  - output: display all scaffold cards AND return a list of ScaffoldProps for selected scaffolds
+
+5. createPresentation.ts
+  - input: session.accessToken
+  - output: response (which has presentationID - personal URL for google slides presentation)
+
+6. updatePresentation.ts
+  - input: session.accessToken, presentationId (personal URL), list of ScaffoldProps for selected scaffolds
+  - output: final presentation link
 */
-interface InputData {
-  lessonObjectives: string;
-  lessonStandards: string;
-}
 
 export default function Start() {
-  const [lessonData, setLessonData] = useState({
-    lessonObjective: "",
-    lessonStandard: "",
+  const [lessonData, setLessonData] = useState<InputData>({
+    lessonObjectives: "",
+    lessonStandards: "",
   });
   const [submitCount, setSubmitCount] = useState(0);
   const [activeTab, setActiveTab] = useState("illustrativeMathematics");
-  const [presentationId, setPresentationId] = useState("");
+  const [scaffolds, setScaffolds] = useState<ScaffoldProps[]>([]);
+  const [selectedScaffolds, setSelectedScaffolds] = useState<ScaffoldProps[]>([]);
 
+  const [presentationLink, setPresentationLink] = useState<string | null>(null);
+  const router = useRouter();
   const { data: session } = useSession();
 
   const handleResultsInput = (inputType: string, inputData: InputData) => {
     console.log(`Handling results input: ${inputType}`, inputData); // Log for debugging
     setLessonData({
-      lessonObjective: inputData.lessonObjectives || "",
-      lessonStandard: inputData.lessonStandards || "",
+      lessonObjectives: inputData.lessonObjectives || "",
+      lessonStandards: inputData.lessonStandards || "",
     });
     setSubmitCount((prevCount) => prevCount + 1);
   };
 
   useEffect(() => {
     // Reset lessonData when the active tab changes
-    setLessonData({ lessonObjective: "", lessonStandard: "" });
+    setLessonData({ lessonObjectives: "", lessonStandards: "" });
     setSubmitCount(0);
   }, [activeTab]);
 
-  const createPresentation = async () => {
-    if (session) {
-      try {
-        const response = await axios.post("/api/createPresentation", {
-          accessToken: session.accessToken, // assuming accessToken is stored in session
-        });
-        console.log(
-          "Presentation ID in createPresentation:",
-          response.data.presentationId,
-        );
-        return response.data.presentationId;
-      } catch (error) {
-        console.error("Error creating presentation:", error);
-      }
+  useEffect(() => {
+    if (lessonData.lessonObjectives && lessonData.lessonStandards) {
+      const fetchAndSetResults = async () => {
+        const resultScaffolds = await Results(lessonData);
+        setScaffolds(resultScaffolds);
+      };
+      fetchAndSetResults();
     }
+  }, [lessonData, submitCount]);
+
+  const handleSelectScaffold = (scaffold: ScaffoldProps) => {
+    setSelectedScaffolds(prevSelectedScaffolds => {
+      if (prevSelectedScaffolds.includes(scaffold)) {
+        return prevSelectedScaffolds.filter(item => item !== scaffold);
+      } else {
+        return [...prevSelectedScaffolds, scaffold];
+      }
+    });
   };
 
-  const updatePresentation = async (newPresentationId: string) => {
+  const handleCreatePresentation = async () => {
     if (session) {
-      try {
-        console.log("Presentation ID in updatePresentation:", newPresentationId);
-        const response = await axios.post("/api/updatePresentation", {
-          accessToken: session.accessToken, // assuming accessToken is stored in session
-          presentationId: newPresentationId,
-        });
-        console.log("Presentation Updated:", response.data);
-      } catch (error) {
-        console.error("Error updating presentation:", error);
-      }
-    }
-  };
+      const accessToken = session.accessToken as string;
+      const response = await axios.post("/api/createPresentation", { accessToken });
+      const newPresentationId = response.data.presentationId;
 
-  const setAndUpdatePresentation = async () => {
-    const newPresentationId = await createPresentation();
-    setPresentationId(newPresentationId);
-    await updatePresentation(newPresentationId);
+      await axios.post("/api/updatePresentation", {
+        accessToken,
+        presentationId: newPresentationId,
+        scaffolds: selectedScaffolds,
+      });
+
+      setPresentationLink(`https://docs.google.com/presentation/d/${newPresentationId}/edit`);
+    }
   };
 
   return (
     <div className="max-w-hh mx-auto flex min-h-screen flex-col items-center bg-slate-100">
       <div className="container flex min-w-96 flex-col items-center gap-8 pt-10">
-        <div className="flex flex-col gap-8">
-          <button
-            className="rounded-lg bg-rose-400 px-4 py-2.5 font-semibold text-white hover:bg-rose-300 active:bg-rose-500"
-            onClick={() => setAndUpdatePresentation()}
-          >
-            Create presentation
-          </button>
-          {presentationId && (
-            <a
-              href={`https://docs.google.com/presentation/d/${presentationId}/edit`}
-              target="_blank"
-              className="text-blue-500 underline"
-            >
-              {`https://docs.google.com/presentation/d/${presentationId}/edit`}
-            </a>
-          )}
-        </div>
         <h1 className="text-4xl font-bold">
           Get Curriculum-Aligned Instructional Scaffolds
         </h1>
@@ -126,7 +131,30 @@ export default function Start() {
           setActiveTab={setActiveTab}
           onResultsInput={handleResultsInput}
         />
-        <Results {...lessonData} submitCount={submitCount} />
+        {lessonData.lessonObjectives && lessonData.lessonStandards && (
+          <div key="lessonInfo" className="my-5 w-full md:w-10/12 lg:max-w-6xl mx-auto">
+            <LessonInfo lessonObjectives={lessonData.lessonObjectives} lessonStandards={lessonData.lessonStandards} />
+          </div>
+        )}
+        {scaffolds.length > 0 && (
+          <AllScaffolds
+            scaffoldsData={scaffolds}
+            onSelectScaffold={handleSelectScaffold}
+            selectedScaffolds={selectedScaffolds}
+          />
+        )}
+        <div className="mt-4 flex flex-col gap-8">
+          {selectedScaffolds.length > 0 && (
+            <button className="rounded-lg bg-rose-400 px-4 py-2.5 font-semibold text-white hover:bg-rose-300 active:bg-rose-500" onClick={handleCreatePresentation}>
+              Create presentation
+            </button>
+          )}
+          {presentationLink && (
+            <a href={presentationLink} target="_blank" className="text-blue-500 underline">
+              Open your presentation
+            </a>
+          )}
+        </div>
       </div>
     </div>
   );

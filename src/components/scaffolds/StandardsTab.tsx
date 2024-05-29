@@ -2,14 +2,8 @@
 import React, { useState } from 'react';
 import standardsData from './MS_math_standards.json';
 
-interface InputData {
-  lessonObjectives: string;
-  lessonStandards: string;
-}
-
-interface StandardsTabProps {
-  onTabResult: (data: InputData) => void;
-}
+// StandardsTabProps Interface
+import { StandardsTabProps } from '~/utils/interfaces';
 
 const StandardsTab = ({ onTabResult } : StandardsTabProps) => {
   const [grade, setGrade] = useState('');

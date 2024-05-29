@@ -2,14 +2,9 @@
 // every line where there is onTabResult({ file }); needs to be changed to send back "data" = objectives and standards
 import React, { useState } from 'react';
 
-interface InputData {
-    lessonObjectives: string;
-    lessonStandards: string;
-}
-  
-interface PdfTabProps {
-    onTabResult: (data: InputData) => void;
-}
+// PdfTabProps Interface
+import { PdfTabProps } from '~/utils/interfaces';
+
 
 const PdfTab = ({ onTabResult } : PdfTabProps) => {
   const [file, setFile] = useState<File | null>(null);

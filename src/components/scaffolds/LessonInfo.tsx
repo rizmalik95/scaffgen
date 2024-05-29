@@ -1,8 +1,8 @@
-interface lessonInfoProps {
-  lessonObjectives: string;
-  lessonStandards: string;
-}
-const LessonInfo = ({ lessonObjectives, lessonStandards }: lessonInfoProps) => {
+// InputData Interface
+import { InputData } from '~/utils/interfaces';
+
+
+const LessonInfo = ({ lessonObjectives, lessonStandards }: InputData) => {
   return (
     <div className="flex flex-col lg:flex-row justify-between gap-4 lg:gap-10 mx-auto lg:w-15/16 p-4">
       <div className="flex flex-col w-full lg:w-2/3 text-left">

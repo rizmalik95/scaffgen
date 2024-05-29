@@ -1,14 +1,8 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 
-interface InputData {
-  lessonObjectives: string;
-  lessonStandards: string;
-}
-
-interface UrlTabProps {
-  onTabResult: (data: InputData) => void;
-}
+// UrlTabProps Interface
+import { UrlTabProps } from '~/utils/interfaces';
 
 function UrlTab({ onTabResult  }: UrlTabProps ) {
   const [url, setUrl] = useState('');

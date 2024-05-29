@@ -2,19 +2,8 @@ import React from 'react';
 import 'slick-carousel/slick/slick.css'; 
 import 'slick-carousel/slick/slick-theme.css';
 
-// scaffold props can be an array
-// include standard in the visual
-// make AllScaffolds take in the array with variables we can add in
-
-interface ScaffoldProps {
-  pdfUrl: string;
-  image: string;
-  title: string;
-  summary: string;
-  standard: string;
-  tags: string;
-  isAI: boolean;
-}
+// ScaffoldProps Interface
+import { ScaffoldProps } from '~/utils/interfaces';
 
 const gradientClasses = [
   "bg-gradient-to-b from-orange-200 to-white",
@@ -35,19 +24,25 @@ const imageLinks = [
 ];
 
 /// Individual Scaffold Component
-const Scaffold = ({ pdfUrl, image, title, summary, standard, tags = '', isAI, gradient}: ScaffoldProps & {gradient: string}) => {
-  const handleScaffoldClick = () => {
-    window.open(pdfUrl, '_blank'); // Opens the PDF URL in a new tab
-  };
+const Scaffold = ({ HumanURL_AIContent: pdfUrl, image, title, summary, standard, tags = '', isAI, gradient, onSelect, isSelected}: ScaffoldProps & {gradient: string, onSelect: () => void, isSelected: boolean}) => {
+  // const handleScaffoldClick = () => {
+  //   window.open(pdfUrl, '_blank'); // Opens the PDF URL in a new tab
+  // };
   
   const tagList = tags ? tags.split(',').map(tag => tag.trim()) : [];
   if (isAI) {tagList.push('AI Generated')};
   const hasTag = (tagName: string) => tagList.includes(tagName);
 
   return (
-    <div className={`w-[29%] mx-4 my-4 rounded-2xl shadow overflow-hidden ${gradient} border border-gray-200 font-sans \
+    <div
+      className={`w-[29%] mx-4 my-4 rounded-2xl shadow overflow-hidden ${gradient} border ${isSelected ? 'selected-gradient' : ''} font-sans \
+      hover:shadow-md hover:border-slate-300 cursor-pointer`}
+      onClick={onSelect}
+    >
+    {/* <div className={`w-[29%] mx-4 my-4 rounded-2xl shadow overflow-hidden ${gradient} border border-gray-200 font-sans \
                     hover:shadow-md hover:border-slate-300 cursor-pointer`}
           onClick={handleScaffoldClick}>
+        > */}
       {/* Image Section with rounded corners */}
       <div className="relative">
         <img src={image} alt={title} className="w-2/3 mx-auto mt-4 rounded-xl" />
@@ -87,12 +82,9 @@ const Scaffold = ({ pdfUrl, image, title, summary, standard, tags = '', isAI, gr
   );
 };
 
-
-
-
   
 // Main Component
-const AllScaffolds = ({ scaffoldsData }: { scaffoldsData: ScaffoldProps[] }) => {
+const AllScaffolds = ({ scaffoldsData, onSelectScaffold, selectedScaffolds }: { scaffoldsData: ScaffoldProps[], onSelectScaffold: (scaffold: ScaffoldProps) => void, selectedScaffolds: ScaffoldProps[] }) => {
   // Settings for the slider
   const settings = {
     dots: true,
@@ -126,7 +118,7 @@ const AllScaffolds = ({ scaffoldsData }: { scaffoldsData: ScaffoldProps[] }) => 
         {scaffoldsData.map((scaffold, index) => (
           <Scaffold
             key={index}
-            pdfUrl={scaffold.pdfUrl}
+            HumanURL_AIContent={scaffold.HumanURL_AIContent}
             image={imageLinks[index % imageLinks.length] || imageLinks[0] || ''}
             title={scaffold.title}
             summary={scaffold.summary}
@@ -134,6 +126,8 @@ const AllScaffolds = ({ scaffoldsData }: { scaffoldsData: ScaffoldProps[] }) => 
             tags={scaffold.tags}
             isAI={scaffold.isAI}
             gradient={gradientClasses[index % gradientClasses.length] || gradientClasses[0] || ''}
+            onSelect={() => onSelectScaffold(scaffold)}
+            isSelected={selectedScaffolds.includes(scaffold)}
           />
         ))}
       </div>
