@@ -1,8 +1,12 @@
 beautifulsoup4==4.12.3
 fitz==0.0.1.dev2
-lxml==5.1.0
-openai==1.13.3
+google_api_python_client==2.129.0
+google_auth_oauthlib==1.2.0
+langchain_openai==0.1.8
+lxml==5.2.2
+openai==1.30.4
+protobuf==5.27.0
 python-dotenv==1.0.1
-Requests==2.31.0
-supabase==2.4.0
-tqdm==4.66.2
+Requests==2.32.3
+supabase==2.5.0
+tqdm==4.66.1
