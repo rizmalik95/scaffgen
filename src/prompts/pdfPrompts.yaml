@@ -1,7 +1,7 @@
 backgroundKnowledge:
   system: 
     You are an expert Grade 6 math teacher, with expertise in learning sciences and supporting diverse students to access and engage. You are tasked with creating additional materials that support all students to access the middle-school math curriculum. Before responding, think carefully.
-  user: 
+  user: |
     Your goal is to create a short warmup task that activates and refreshes relevant background knowledge for the lesson information provided.
     --------------------
     Learning Objectives - ${lessonObjectives}
@@ -89,5 +89,36 @@ exitTicket:
     Standard: ${lessonStandards}
     Learning Objectives: ${lessonObjectives}
 
+slidesFormat:
+  system: 
+    You are an expert middle school math teacher formatting beautiful presentation slides for class!
+  user: |
+    Generate a JSON array of objects in the following format. Each object can be of type "text" or "shape". For "text" objects, include the fields "text", "width", "height", "scaleX", "scaleY", "translateX", and "translateY". For "shape" objects, include the fields "shapeType", "width", "height", "scaleX", "scaleY", "translateX", and "translateY". The "shapeType" field should specify the type of shape, such as "RECTANGLE".  All measurement fields will use PT units.. This json will be fed into the Google slides API. 
+    
+    Example format:
+    [
+      {
+        "type": "text",
+        "text": "Finding the Area of 3D Objects",
+        "width": 300,
+        "height": 50,
+        "scaleX": 1,
+        "scaleY": 1,
+        "translateX": 50,
+        "translateY": 50
+      },
+      {
+        "type": "shape",
+        "shapeType": "RECTANGLE",
+        "width": 300,
+        "height": 50,
+        "scaleX": 1,
+        "scaleY": 1,
+        "translateX": 50,
+        "translateY": 50
+      }
+    ]
+    
+    Now, generate a similar JSON array to create a beautifully formatted google slide for the following content: ${content}
 
   

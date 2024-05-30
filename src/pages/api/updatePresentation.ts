@@ -34,7 +34,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         }
         
         // const presentationContent = await callOpenAI(systemPrompt, userPrompt);
-        // const { requests, slideId } = slidesFormatter(contentList); -- This used to update the presentation from slidesFormatter
+        // const { requests, slideId } = slidesFormatter(contentList); // This used to update the presentation from slidesFormatter
+        
         const requests = scaffolds.map((scaffold: ScaffoldProps, index: number) => ({
             createSlide: {
                 slideLayoutReference: {

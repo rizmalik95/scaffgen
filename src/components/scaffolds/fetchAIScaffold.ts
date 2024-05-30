@@ -35,7 +35,6 @@ export default async function fetchAIScaffoldItem(
             // console.log(pdfGenResponse.data.pdfUrl);
             
             const scaffoldProps: ScaffoldProps = {
-              //HumanURL_AIContent: pdfGenResponse.data.pdfUrl,
               HumanURL_AIContent: scaffoldResponse.activity,
               image: "",
               title: scaffoldResponse.title,

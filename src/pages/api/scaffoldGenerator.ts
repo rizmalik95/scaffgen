@@ -5,7 +5,6 @@ import callOpenAI from "~/utils/callOpenAI";
 import loadYamlFile from "~/utils/loadYamlFile";
 import { createTaskId, setTaskStatus } from "~/utils/taskManager";
 
-
 type ScaffoldData = {
   activity?: string;
   title?: string;
@@ -93,21 +92,36 @@ function fillTemplate(template: string, values: TemplateValues): string {
   return template.replace(/\$\{(\w+)\}/g, (_, key) => values[key] || "");
 }
 
+// This is the Google Slides Formatting Prompt
+async function slidesFormatPrompt(template: TemplateValues): Promise<string> {
+  const slidesFormatSystemPrompt = prompts.slidesFormat.system;
+  const slidesFormatUserPrompt = fillTemplate(prompts.slidesFormat.user, template);
+
+  const formatted = await callOpenAI(slidesFormatSystemPrompt, slidesFormatUserPrompt);
+  if (!formatted) {
+    throw new Error('Failed to format AI scaffold activity to google slides format')
+  }
+  return formatted
+}
+
 async function backgroundKnowledge(lessonObjectives: string, lessonStandards: string): Promise<ScaffoldData> {
   let template: TemplateValues = {
     lessonObjectives: lessonObjectives,
   };
-
   const systemPrompt = prompts.backgroundKnowledge.system;
   const userPrompt = fillTemplate(prompts.backgroundKnowledge.user, template);
-
   const warmupTask = await callOpenAI(systemPrompt, userPrompt);
   if (!warmupTask) {
     throw new Error(`Failed to generate backgroundKnowledge activity due to an OpenAI Error.`);
   }
 
+  let format_template: TemplateValues = {
+    content : warmupTask,
+  };
+  const formattedWarmup = await slidesFormatPrompt(format_template);
+
   return {
-    activity: warmupTask,
+    activity: formattedWarmup,
     title: "Background Knowledge Quiz",
     summary:
       "This task provides five questions that review and activate relevant knowledge and skills for the lesson.", // summary
@@ -121,7 +135,6 @@ async function mathLanguage(lessonObjectives: string,  lessonStandards: string):
   };
   const systemPrompt = prompts.mathLanguage.system;
   const userPrompt = fillTemplate(prompts.mathLanguage.user, template);
-
   const mathLanguageResponse = await callOpenAI(
     systemPrompt,
     userPrompt,
@@ -130,8 +143,13 @@ async function mathLanguage(lessonObjectives: string,  lessonStandards: string):
     throw new Error(`Failed to generate mathLanguage activity due to an OpenAI Error.`);
   }
 
+  let format_template: TemplateValues = {
+    content : mathLanguageResponse,
+  };
+  const formattedWarmup = await slidesFormatPrompt(format_template);
+
   return {
-    activity: mathLanguageResponse,
+    activity: formattedWarmup,
     title: "Relevant Vocab & Sentence Stems",
     summary:
       "This resource contains a set of key words and sentence stems specific to this particular lesson.", // summary
@@ -151,8 +169,13 @@ async function problemPairs(lessonObjectives: string, lessonStandards: string): 
     throw new Error(`Failed to generate problemPairs activity due to an OpenAI Error.`);
   }
 
+  let format_template: TemplateValues = {
+    content : problemPairsResponse,
+  };
+  const formattedWarmup = await slidesFormatPrompt(format_template);
+
   return {
-    activity: problemPairsResponse,
+    activity: formattedWarmup,
     title: "Problem Pairs",
     summary:
       "This resource contains sets of two problems that are similar in structure but differ in content.", // summary
@@ -166,14 +189,18 @@ async function exitTicket(lessonObjectives: string, lessonStandards: string): Pr
     lessonStandards: lessonStandards,
   };
   const systemPrompt = fillTemplate(prompts.exitTicket.system, template);
-
   const exitTicketResponse = await callOpenAI(systemPrompt);
   if (!exitTicketResponse) {
     throw new Error(`Failed to generate exitTicket activity due to an OpenAI Error.`);
   }
 
+  let format_template: TemplateValues = {
+    content : exitTicketResponse,
+  };
+  const formattedWarmup = await slidesFormatPrompt(format_template);
+
   return {
-    activity: exitTicketResponse,
+    activity: formattedWarmup,
     title: "Exit Ticket",
     summary:
       "A short task that tests whether the students have understood the learning objectives.", // summary
