@@ -98,37 +98,20 @@ async function backgroundKnowledge(lessonObjectives: string, lessonStandards: st
   let template: TemplateValues = {
     lessonObjectives: lessonObjectives,
   };
-  const systemPrompt = prompts.backgroundKnowledge.promptOne.system;
+  const systemPrompt = prompts.backgroundKnowledge.system;
   const userPrompt = fillTemplate(
-    prompts.backgroundKnowledge.promptOne.user,
+    prompts.backgroundKnowledge.user,
     template,
   );
 
-  const prerequisiteTopics = await callOpenAI(systemPrompt, userPrompt, 512);
-  if (!prerequisiteTopics) {
-    throw new Error(`Failed to generate backgroundKnowledge activity due to an OpenAI Error.`);
-  }
-
-
-  //Prompt 2
-  template = {
-    lessonObjectives: lessonObjectives,
-    prerequisiteTopics: prerequisiteTopics,
-  };
-  const promptTwo = fillTemplate(
-    prompts.backgroundKnowledge.promptTwo.system,
-    template,
-  );
-
-  const warmupTask = await callOpenAI(promptTwo, undefined);
+  const warmupTask = await callOpenAI(systemPrompt, userPrompt, undefined);
   if (!warmupTask) {
     throw new Error(`Failed to generate backgroundKnowledge activity due to an OpenAI Error.`);
   }
 
-
   return {
     activity: warmupTask,
-    title: "Background Knowledge Quiz",
+    title: "Background Knowledge Warmup",
     summary:
       "This task provides five questions that review and activate relevant knowledge and skills for the lesson.", // summary
     tags: "Activate Background Knowledge,Addressing Misconceptions",

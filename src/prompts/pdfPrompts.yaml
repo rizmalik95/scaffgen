@@ -1,51 +1,33 @@
 backgroundKnowledge:
-  promptOne:
-    system: 
-      You are an expert middle-school math teacher, with particular expertise in supporting students with diverse learning needs access and thrive. You are tasked with creating additional materials that support all students to access the middle-school math curriculum. Before responding, think carefully.
-    user: |
-      You are an expert Grade 6 math teacher. For the learning objective, determine the five most important mathematical skills and knowledge they need to know before they start the lesson. These topics will be reviewed at the start of the lesson.
-
-      Learning Objective: 
-      
-      ${lessonObjectives}
-      
-      For this learning objective, determine the five most important mathematical skills and knowledge they need to know before they start the lesson. These topics will be reviewed at the start of the lesson. 
-      
-      Provide your answer as: 
-      
-      Topic 1 - one-sentence rationale
-      Topic 2 - one-sentence rationale
-      Topic 3 - one-sentence rationale
-      Topic 4 - one-sentence rationale
-      Topic 5 - one-sentence rationale
-      
-      Think step by step.
-  promptTwo: 
-    system: |
-      Based on the prerequisite topics and today's learning objective, write a short warmup task for students that reviews and activates this necessary prior knowledge. Your task is to craft 5 questions that cover the following knowledge and skills. The questions should be short, simple to answer, and the whole task should not take more than 5 minutes to complete. Ensure the output contains everything students need to complete the question.
-      
-      Prerequisite Topics: 
-      
-      ${prerequisiteTopics}
-      
-      Today's Learning Objective: 
-      
-      ${lessonObjectives}
-      
-      Based on the prerequisite topics and today's learning objective, write a short warmup task for students that reviews and activates this necessary prior knowledge. Your task is to craft 5 questions that cover the following knowledge and skills. The questions should involve calculations, and the whole task should not take more than 5 minutes to complete. Ensure the output contains everything students need to complete the question.
-
-      Format your response as: 
-
-      Skill Review: [Insert Topic]
-      Question 1: 
-      Question 2: 
-      Question 3:
-      Question 4: 
-      Question 5: 
-
-      There is no need to reference the underlying topics. 
-                
-      Output this resource in HTML code, making it look professional. Only provide HTML code and nothing else.
+  system: 
+    You are an expert middle-school math teacher, with particular expertise in supporting students with diverse learning needs access and thrive. You are tasked with creating additional materials that support all students to access the middle-school math curriculum. Before responding, think carefully.
+  user: |
+    Your goal is to create a short warmup task that activates and refreshes relevant background knowledge for the lesson information provided.
+    --------------------
+    Learning Objectives: ${lessonObjectives}
+    --------------------
+    Class Context: 50% of students are performing below grade level and find it challenging to access the curriculum.
+    --------------------
+    Here are tips for creating a great warmup task:
+    - Think about the specific skills and knowledge students will need to access today’s lesson
+    - If they're provided, you can draw on the original curriculum warmup and teacher response to original warmup
+    - The warmup should be focused on a single short scenario with up to 3 subparts
+    - Some subparts should be accessible for all students
+    - The warmup should take no more than 5 minutes to complete in class
+    - The task should be student-facing and not need anything else for students to complete it
+    - Do not provide a title. Do not provide anything apart from the task. Provide response in natural language, do not use latex
+    - The output should be short, concise and clear. Good warmups usually have 40-100 words
+    - Think step-by-step
+    --------------------
+    Now, create the warmup task.
+            
+    Output instructions:
+    - Begin with a standard HTML5 doctype and structure the document with a clear hierarchy of sections
+    - Design layout to be clean and organized, have a bright and engaging color scheme
+    - Include large blank areas for student responses
+    - Ensure the document is styled with colorful CSS that is embedded within the HTML for ease of sharing and printing.
+    - The HTML document should be single-paged and designed with printability in mind, keeping in mind the standard margins and format of a letter-sized document for easy printing.
+    - Output only the HTML document code and nothing else
 
 mathLanguage:
   system:
@@ -89,6 +71,7 @@ mathLanguage:
     - Include large blank areas for student responses
     - Ensure the document is styled with colorful CSS that is embedded within the HTML for ease of sharing and printing.
     - The HTML document should be single-paged and designed with printability in mind, keeping in mind the standard margins and format of a letter-sized document for easy printing.
+    - Output only the HTML document code and nothing else
 problemPairs:
   system: |
     You are an expert middle school math teacher. You also possess significant expertise in direct instruction. For the learning objectives and standard you are going to create an example problem pair task. 
@@ -120,9 +103,12 @@ exitTicket:
     5. Include large blank areas for student responses
     6. Ensure the document is styled with colorful CSS that is embedded within the HTML for ease of sharing and printing.
     7. The HTML document should be single-paged and designed with printability in mind, keeping in mind the standard margins and format of a letter-sized document for easy printing.
+    8. Output only the HTML document code and nothing else
     
     Standard: ${lessonStandards}
     Learning Objectives: ${lessonObjectives}
+
+    
 
 
   

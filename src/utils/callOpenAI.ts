@@ -1,4 +1,4 @@
-const MODEL = "gpt-3.5-turbo";
+const MODEL = "gpt-4o";
 
 import OpenAI from "openai";
 
