@@ -1,5 +1,7 @@
 /node_modules
 .env
+credentials.json
+token.json
 scripts/API.py
 scripts/PDF
 scripts/__pycache__

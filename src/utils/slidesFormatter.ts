@@ -12,6 +12,15 @@ interface Return {
   slideId: string;
 }
 
+function getColor(color: any) {
+  if (color && color.startsWith("#")) {
+    return { rgbColor: hexToRgb(color) };
+  } else if (color) {
+    return { themeColor: color };
+  }
+  return null;
+}
+
 export function slidesFormatter(contentList: Content[]): Return {
   const slideId = idGenerator();
   const requests: any = [
@@ -25,9 +34,7 @@ export function slidesFormatter(contentList: Content[]): Return {
     switch (content.type) {
       case "text":
         const textboxId = idGenerator();
-        const textRgb: RGB | null = content.textColor
-          ? hexToRgb(content.textColor)
-          : null;
+        const textColor = getColor(content.textColor);
         requests.push({
           createShape: {
             objectId: textboxId,
@@ -60,8 +67,8 @@ export function slidesFormatter(contentList: Content[]): Return {
             objectId: textboxId,
             fields: "foregroundColor,bold,fontSize,fontFamily",
             style: {
-              ...(textRgb && {
-                foregroundColor: { opaqueColor: { rgbColor: textRgb } },
+              ...(textColor && {
+                foregroundColor: { opaqueColor: textColor },
               }),
               ...(content.fontSize && {
                 fontSize: { magnitude: content.fontSize, unit: "PT" },
@@ -96,12 +103,8 @@ export function slidesFormatter(contentList: Content[]): Return {
         break;
 
       case "shape":
-        const shapeRgb: RGB | null  = content.backgroundColor
-          ? hexToRgb(content.backgroundColor)
-          : null;
-        const outlineRgb: RGB | null = content.outlineColor
-          ? hexToRgb(content.outlineColor)
-          : null;
+        const backgroundColor = getColor(content.backgroundColor);
+        const outlineColor = getColor(content.outlineColor);
 
         const shapeId = idGenerator();
         requests.push({
@@ -129,23 +132,19 @@ export function slidesFormatter(contentList: Content[]): Return {
             objectId: shapeId,
             fields: "shapeBackgroundFill,outline",
             shapeProperties: {
-              ...(shapeRgb && {
+              ...(backgroundColor && {
                 shapeBackgroundFill: {
                   solidFill: {
-                    color: {
-                      rgbColor: shapeRgb,
-                    },
+                    color: backgroundColor,
                     alpha: 1,
                   },
                 },
               }),
-              ...(outlineRgb && {
+              ...(outlineColor && {
                 outline: {
                   outlineFill: {
                     solidFill: {
-                      color: {
-                        rgbColor: outlineRgb,
-                      },
+                      color: outlineColor,
                       alpha: 1,
                     },
                   },
