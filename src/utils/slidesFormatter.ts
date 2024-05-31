@@ -21,7 +21,9 @@ function getColor(color: any) {
   return null;
 }
 
-export function slidesFormatter(contentList: Content[]): Return {
+const validShapes = ["RECTANGLE", "ROUND_RECTANGLE", "ELLIPSE", "CLOUD", "DIAMOND"];
+
+export function slidesFormatter(contentList: Content[]): any {
   const slideId = idGenerator();
   const requests: any = [
     {
@@ -103,6 +105,9 @@ export function slidesFormatter(contentList: Content[]): Return {
         break;
 
       case "shape":
+        if (!validShapes.includes(content.shapeType)) {
+          break;
+        }
         const backgroundColor = getColor(content.backgroundColor);
         const outlineColor = getColor(content.outlineColor);
 
@@ -160,5 +165,5 @@ export function slidesFormatter(contentList: Content[]): Return {
     }
   });
 
-  return { requests, slideId };
+  return requests;
 }

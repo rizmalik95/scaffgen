@@ -15,7 +15,7 @@ from pprint import pprint
 
 from color_utils import hex_to_rgb, rgb_to_hex
 
-PRESENTATION_URL = "https://docs.google.com/presentation/d/1go_IsaDCznJK25m49VsacXAD60gTDkTxVNrU-j6V2ic/edit#slide=id.pag9sTMc86"
+PRESENTATION_URL = "https://docs.google.com/presentation/d/1Zlfjw9hmF1AM768bdpm4ySlmYpb60UnzcJgyYaRY-WM/edit#slide=id.g272a43a57ef_0_123"
 SCOPES = ["https://www.googleapis.com/auth/presentations.readonly"]
 
 chrome_path = "C:/Program Files (x86)/Google/Chrome/Application/chrome.exe %s"
@@ -55,14 +55,27 @@ def get_presentation_id(url):
 
 
 def emu_to_pt(emu):
-    return round(emu / 12700, 2)
+    return round(emu / 12700, 0)
+
 
 def get_color(color):
     if 'themeColor' in color:
         return color['themeColor']
     else:
         rgb_color = color['rgbColor']
-        return rgb_to_hex((rgb_color['red'], rgb_color['green'], rgb_color['blue']))
+        if rgb_color == {}:
+            return None
+        return rgb_to_hex(rgb_color['red'], rgb_color['green'],
+                          rgb_color['blue'])
+
+
+def get_all_text(text_elements):
+    text = ""
+    for text_element in text_elements:
+        if 'textRun' in text_element:
+            text += text_element['textRun']['content']
+
+    return text
 
 
 def main():
@@ -75,7 +88,7 @@ def main():
         presentationId=presentation_id).execute()
     slides = presentation.get('slides')
 
-    slide = slides[1]
+    slide = slides[6]
 
     elements = []
 
@@ -83,9 +96,10 @@ def main():
         elem_dict = dict()
         if elem.get('shape'):
             if elem.get('shape').get('shapeType') == 'TEXT_BOX':
+                pprint(elem)
                 elem_dict['type'] = 'text'
-                elem_dict['text'] = elem.get('shape').get('text').get(
-                    'textElements')[1].get('textRun').get('content')
+                elem_dict['text'] = get_all_text(
+                    elem.get('shape').get('text').get('textElements'))
                 elem_dict['width'] = emu_to_pt(
                     elem.get('size').get('width').get('magnitude')) * elem.get(
                         'transform').get('scaleX')
@@ -99,11 +113,15 @@ def main():
 
                 style = elem.get('shape').get('text').get(
                     'textElements')[1].get('textRun').get('style')
-                elem_dict['textColor'] = get_color(style.get('foregroundColor').get('opaqueColor'))
+                if 'foregroundColor' in style:
+                    elem_dict['textColor'] = get_color(
+                        style.get('foregroundColor').get('opaqueColor'))
 
                 elem_dict['bold'] = style.get('bold')
                 elem_dict['fontFamily'] = style.get('fontFamily')
-                elem_dict['fontSize'] = style.get('fontSize').get('magnitude')
+                if 'fontSize' in style:
+                    elem_dict['fontSize'] = style.get('fontSize').get(
+                        'magnitude')
 
             else:
                 elem_dict['type'] = 'shape'
@@ -114,18 +132,27 @@ def main():
                 elem_dict['height'] = emu_to_pt(
                     elem.get('size').get('height').get(
                         'magnitude')) * elem.get('transform').get('scaleY')
-                elem_dict['translateX'] = emu_to_pt(
-                    elem.get('transform').get('translateX'))
-                elem_dict['translateY'] = emu_to_pt(
-                    elem.get('transform').get('translateY'))
-                
-                shapeBackgroundFill = elem.get('shape').get('shapeProperties').get('shapeBackgroundFill')
+                if 'translateX' in elem.get('transform'):
+                    elem_dict['translateX'] = emu_to_pt(
+                        elem.get('transform').get('translateX'))
+                if 'translateY' in elem.get('transform'):
+                    elem_dict['translateY'] = emu_to_pt(
+                        elem.get('transform').get('translateY'))
 
-                elem_dict['backgroundColor'] = get_color(shapeBackgroundFill.get('solidFill').get('color'))
+                shapeBackgroundFill = elem.get('shape').get(
+                    'shapeProperties').get('shapeBackgroundFill')
 
-                outline = elem.get('shape').get('shapeProperties').get('outline')
-                elem_dict['outlineColor'] = get_color(outline.get('outlineFill').get('solidFill').get('color'))
-                elem_dict['outlineWeight'] = emu_to_pt(outline.get('weight').get('magnitude'))
+                elem_dict['backgroundColor'] = get_color(
+                    shapeBackgroundFill.get('solidFill').get('color'))
+
+                outline = elem.get('shape').get('shapeProperties').get(
+                    'outline')
+                outline_color = get_color(
+                    outline.get('outlineFill').get('solidFill').get('color'))
+                if outline_color:
+                    elem_dict['outlineColor'] = outline_color
+                    elem_dict['outlineWeight'] = emu_to_pt(
+                        outline.get('weight').get('magnitude'))
 
         elements.append(elem_dict)
 

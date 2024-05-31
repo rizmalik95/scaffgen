@@ -57,13 +57,7 @@ mathLanguage:
     3.
     4.
     5.
-    
-    Output instructions:
-    - Begin with a standard HTML5 doctype and structure the document with a clear hierarchy of sections
-    - Design layout to be clean and organized, have a bright and engaging color scheme
-    - Include large blank areas for student responses
-    - Ensure the document is styled with colorful CSS that is embedded within the HTML for ease of sharing and printing.
-    - The HTML document should be single-paged and designed with printability in mind, keeping in mind the standard margins and format of a letter-sized document for easy printing.
+
 problemPairs:
   system: |
     You are an expert middle school math teacher. You also possess significant expertise in direct instruction. For the learning objectives and standard you are going to create an example problem pair task. 
@@ -93,32 +87,89 @@ slidesFormat:
   system: 
     You are an expert middle school math teacher formatting beautiful presentation slides for class!
   user: |
-    Generate a JSON array of objects in the following format. Each object can be of type "text" or "shape". For "text" objects, include the fields "text", "width", "height", "scaleX", "scaleY", "translateX", and "translateY". For "shape" objects, include the fields "shapeType", "width", "height", "scaleX", "scaleY", "translateX", and "translateY". The "shapeType" field should specify the type of shape, such as "RECTANGLE".  All measurement fields will use PT units.. This json will be fed into the Google slides API. 
-    
+    Generate a JSON array of objects in the following format. Each object can be of type "text" or "shape". For "text" objects, include the fields "text", "width", "height", "scaleX", "scaleY", "translateX", "translateY", "textColor", "bold", "fontFamily", and "fontSize". For "shape" objects, include the fields "shapeType", "width", "height", "scaleX", "scaleY", "translateX", "translateY", "backgroundColor", "outlineColor", and "outlineWeight". The "shapeType" field should specify the type of shape, it must be one of "RECTANGLE", "ROUND_RECTANGLE", "ELLIPSE", "CLOUD", or "DIAMOND".  All measurement fields will use PT units.. This json will be fed into the Google slides API. 
+    Note that the maximum width of the google slide is 960, and the maximum height is 540, objects MUST NOT go out of these bounds.
+    This means that width + translateX cannot exceed 960 and height + translateY cannot exceed 540.
+
     Example format:
     [
       {
-        "type": "text",
-        "text": "Finding the Area of 3D Objects",
-        "width": 300,
-        "height": 50,
-        "scaleX": 1,
-        "scaleY": 1,
-        "translateX": 50,
-        "translateY": 50
+        "type": "shape",
+        "shapeType": "RECTANGLE",
+        "width": 719.9888000000001,
+        "height": 404.62199999999996,
+        "translateX": -1.0,
+        "backgroundColor": "#f6f9ea"
       },
       {
         "type": "shape",
         "shapeType": "RECTANGLE",
-        "width": 300,
-        "height": 50,
-        "scaleX": 1,
-        "scaleY": 1,
-        "translateX": 50,
-        "translateY": 50
+        "width": 603.2396,
+        "height": 308.0272,
+        "translateX": 58.0,
+        "translateY": 62.0,
+        "backgroundColor": "LIGHT1"
+      },
+      {
+        "type": "text",
+        "text": "Navigating a Table of Equivalent Ratios\n",
+        "width": 461.1204,
+        "height": 41.3,
+        "translateX": 58.0,
+        "translateY": 14.0,
+        "textColor": "#143c55",
+        "bold": true,
+        "fontFamily": "Catamaran",
+        "fontSize": 24
+      },
+      {
+        "type": "text",
+        "text": "Warm-Up:\n",
+        "width": 125.48119999999999,
+        "height": 41.3,
+        "translateX": 484.0,
+        "translateY": 14.0,
+        "textColor": "#143c55",
+        "bold": false,
+        "fontFamily": "Catamaran",
+        "fontSize": 24
+      },
+      {
+        "type": "text",
+        "text": "1. What do you notice or wonder?\n2. What is the ratio of cats to dogs?\n3. If the ratio stayed equivalent but the total pets doubled how many cats and dogs would there be?\n4. Which operations can you use to find equivalent ratios?\n",
+        "width": 549.0776,
+        "height": 273.76,
+        "translateX": 78.0,
+        "translateY": 166.0,
+        "textColor": "#143c55",
+        "bold": false,
+        "fontFamily": "Bellota Text",
+        "fontSize": 20
+      },
+      {
+        "type": "text",
+        "text": "A pet shelter had the\nfollowing population on\nSunday:\n",
+        "width": 235.2212,
+        "height": 87.1784,
+        "translateX": 78.0,
+        "translateY": 72.0,
+        "textColor": "#143c55",
+        "bold": false,
+        "fontFamily": "Bellota Text",
+        "fontSize": 20
+      },
+      {
+        "type": "shape",
+        "shapeType": "CLOUD",
+        "width": 166.0985,
+        "height": 81.7445,
+        "translateX": 440.0,
+        "translateY": 99.0,
+        "backgroundColor": "#c9daf7",
+        "outlineColor": "LIGHT1",
+        "outlineWeight": 1.0
       }
     ]
     
-    Now, generate a similar JSON array to create a beautifully formatted google slide for the following content: ${content}
-
-  
+    Now, generate a similar JSON array to create a beautifully formatted google slide. The slide should be engaging and colorful, with shapes and text that is easy to read. Be creative! 
+    This is the text content that you can use as inspiration for the slide: ${content}

@@ -1,15 +1,16 @@
 import React, { useState, useEffect } from "react";
 import InputForm from "@/components/scaffolds/InputForm";
-import LessonInfo from '@/components/scaffolds/LessonInfo';
+import LessonInfo from "@/components/scaffolds/LessonInfo";
 import Results from "@/components/scaffolds/Results";
-import AllScaffolds from '@/components/scaffolds/AllScaffolds';
+import AllScaffolds from "@/components/scaffolds/AllScaffolds";
+import BorderLinearProgress from "@/components/general/BorderLinearProgress";
 
 import { useSession } from "next-auth/react";
-import { useRouter } from 'next/router';
+import { useRouter } from "next/router";
 
 import axios from "axios";
 
-import { InputData, ScaffoldProps } from '~/utils/interfaces';
+import { InputData, ScaffoldProps } from "~/utils/interfaces";
 
 /* 
 Start.tsx Outline
@@ -59,7 +60,10 @@ export default function Start() {
   const [submitCount, setSubmitCount] = useState(0);
   const [activeTab, setActiveTab] = useState("illustrativeMathematics");
   const [scaffolds, setScaffolds] = useState<ScaffoldProps[]>([]);
-  const [selectedScaffolds, setSelectedScaffolds] = useState<ScaffoldProps[]>([]);
+  const [selectedScaffolds, setSelectedScaffolds] = useState<ScaffoldProps[]>(
+    [],
+  );
+  const [scaffoldPercentLoaded, setScaffoldPercentLoaded] = useState(100);
 
   const [presentationLink, setPresentationLink] = useState<string | null>(null);
   const router = useRouter();
@@ -83,7 +87,7 @@ export default function Start() {
   useEffect(() => {
     if (lessonData.lessonObjectives && lessonData.lessonStandards) {
       const fetchAndSetResults = async () => {
-        const resultScaffolds = await Results(lessonData);
+        const resultScaffolds = await Results(lessonData, setScaffoldPercentLoaded);
         setScaffolds(resultScaffolds);
       };
       fetchAndSetResults();
@@ -91,9 +95,9 @@ export default function Start() {
   }, [lessonData, submitCount]);
 
   const handleSelectScaffold = (scaffold: ScaffoldProps) => {
-    setSelectedScaffolds(prevSelectedScaffolds => {
+    setSelectedScaffolds((prevSelectedScaffolds) => {
       if (prevSelectedScaffolds.includes(scaffold)) {
-        return prevSelectedScaffolds.filter(item => item !== scaffold);
+        return prevSelectedScaffolds.filter((item) => item !== scaffold);
       } else {
         return [...prevSelectedScaffolds, scaffold];
       }
@@ -103,7 +107,9 @@ export default function Start() {
   const handleCreatePresentation = async () => {
     if (session) {
       const accessToken = session.accessToken as string;
-      const response = await axios.post("/api/createPresentation", { accessToken });
+      const response = await axios.post("/api/createPresentation", {
+        accessToken,
+      });
       const newPresentationId = response.data.presentationId;
 
       await axios.post("/api/updatePresentation", {
@@ -112,7 +118,9 @@ export default function Start() {
         scaffolds: selectedScaffolds,
       });
 
-      setPresentationLink(`https://docs.google.com/presentation/d/${newPresentationId}/edit`);
+      setPresentationLink(
+        `https://docs.google.com/presentation/d/${newPresentationId}/edit`,
+      );
     }
   };
 
@@ -132,8 +140,27 @@ export default function Start() {
           onResultsInput={handleResultsInput}
         />
         {lessonData.lessonObjectives && lessonData.lessonStandards && (
-          <div key="lessonInfo" className="my-5 w-full md:w-10/12 lg:max-w-6xl mx-auto">
-            <LessonInfo lessonObjectives={lessonData.lessonObjectives} lessonStandards={lessonData.lessonStandards} />
+          <div
+            key="lessonInfo"
+            className="mx-auto my-5 w-full md:w-10/12 lg:max-w-6xl"
+          >
+            <LessonInfo
+              lessonObjectives={lessonData.lessonObjectives}
+              lessonStandards={lessonData.lessonStandards}
+            />
+          </div>
+        )}
+        {scaffoldPercentLoaded < 100 && (
+          <div className="mx-auto flex w-2/3 flex-col">
+            <p className="mx-auto py-5 text-xl font-bold text-slate-700">
+              Generating scaffolds...
+            </p>
+            <BorderLinearProgress
+              key="linearProgress"
+              variant="buffer"
+              value={scaffoldPercentLoaded}
+              valueBuffer={scaffoldPercentLoaded}
+            />
           </div>
         )}
         {scaffolds.length > 0 && (
@@ -145,12 +172,19 @@ export default function Start() {
         )}
         <div className="mt-4 flex flex-col gap-8">
           {selectedScaffolds.length > 0 && (
-            <button className="rounded-lg bg-rose-400 px-4 py-2.5 font-semibold text-white hover:bg-rose-300 active:bg-rose-500" onClick={handleCreatePresentation}>
+            <button
+              className="rounded-lg bg-rose-400 px-4 py-2.5 font-semibold text-white hover:bg-rose-300 active:bg-rose-500"
+              onClick={handleCreatePresentation}
+            >
               Create presentation
             </button>
           )}
           {presentationLink && (
-            <a href={presentationLink} target="_blank" className="text-blue-500 underline">
+            <a
+              href={presentationLink}
+              target="_blank"
+              className="text-blue-500 underline"
+            >
               Open your presentation
             </a>
           )}
