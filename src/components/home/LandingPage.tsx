@@ -29,7 +29,7 @@ export default function LandingPage() {
               Join our community ∨
             </button>
             <NavLink
-              href="/login"
+              href="/login?callbackUrl=/start"
               className="bg-rose-400  font-semibold text-white hover:bg-rose-300 active:bg-rose-500"
             >
               Try It Now

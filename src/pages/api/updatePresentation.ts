@@ -25,6 +25,7 @@ export default async function handler(
 
   try {
     const { accessToken, presentationId, scaffolds } = req.body;
+    console.log("req.body", req.body);
 
     if (!accessToken) {
       return res.status(400).json({ error: "Access Token is required" });
@@ -52,6 +53,8 @@ export default async function handler(
         slidesFormatter(getJson(scaffold.HumanURL_AIContent)),
     );
     // const requests = slidesFormatter(contentList);
+
+    console.log("presentationId", presentationId);
 
     await slides.presentations.batchUpdate({
       presentationId: presentationId,
