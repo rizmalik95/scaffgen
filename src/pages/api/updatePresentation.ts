@@ -15,6 +15,16 @@ function getJson(jsonString: string) {
   return JSON.parse(jsonString);
 }
 
+function isValidUrl(url: string) {
+  const pattern = new RegExp('^(https?:\\/\\/)?'+ // protocol
+    '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.?)+[a-z]{2,}|'+ // domain name
+    '((\\d{1,3}\\.){3}\\d{1,3}))'+ // OR ip (v4) address
+    '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*'+ // port and path
+    '(\\?[;&a-z\\d%_.~+=-]*)?'+ // query string
+    '(\\#[-a-z\\d_]*)?$','i'); // fragment locator
+  return !!pattern.test(url);
+}
+
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse,
@@ -47,11 +57,55 @@ export default async function handler(
         "Failed to update presentation: No presentation ID returned",
       );
     }
-    const requests = scaffolds.flatMap(
-      (scaffold: ScaffoldProps, index: number) =>
-        slidesFormatter(getJson(scaffold.HumanURL_AIContent)),
-    );
+    // const requests = scaffolds.flatMap(
+    //   (scaffold: ScaffoldProps, index: number) =>
+    //     slidesFormatter(getJson(scaffold.HumanURL_AIContent)),
+    // );
     // const requests = slidesFormatter(contentList);
+    const requests = [];
+
+    for (const scaffold of scaffolds) {
+      if (scaffold.isAI) {
+        const aiRequests = slidesFormatter(getJson(scaffold.HumanURL_AIContent));
+        requests.push(...aiRequests);
+      } else {
+        const images = scaffold.HumanURL_AIContent;
+        for (const imgData of images) {
+          if (!isValidUrl(imgData)) {
+            console.error(`Invalid URL: ${imgData}`);
+            return res.status(400).json({ error: `Invalid URL: ${imgData}` });
+          }
+          const slideId = `slide_${Math.random().toString(36).substring(7)}`;
+          requests.push({
+            createSlide: {
+              objectId: slideId,
+              slideLayoutReference: {
+                predefinedLayout: 'BLANK',
+              },
+            },
+          });
+          requests.push({
+            createImage: {
+              url: imgData,
+              elementProperties: {
+                pageObjectId: slideId,
+                size: {
+                  width: { magnitude: 500, unit: "PT" },
+                  height: { magnitude: 700, unit: "PT" },
+                },
+                transform: {
+                  scaleX: 1,
+                  scaleY: 1,
+                  translateX: 50,
+                  translateY: 50,
+                  unit: "PT",
+                },
+              },
+            },
+          });
+        }
+      }
+    }
 
     await slides.presentations.batchUpdate({
       presentationId: presentationId,

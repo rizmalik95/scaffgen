@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import InputForm from "@/components/scaffolds/InputForm";
 import LessonInfo from "@/components/scaffolds/LessonInfo";
+import BorderLinearProgress from "@/components/general/BorderLinearProgress";
 import Results from "@/components/scaffolds/Results";
 import AllScaffolds from "@/components/scaffolds/AllScaffolds";
-import BorderLinearProgress from "@/components/general/BorderLinearProgress";
 
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";

@@ -22,7 +22,7 @@ export interface PdfTabProps {
 // title, summary, standard, tags, isAI
 
 export interface ScaffoldProps {
-    HumanURL_AIContent: string;
+    HumanURL_AIContent: string | string[];
     image: string;
     title: string;
     summary: string;

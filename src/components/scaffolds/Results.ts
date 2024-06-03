@@ -53,6 +53,16 @@ const Results = async (lessonData: InputData, setScaffoldPercentLoaded: React.Di
         tags: item.type_tags,
         isAI: false,
       }));
+      
+      for (const item of scaffoldItems) {
+        try {
+          const imageResponse = await axios.post('/api/pdfToImages', { pdfUrl: item.HumanURL_AIContent });
+          item.HumanURL_AIContent = imageResponse.data.images; // Ensure this is an array
+        } catch (error) {
+          console.error('Error converting PDF to images:', error);
+        }
+      }
+
       return scaffoldItems;
     } catch (error) {
       console.error('Error fetching human data:', error);
