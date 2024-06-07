@@ -162,9 +162,10 @@ async function problemPairs(lessonObjectives: string, lessonStandards: string): 
     lessonObjectives: lessonObjectives,
     lessonStandards: lessonStandards,
   };
-  const systemPrompt = fillTemplate(prompts.problemPairs.system, template);
+  const systemPrompt = prompts.problemPairs.system;
+  const userPrompt = fillTemplate(prompts.problemPairs.user, template);
 
-  const problemPairsResponse = await callOpenAI(systemPrompt);
+  const problemPairsResponse = await callOpenAI(systemPrompt, userPrompt);
   if (!problemPairsResponse) {
     throw new Error(`Failed to generate problemPairs activity due to an OpenAI Error.`);
   }
@@ -188,8 +189,10 @@ async function exitTicket(lessonObjectives: string, lessonStandards: string): Pr
     lessonObjectives: lessonObjectives,
     lessonStandards: lessonStandards,
   };
-  const systemPrompt = fillTemplate(prompts.exitTicket.system, template);
-  const exitTicketResponse = await callOpenAI(systemPrompt);
+  const systemPrompt = prompts.exitTicket.system;
+  const userPrompt = fillTemplate(prompts.exitTicket.user, template);
+
+  const exitTicketResponse = await callOpenAI(systemPrompt, userPrompt);
   if (!exitTicketResponse) {
     throw new Error(`Failed to generate exitTicket activity due to an OpenAI Error.`);
   }

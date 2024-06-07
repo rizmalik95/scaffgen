@@ -67,7 +67,12 @@ export default function Start() {
 
   const [presentationLink, setPresentationLink] = useState<string | null>(null);
   const router = useRouter();
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
+
+  useEffect(() => {
+    if (status === 'loading') return; // Do nothing while loading
+    if (!session && typeof window !== 'undefined') router.push(`/login?callbackUrl=/start`); // Redirect if not authenticated
+  }, [session, status, router]);
 
   const handleResultsInput = (inputType: string, inputData: InputData) => {
     console.log(`Handling results input: ${inputType}`, inputData); // Log for debugging

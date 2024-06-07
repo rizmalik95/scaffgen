@@ -2,17 +2,37 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { google } from "googleapis";
 import contentList from "@/utils/contentList";
 import { slidesFormatter } from "@/utils/slidesFormatter";
-
+import pdfToImages from "@/utils/pdfToImage";
 import { ScaffoldProps } from "~/utils/interfaces";
 
 function getJson(jsonString: string) {
-  if (jsonString[0] !== '[') {
-    jsonString = jsonString.substring(jsonString.indexOf('['));
+  if (jsonString[0] !== "[") {
+    jsonString = jsonString.substring(jsonString.indexOf("["));
   }
-  if (jsonString[jsonString.length-1] !== ']') {
-    jsonString = jsonString.substring(0, jsonString.lastIndexOf(']')+1);
+  if (jsonString[jsonString.length - 1] !== "]") {
+    jsonString = jsonString.substring(0, jsonString.lastIndexOf("]") + 1);
   }
   return JSON.parse(jsonString);
+}
+
+async function getRequests(scaffold: ScaffoldProps) {
+  if (scaffold.isAI) {
+    return slidesFormatter(getJson(scaffold.HumanURL_AIContent));
+  } else {
+    const imageUrls = await pdfToImages(scaffold.HumanURL_AIContent);
+    return imageUrls.map((imageUrl) =>
+      slidesFormatter([
+        {
+          type: "image",
+          url: imageUrl,
+          width: 405,
+          height: 720,
+          translateX: 0,
+          translateY: 0,
+        },
+      ]),
+    );
+  }
 }
 
 export default async function handler(
@@ -25,7 +45,6 @@ export default async function handler(
 
   try {
     const { accessToken, presentationId, scaffolds } = req.body;
-    console.log("req.body", req.body);
 
     if (!accessToken) {
       return res.status(400).json({ error: "Access Token is required" });
@@ -48,13 +67,11 @@ export default async function handler(
         "Failed to update presentation: No presentation ID returned",
       );
     }
-    const requests = scaffolds.flatMap(
-      (scaffold: ScaffoldProps, index: number) =>
-        slidesFormatter(getJson(scaffold.HumanURL_AIContent)),
+    const requestPromises = scaffolds.map((scaffold: ScaffoldProps) =>
+      getRequests(scaffold),
     );
-    // const requests = slidesFormatter(contentList);
 
-    console.log("presentationId", presentationId);
+    const requests = (await Promise.all(requestPromises)).flat();
 
     await slides.presentations.batchUpdate({
       presentationId: presentationId,

@@ -13,7 +13,7 @@ const Navbar = () => {
     // { title: 'Testimonials', path: '#testimonials' },
     { title: "Homepage", path: "/" },
     { title: "Community", path: "/community" },
-    { title: "Test Slides", path: "/login?callbackUrl=/test-slides" },
+    { title: "Test Slides", path: "/test-slides" },
   ];
 
   const pathname = usePathname();
@@ -102,7 +102,7 @@ const Navbar = () => {
               })}
               <li>
                 <NavLink
-                  href="/login?callbackUrl=/start"
+                  href="/start"
                   className="block bg-rose-400 text-sm font-medium text-white hover:bg-rose-300"
                 >
                   Try It Now

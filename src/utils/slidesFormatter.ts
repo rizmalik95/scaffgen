@@ -21,7 +21,13 @@ function getColor(color: any) {
   return null;
 }
 
-const validShapes = ["RECTANGLE", "ROUND_RECTANGLE", "ELLIPSE", "CLOUD", "DIAMOND"];
+const validShapes = [
+  "RECTANGLE",
+  "ROUND_RECTANGLE",
+  "ELLIPSE",
+  "CLOUD",
+  "DIAMOND",
+];
 
 export function slidesFormatter(contentList: Content[]): any {
   const slideId = idGenerator();
@@ -99,7 +105,7 @@ export function slidesFormatter(contentList: Content[]): any {
                 translateY: content.translateY,
                 unit: "PT",
               },
-            }
+            },
           },
         });
         break;
@@ -155,7 +161,7 @@ export function slidesFormatter(contentList: Content[]): any {
                   },
                   ...(content.outlineWeight && {
                     weight: { magnitude: content.outlineWeight, unit: "PT" },
-                  })
+                  }),
                 },
               }),
             },
