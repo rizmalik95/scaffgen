@@ -13,6 +13,7 @@ const Navbar = () => {
     // { title: 'Testimonials', path: '#testimonials' },
     { title: "Homepage", path: "/" },
     { title: "Community", path: "/community" },
+    { title: "Test Slides", path: "/login?callbackUrl=/test-slides" },
   ];
 
   const pathname = usePathname();
@@ -40,8 +41,8 @@ const Navbar = () => {
           state ? "fixed z-10 h-full" : ""
         }`}
       >
-        <div className="custom-screen mx-auto items-start md:flex mt-2">
-          <div className="flex items-center justify-between py-3 md:block md:py-5 mb-5">
+        <div className="custom-screen mx-auto mt-2 items-start md:flex">
+          <div className="mb-5 flex items-center justify-between py-3 md:block md:py-5">
             <Link href="/" className="flex items-center gap-3">
               <Image src="/logo.png" alt="logo" width={210} height={36} />
             </Link>
@@ -101,8 +102,8 @@ const Navbar = () => {
               })}
               <li>
                 <NavLink
-                  href="/login"
-                  className="block bg-rose-400 text-sm font-medium hover:bg-rose-300 text-white"
+                  href="/login?callbackUrl=/start"
+                  className="block bg-rose-400 text-sm font-medium text-white hover:bg-rose-300"
                 >
                   Try It Now
                 </NavLink>

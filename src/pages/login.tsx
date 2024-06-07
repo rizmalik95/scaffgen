@@ -1,14 +1,20 @@
 import React from "react";
 import { signIn } from "next-auth/react";
+import { useRouter } from "next/router";
+
 
 export default function Login() {
+
+  const router = useRouter();
+  const { callbackUrl } = router.query as { callbackUrl: string };
+  
   return (
     <div className="flex min-h-screen flex-col items-center gap-8 bg-slate-100 pt-48">
       <h1 className="my-10 text-4xl font-bold text-slate-700">Login</h1>
       <button
         aria-label="Sign in with Google"
         className="border-button-border-light flex w-64 items-center justify-center gap-2 rounded-lg border bg-white py-2"
-        onClick={() => signIn('google', { callbackUrl: '/start' })}
+        onClick={() => signIn('google', { callbackUrl: callbackUrl })}
       >
         <div className="flex h-9 w-9 items-center justify-center rounded-l bg-white">
           <svg
@@ -43,7 +49,7 @@ export default function Login() {
       <button
         aria-label="Continue as Guest"
         className=" w-64 rounded-md bg-rose-400 px-4  py-2.5 text-center text-sm font-medium text-white duration-150 hover:bg-rose-300"
-        onClick={() => window.location.href = '/start'}
+        onClick={() => window.location.href = callbackUrl}
       >
         <div className="flex items-center justify-center">
           <span className="text-lg font-normal text-white">
