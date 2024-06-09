@@ -1,4 +1,4 @@
-import { useSession } from "next-auth/react";
+import { useSession, signIn } from "next-auth/react";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 import { useState } from "react";
@@ -9,8 +9,12 @@ export default function TestSlides() {
   const { data: session, status } = useSession();
 
   useEffect(() => {
-    if (status === 'loading') return; // Do nothing while loading
-    if (!session && typeof window !== 'undefined') router.push(`/login?callbackUrl=/test-slides`); // Redirect if not authenticated
+    // Ensure the session is valid and sign in if not
+    if (status === "loading") return; // Do nothing while loading
+
+    if (!session) {
+      signIn();
+    }
   }, [session, status, router]);
 
   const [presentationId, setPresentationId] = useState<string>("");

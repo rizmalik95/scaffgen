@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useSession, signOut, signIn } from "next-auth/react";
 import { useEffect, useState } from "react";
 import NavLink from "@/components/NavLink";
 import Image from "next/image";
@@ -8,6 +9,13 @@ import { usePathname, useSearchParams } from "next/navigation";
 
 const Navbar = () => {
   const [state, setState] = useState(false);
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
+
+  const { data: session, status } = useSession();
+
+  const toggleProfile = () => {
+    setIsProfileOpen(!isProfileOpen);
+  };
 
   const navigation = [
     // { title: 'Testimonials', path: '#testimonials' },
@@ -107,6 +115,33 @@ const Navbar = () => {
                 >
                   Try It Now
                 </NavLink>
+              </li>
+              <li>
+              <button
+              onClick={toggleProfile}
+              className="rounded-full text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-700 focus:ring-offset-2 focus:ring-offset-gray-800"
+            >
+              {session?.user?.name || "Profile"}
+            </button>
+            {isProfileOpen && (
+              <div className="absolute right-0 z-20 mt-2 w-48 rounded-md bg-white py-1 shadow-lg">
+                <div className="px-4 py-2 text-sm text-gray-700">
+                  {session ? (
+                    <>
+                      <p>Signed in as {session.user?.name}</p>
+                      <button
+                        onClick={() => signOut()}
+                        className="mt-2 w-full text-left text-red-500"
+                      >
+                        Logout
+                      </button>
+                    </>
+                  ) : (
+                    <button onClick={() => signIn()}>Login</button>
+                  )}
+                </div>
+              </div>
+            )}
               </li>
             </ul>
           </div>

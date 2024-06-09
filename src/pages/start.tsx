@@ -6,51 +6,12 @@ import AllScaffolds from "@/components/scaffolds/AllScaffolds";
 import BorderLinearProgress from "@/components/general/BorderLinearProgress";
 
 import { useSession } from "next-auth/react";
+import { signIn } from "next-auth/react";
 import { useRouter } from "next/router";
 
 import axios from "axios";
 
 import { InputData, ScaffoldProps } from "~/utils/interfaces";
-
-/* 
-Start.tsx Outline
-
-1. InputForm.tsx
-  - input: one of the three tabs (string)
-  - output: InputData --> LessonObjectives, LessonStandards
-
-  a. UrlTab.tsx
-    - curriculum.ts
-  b. StandardsTab.tsx
-  c. PdfTab.tsx
-    - fake function for now
-
-2. LessonInfo.tsx
-  - input: InputData
-  - output: LessonInfo card that displays LessonObjectives, LessonStandards
-
-3. Results.ts
-  - input: InputData
-  - output: list of ScaffoldProps interface for each scaffold
-
-  a. Retrieve human PDF scaffolds as ScaffoldProps
-  b. Generate AI scaffolds content as ScaffoldProps
-    i. call openAI api to generate slides format
-    ii. use the format to create into presentation
-  c. Images/previews?
-
-4. AllScaffolds.tsx
-  - input: list of ScaffoldProps interface for each scaffold
-  - output: display all scaffold cards AND return a list of ScaffoldProps for selected scaffolds
-
-5. createPresentation.ts
-  - input: session.accessToken
-  - output: response (which has presentationID - personal URL for google slides presentation)
-
-6. updatePresentation.ts
-  - input: session.accessToken, presentationId (personal URL), list of ScaffoldProps for selected scaffolds
-  - output: final presentation link
-*/
 
 export default function Start() {
   const [lessonData, setLessonData] = useState<InputData>({
@@ -66,12 +27,17 @@ export default function Start() {
   const [scaffoldPercentLoaded, setScaffoldPercentLoaded] = useState(100);
 
   const [presentationLink, setPresentationLink] = useState<string | null>(null);
+
   const router = useRouter();
   const { data: session, status } = useSession();
 
   useEffect(() => {
-    if (status === 'loading') return; // Do nothing while loading
-    if (!session && typeof window !== 'undefined') router.push(`/login?callbackUrl=/start`); // Redirect if not authenticated
+    // Ensure the session is valid and sign in if not
+    if (status === "loading") return; // Do nothing while loading
+
+    if (!session) {
+      signIn();
+    }
   }, [session, status, router]);
 
   const handleResultsInput = (inputType: string, inputData: InputData) => {
@@ -92,7 +58,10 @@ export default function Start() {
   useEffect(() => {
     if (lessonData.lessonObjectives && lessonData.lessonStandards) {
       const fetchAndSetResults = async () => {
-        const resultScaffolds = await Results(lessonData, setScaffoldPercentLoaded);
+        const resultScaffolds = await Results(
+          lessonData,
+          setScaffoldPercentLoaded,
+        );
         setScaffolds(resultScaffolds);
       };
       fetchAndSetResults();
