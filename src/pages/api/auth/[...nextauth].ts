@@ -31,6 +31,7 @@ export default NextAuth({
     }),
   ],
   secret: nextAuthSecret,
+  strategy: "jwt",
   callbacks: {
     async jwt({ token, account }) {
       if (account?.access_token) {

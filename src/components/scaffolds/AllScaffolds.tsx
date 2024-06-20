@@ -25,9 +25,13 @@ const imageLinks = [
 
 /// Individual Scaffold Component
 const Scaffold = ({ HumanURL_AIContent: pdfUrl, image, title, summary, standard, tags = '', isAI, gradient, onSelect, isSelected}: ScaffoldProps & {gradient: string, onSelect: () => void, isSelected: boolean}) => {
-  // const handleScaffoldClick = () => {
-  //   window.open(pdfUrl, '_blank'); // Opens the PDF URL in a new tab
-  // };
+  const handleScaffoldClick = () => {
+    if (isAI) {
+      onSelect();
+    } else {
+      window.open(pdfUrl, '_blank'); // Opens the PDF URL in a new tab
+    }
+  };
   
   const tagList = tags ? tags.split(',').map(tag => tag.trim()) : [];
   if (isAI) {tagList.push('AI Generated')};
@@ -37,7 +41,7 @@ const Scaffold = ({ HumanURL_AIContent: pdfUrl, image, title, summary, standard,
     <div
       className={`w-[29%] mx-4 my-4 rounded-2xl shadow overflow-hidden ${gradient} border ${isSelected ? 'selected-gradient' : ''} font-sans \
       hover:shadow-md hover:border-slate-300 cursor-pointer`}
-      onClick={onSelect}
+      onClick={handleScaffoldClick}
     >
     {/* <div className={`w-[29%] mx-4 my-4 rounded-2xl shadow overflow-hidden ${gradient} border border-gray-200 font-sans \
                     hover:shadow-md hover:border-slate-300 cursor-pointer`}

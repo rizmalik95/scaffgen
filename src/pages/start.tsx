@@ -78,6 +78,8 @@ export default function Start() {
     });
   };
 
+  const resetSelectedScaffolds = () => { setSelectedScaffolds([]) }
+
   const handleCreatePresentation = async () => {
     if (session) {
       const accessToken = session.accessToken as string;
@@ -144,25 +146,35 @@ export default function Start() {
             selectedScaffolds={selectedScaffolds}
           />
         )}
-        <div className="mt-4 flex flex-col gap-8">
-          {selectedScaffolds.length > 0 && (
-            <button
-              className="rounded-lg bg-rose-400 px-4 py-2.5 font-semibold text-white hover:bg-rose-300 active:bg-rose-500"
-              onClick={handleCreatePresentation}
-            >
-              Create presentation
-            </button>
-          )}
-          {presentationLink && (
-            <a
-              href={presentationLink}
-              target="_blank"
-              className="text-blue-500 underline"
-            >
-              Open your presentation
-            </a>
-          )}
-        </div>
+        {selectedScaffolds.length > 0 && (
+          <div className="rounded-lg bg-white fixed top-10 right-10 p-10">
+            <div className="flex flex-col justify-items-center">
+              <button
+                className="rounded-lg bg-rose-400 px-4 py-2.5 font-semibold text-white hover:bg-rose-300 active:bg-rose-500"
+                onClick={handleCreatePresentation}
+              >
+                Create presentation
+              </button>
+              <button
+                className="rounded-lg"
+                onClick={resetSelectedScaffolds}
+              >
+                Clear Selection
+              </button>
+            </div>
+            {presentationLink && (
+              <div>
+                <a
+                  href={presentationLink}
+                  target="_blank"
+                  className="text-blue-500 underline"
+                >
+                  Open your presentation
+                </a>
+              </div>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );

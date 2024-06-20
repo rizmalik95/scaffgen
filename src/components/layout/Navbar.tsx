@@ -21,7 +21,7 @@ const Navbar = () => {
     // { title: 'Testimonials', path: '#testimonials' },
     { title: "Homepage", path: "/" },
     { title: "Community", path: "/community" },
-    { title: "Test Slides", path: "/test-slides" },
+    // { title: "Test Slides", path: "/test-slides" },
   ];
 
   const pathname = usePathname();
@@ -117,7 +117,7 @@ const Navbar = () => {
                 </NavLink>
               </li>
               <li>
-              <button
+            <button
               onClick={toggleProfile}
               className="rounded-full text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-700 focus:ring-offset-2 focus:ring-offset-gray-800"
             >
@@ -128,7 +128,7 @@ const Navbar = () => {
                 <div className="px-4 py-2 text-sm text-gray-700">
                   {session ? (
                     <>
-                      <p>Signed in as {session.user?.name}</p>
+                      <p>Signed in</p>
                       <button
                         onClick={() => signOut()}
                         className="mt-2 w-full text-left text-red-500"

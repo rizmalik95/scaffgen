@@ -15,25 +15,27 @@ function getJson(jsonString: string) {
   return JSON.parse(jsonString);
 }
 
-async function getRequests(scaffold: ScaffoldProps) {
-  if (scaffold.isAI) {
-    return slidesFormatter(getJson(scaffold.HumanURL_AIContent));
-  } else {
-    const imageUrls = await pdfToImages(scaffold.HumanURL_AIContent);
-    return imageUrls.map((imageUrl) =>
-      slidesFormatter([
-        {
-          type: "image",
-          url: imageUrl,
-          width: 405,
-          height: 720,
-          translateX: 0,
-          translateY: 0,
-        },
-      ]),
-    );
-  }
-}
+// Currently unused
+// async function getRequests(scaffold: ScaffoldProps) {
+//   if (scaffold.isAI) {
+//     // Not async - should split up so that this only returns promises
+//     return slidesFormatter(getJson(scaffold.HumanURL_AIContent));
+//   } else {
+//     const imageUrls = await pdfToImages(scaffold.HumanURL_AIContent);
+//     return imageUrls.map((imageUrl) =>
+//       slidesFormatter([
+//         {
+//           type: "image",
+//           url: imageUrl,
+//           width: 405,
+//           height: 720,
+//           translateX: 0,
+//           translateY: 0,
+//         },
+//       ]),
+//     );
+//   }
+// }
 
 export default async function handler(
   req: NextApiRequest,
@@ -67,11 +69,18 @@ export default async function handler(
         "Failed to update presentation: No presentation ID returned",
       );
     }
-    const requestPromises = scaffolds.map((scaffold: ScaffoldProps) =>
-      getRequests(scaffold),
-    );
 
-    const requests = (await Promise.all(requestPromises)).flat();
+    // TODO: Re-enable when Human slides are fixed
+    // const requestPromises = scaffolds.map((scaffold: ScaffoldProps) =>
+    //   getRequests(scaffold),
+    // );
+
+    // const requests = (await Promise.all(requestPromises)).flat();
+
+    // Right now, only synchronous AI-generated slides are working
+    const requests = scaffolds.map((scaffold: ScaffoldProps) =>
+      slidesFormatter(getJson(scaffold.HumanURL_AIContent))
+    );
 
     await slides.presentations.batchUpdate({
       presentationId: presentationId,
